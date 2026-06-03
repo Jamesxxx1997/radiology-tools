@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Liver</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 850px; }
+
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Liver Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Primary Imaging Feature</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select primary feature...</option>
+                    <option value="hypervascular">Branch 1: HYPERVASCULAR Lesions</option>
+                    <option value="hypovascular">Branch 2: HYPOVASCULAR Lesions</option>
+                    <option value="diffuse">Branch 3: DIFFUSE Parenchymal Disease</option>
+                    <option value="vascular">Branch 4: VASCULAR Pattern</option>
+                    <option value="infectious">Branch 5: INFECTIOUS / INFLAMMATORY</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology / Sub-branch</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzeLiver()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Hepatic Findings</button>
+        <div class="result-box" id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Liver Lesion)) --- B1[Branch 1: Hypervascular]
+            Root --- B2[Branch 2: Hypovascular]
+            Root --- B3[Branch 3: Diffuse Disease]
+            Root --- B4[Branch 4: Vascular Pattern]
+            Root --- B5[Branch 5: Infectious/Inflammatory]
+
+            B1 --- B1A(1A: Washout Present)
+            B1A --- HCC[Hepatocellular Carcinoma]
+            B1A --- ICC[Intrahepatic Cholangiocarcinoma]
+            B1A --- HM1[Hypervascular Metastases]
+            
+            B1 --- B1B(1B: No Washout/Persistent)
+            B1B --- HMG[Hemangioma]
+            B1B --- FNH[Focal Nodular Hyperplasia]
+            B1B --- HCA[Hepatocellular Adenoma]
+
+            B2 --- B2A(2A: Cystic/Fluid)
+            B2A --- SCY[Simple Hepatic Cyst]
+            B2A --- HABS[Hepatic Abscess]
+            B2A --- ECY[Echinococcal Cyst]
+            B2A --- CMET[Cystic Metastases]
+
+            B2 --- B2B(2B: Solid/Low Attenuation)
+            B2B --- MET[Metastases]
+            B2B --- ICC2[Cholangiocarcinoma Solid]
+            B2B --- LYM[Lymphoma]
+            B2B --- FMAB[Fungal Microabscesses]
+
+            B3 --- B3A(3A: Altered Signal/Attenuation)
+            B3A --- STEA[Hepatic Steatosis]
+            B3A --- HEMO[Hemochromatosis]
+            B3A --- CIRR[Cirrhosis]
+
+            B3 --- B3B(3B: Biliary Pattern)
+            B3B --- PSC[Primary Sclerosing Cholangitis]
+            B3B --- PBC[Primary Biliary Cholangitis]
+            B3B --- IGG4[IgG4-related Cholangitis]
+
+            B4 --- PVT[Portal Vein Thrombosis]
+            B4 --- PSVD[Porto-sinusoidal Vascular Disease]
+            B4 --- BCS[Budd-Chiari Syndrome]
+            B4 --- INF[Hepatic Infarction]
+
+            B5 --- ABS[Pyogenic Abscess]
+            B5 --- HEP[Viral Hepatitis]
+            B5 --- AIH[Autoimmune Hepatitis]
+            B5 --- FUN[Fungal Infection]
+
+            class HCC hcc_s; class ICC,ICC2 icc_s; class HM1 hm1_s; class HMG hmg_s;
+            class FNH fnh_s; class HCA hca_s; class SCY scy_s; class HABS abs_s;
+            class ECY ecy_s; class CMET cmet_s; class MET met_s;
+            class LYM lym_s; class FMAB,FUN fun_s; class STEA stea_s; class HEMO hemo_s;
+            class CIRR cirr_s; class PSC psc_s; class PBC pbc_s; class IGG4 igg4_s;
+            class PVT pvt_s; class PSVD psvd_s; class BCS bcs_s; class INF inf_s;
+            class ABS abs_s; class HEP hep_s; class AIH aih_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "hypervascular": ["1A: Washout Present", "1B: No Washout / Persistent Enhancement"],
+        "hypovascular": ["2A: Cystic / Fluid Attenuation", "2B: Solid / Low Attenuation"],
+        "diffuse": ["3A: Increased Attenuation / Altered Signal", "3B: Biliary Pattern (Ductal Dilatation)"],
+        "vascular": ["4A: Vascular Abnormalities"],
+        "infectious": ["5A: Regional or Multifocal Involvement"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".hcc_s": "<b>Hepatocellular Carcinoma (HCC)</b>: Most common in cirrhosis. Features arterial phase hyperenhancement and 'washout' on delayed phases.",
+        ".icc_s": "<b>Intrahepatic Cholangiocarcinoma</b>: May feature progressive delayed enhancement on solid components.",
+        ".hm1_s": "<b>Hypervascular Metastases</b>: Neuroendocrine, melanoma, or renal cell carcinoma primaries typically show avid arterial enhancement.",
+        ".hmg_s": "<b>Hemangioma</b>: Peripheral nodular discontinuous enhancement with centripetal fill-in.",
+        ".fnh_s": "<b>Focal Nodular Hyperplasia (FNH)</b>: Features a central scar and homogeneous enhancement; iso/hyperintense on hepatobiliary phase MRI.",
+        ".hca_s": "<b>Hepatocellular Adenoma</b>: Variable enhancement; may contain fat; often associated with oral contraceptives.",
+        ".scy_s": "<b>Simple Hepatic Cyst</b>: No enhancement; homogeneous fluid signal.",
+        ".abs_s": "<b>Pyogenic Abscess</b>: Rim-enhancing fluid collection with low attenuation center.",
+        ".ecy_s": "<b>Echinococcal Cyst</b>: Features daughter cysts and wall calcifications.",
+        ".cmet_s": "<b>Cystic Metastases</b>: Typically associated with mucinous primaries.",
+        ".met_s": "<b>Metastases (Solid)</b>: Most common malignant liver lesion overall; usually multiple and low attenuation.",
+        ".lym_s": "<b>Lymphoma</b>: Homogeneous, minimal enhancement.",
+        ".stea_s": "<b>Hepatic Steatosis</b>: Decreased attenuation on Computed Tomography; signal drop on opposed-phase Magnetic Resonance Imaging.",
+        ".hemo_s": "<b>Hemochromatosis</b>: Increased attenuation on Computed Tomography; decreased T2 signal on Magnetic Resonance Imaging.",
+        ".cirr_s": "<b>Cirrhosis</b>: Nodular contour and volume redistribution (e.g., enlarged caudate lobe).",
+        ".psc_s": "<b>Primary Sclerosing Cholangitis (PSC)</b>: Multifocal biliary strictures and dilatations on MRCP ('beaded' appearance).",
+        ".pbc_s": "<b>Primary Biliary Cholangitis (PBC)</b>: Features intrahepatic duct paucity.",
+        ".igg4_s": "<b>IgG4-related Sclerosing Cholangitis</b>: Diffuse or segmental bile duct involvement.",
+        ".pvt_s": "<b>Portal Vein Thrombosis</b>: Filling defect in the portal vein with low attenuation on Computed Tomography.",
+        ".psvd_s": "<b>Porto-sinusoidal Vascular Disease</b>: Portal hypertension without cirrhotic morphology; increased caudate-to-right lobe ratio.",
+        ".bcs_s": "<b>Budd-Chiari Syndrome</b>: Hepatic vein occlusion and caudate lobe hypertrophy.",
+        ".inf_s": "<b>Hepatic Infarction</b>: Wedge-shaped peripheral areas of decreased enhancement.",
+        ".hep_s": "<b>Viral Hepatitis</b>: Features periportal edema and gallbladder wall thickening.",
+        ".aih_s": "<b>Autoimmune Hepatitis</b>: Heterogeneous parenchymal enhancement and periportal edema.",
+        ".fun_s": "<b>Fungal Infection / Microabscesses</b>: Multiple small hypodense lesions in immunocompromised patients."
+    };
+
+    function analyzeLiver() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const resBox = document.getElementById('result');
+        
+        let res = "";
+        let color = "#0f172a";
+
+        if (prim === 'hypervascular') {
+            if (sec.includes('1a')) {
+                res = "<b>Branch 1A: Washout Present</b>\n• Hepatocellular Carcinoma (HCC): Common in cirrhosis\n• Intrahepatic Cholangiocarcinoma: Progressive delayed enhancement\n• Hypervascular Metastases: Neuroendocrine, Melanoma, Renal Cell";
+                color = "#ef4444";
+            } else {
+                res = "<b>Branch 1B: No Washout / Persistent Enhancement</b>\n• Hemangioma: Peripheral nodular enhancement with centripetal fill-in\n• Focal Nodular Hyperplasia (FNH): Central scar; homogeneous enhancement\n• Hepatocellular Adenoma: Variable; may contain fat";
+                color = "#10b981";
+            }
+        } else if (prim === 'hypovascular') {
+            if (sec.includes('2a')) {
+                res = "<b>Branch 2A: Cystic / Fluid Attenuation</b>\n• Simple Hepatic Cyst: No enhancement\n• Hepatic Abscess (Pyogenic): Rim enhancement\n• Echinococcal Cyst: Daughter cysts/calcifications\n• Cystic Metastases: Mucinous primaries";
+                color = "#3b82f6";
+            } else {
+                res = "<b>Branch 2B: Solid / Low Attenuation</b>\n• Metastases: Most common malignant liver lesion overall\n• Cholangiocarcinoma: Progressive delayed enhancement\n• Lymphoma: Homogeneous, minimal enhancement\n• Fungal Microabscesses: Small lesions in immunocompromised";
+                color = "#8b5cf6";
+            }
+        } else if (prim === 'diffuse') {
+            if (sec.includes('3a')) {
+                res = "<b>Branch 3A: Altered Signal / Attenuation</b>\n• Hepatic Steatosis: Decreased attenuation on CT\n• Hemochromatosis: Increased attenuation on CT\n• Cirrhosis: Nodular contour; volume redistribution";
+                color = "#f59e0b";
+            } else {
+                res = "<b>Branch 3B: Biliary Pattern (Ductal Dilatation)</b>\n• Primary Sclerosing Cholangitis: Multifocal strictures and dilatations\n• Primary Biliary Cholangitis: Duct paucity\n• IgG4-related Sclerosing Cholangitis: Segmental involvement";
+                color = "#3b82f6";
+            }
+        } else if (prim === 'vascular') {
+            res = "<b>Branch 4: Vascular Pattern</b>\n• Portal Vein Thrombosis: Filling defect; low attenuation\n• Porto-sinusoidal Vascular Disease: Portal hypertension without cirrhosis\n• Budd-Chiari Syndrome: Hepatic vein occlusion; caudate hypertrophy\n• Hepatic Infarction: Wedge-shaped peripheral areas";
+            color = "#f43f5e";
+        } else if (prim === 'infectious') {
+            res = "<b>Branch 5: Infectious / Inflammatory Pattern</b>\n• Pyogenic Abscess: Rim-enhancing fluid collection\n• Viral Hepatitis: Periportal edema; gallbladder thickening\n• Autoimmune Hepatitis: Heterogeneous enhancement\n• Fungal Infection: Multiple small hypodense lesions";
+            color = "#8b5cf6";
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Adrenal Glands — Dr. Irene Lee + jamesxxx1997</title>
+<style>
+  body { font-family:'Segoe UI',sans-serif; background:#f8fafc; margin:0; }
+  .src-banner { max-width:1400px; margin:18px auto 0; padding:12px 20px; border-radius:8px; font-size:0.97rem; line-height:1.5; }
+  .src-senior { background:#e0f2fe; border-left:6px solid #0ea5e9; color:#0369a1; }
+  .src-mine { background:#dcfce7; border-left:6px solid #10b981; color:#047857; }
+  .src-banner a { color:inherit; font-weight:bold; }
+  iframe { width:100%; border:none; display:block; background:#f8fafc; }
+  .divider { max-width:1300px; margin:34px auto; border-top:2px dashed #cbd5e1; }
+</style>
+</head>
+<body>
+  <div class="src-banner src-senior">📘 <b>Section 1 — Dr. Irene Lee (學姊)</b> · adapted from her <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank">original meta-site</a>.</div>
+  <iframe id="seniorFrame" src="senior/adrenal_glands.html" scrolling="no"></iframe>
+  <div class="divider"></div>
+  <div class="src-banner src-mine">📗 <b>Section 2 — jamesxxx1997</b> · built &amp; distilled from my own imaging notes.</div>
+  <iframe id="mineFrame" src="mine/adrenal_glands.html" scrolling="no"></iframe>
+  <script>
+    function fit(f){ try { var d=f.contentDocument||f.contentWindow.document; if(d&&d.body){ f.style.height=(d.body.scrollHeight+40)+'px'; } } catch(e){} }
+    ['seniorFrame','mineFrame'].forEach(function(id){
+      var f=document.getElementById(id);
+      f.addEventListener('load', function(){ fit(f); [400,1200,2500,4000].forEach(function(t){ setTimeout(function(){ fit(f); }, t); }); });
+    });
+    window.addEventListener('resize', function(){ ['seniorFrame','mineFrame'].forEach(function(id){ fit(document.getElementById(id)); }); });
+  </script>
+</body>
+</html>

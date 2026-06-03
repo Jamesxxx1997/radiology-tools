@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pancreas — jamesxxx1997 notes</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-top: 6px solid #10b981; }
+        h1, h2 { color: #064e3b; text-align: center; }
+        h1 .tag { font-size: 0.95rem; color: #10b981; font-weight: 600; }
+        .card { border: 1px solid #d1fae5; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #f8fefb; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #047857; }
+        select { padding: 10px; border: 1px solid #a7f3d0; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        button.analyze { width: 100%; background: #059669; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 12px; }
+        .result-box { background: #ecfdf5; padding: 18px; border-radius: 8px; border-left: 5px solid #059669; margin-top: 15px; line-height: 1.55; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 760px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th, td { border: 1px solid #d1fae5; padding: 7px 9px; text-align: left; vertical-align: top; }
+        th { background: #d1fae5; color: #064e3b; }
+        .tippy-box[data-theme~='light-border'] { background:#fff !important; color:#1e293b !important; box-shadow:0 4px 15px rgba(0,0,0,0.15); font-size:0.9rem; border:1px solid #a7f3d0; max-width:340px !important; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Pancreatic Cancer — Imaging Workup <span class="tag">· jamesxxx1997</span></h1>
+    <p style="text-align:center;color:#475569;max-width:860px;margin:0 auto 20px;font-size:0.92rem;">
+        Imaging-only distillation of my PDAC notes (epidemiology / risk / clinical sections removed). Core idea: PDAC is a <b>hypovascular, ill-defined, hypoenhancing</b> mass — caught best on the <b>pancreatic phase</b>.
+    </p>
+
+    <div class="card">
+        <h2>Primary Finding → Differential</h2>
+        <label>What is the dominant imaging finding?</label>
+        <select id="finding">
+            <option value="">Select…</option>
+            <option value="mass">Hypovascular ill-defined mass (hypodense in pancreatic phase)</option>
+            <option value="double">Double-duct sign (CBD + MPD dilatation)</option>
+            <option value="occult">MPD abrupt cut-off WITHOUT a visible mass</option>
+            <option value="duct">Duct-penetrating sign (duct runs through the mass)</option>
+            <option value="hyper">Hypervascular mass (strong arterial enhancement)</option>
+        </select>
+        <button class="analyze" onclick="interpret()">Interpret</button>
+        <div class="result-box" id="res"></div>
+    </div>
+
+    <div class="card">
+        <h2>Imaging Tree (Hover nodes for detail)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Suspected PDAC)) --- M[Modality &amp; Phase strategy]
+            Root --- S[Classic PDAC signs]
+            Root --- O[Occult / isoattenuating]
+            Root --- DDx[Imaging mimics]
+
+            M --- PANCP[Pancreatic phase 40-45s]
+            M --- PVP[Portal venous 60-70s]
+            M --- EUS[EUS / FNA]
+
+            S --- MASS[Hypovascular mass]
+            S --- DDUCT[Double-duct sign]
+            S --- SEC[Secondary signs]
+
+            O --- ISO[Isoattenuating PDAC]
+
+            DDx --- CP[Focal chronic pancreatitis]
+            DDx --- NET[Neuroendocrine tumor]
+            DDx --- SPN[Solid pseudopapillary]
+            DDx --- AIP[Autoimmune pancreatitis]
+
+            class MASS malig; class DDUCT malig; class SEC malig; class ISO malig;
+            class CP benign; class NET benign; class SPN benign; class AIP benign;
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Modality Cheat-Sheet (from my notes)</h2>
+        <table>
+            <tr><th>Modality</th><th>Key point</th></tr>
+            <tr><td><b>CT — arterial (25-30s)</b></td><td>Poor tumour-vs-parenchyma contrast → easy to miss.</td></tr>
+            <tr><td><b>CT — pancreatic phase (40-45s)</b></td><td><b>Detection phase.</b> Normal pancreas enhances bright; PDAC stays dark (hypovascular) → best contrast.</td></tr>
+            <tr><td><b>CT — portal venous (60-70s)</b></td><td>Staging: venous involvement &amp; liver metastases.</td></tr>
+            <tr><td><b>MRI — T1 fat-sat</b></td><td>Best parenchymal sequence. Normal pancreas <b>bright</b>; PDAC <b>dark</b> (desmoplastic stroma).</td></tr>
+            <tr><td><b>MRI — T2</b></td><td>PDAC mildly low/iso; T2 mainly for cysts/necrosis/mucin.</td></tr>
+            <tr><td><b>MRI — DWI</b></td><td>PDAC restricts: DWI bright / ADC dark.</td></tr>
+            <tr><td><b>US (first line)</b></td><td>Hypoechoic, ill-defined; limited by bowel gas (esp. tail). Doppler hypovascular.</td></tr>
+            <tr><td><b>EUS</b></td><td>Best for &lt;2 cm; tool of choice for FNA/FNB tissue.</td></tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    function interpret() {
+        const v = document.getElementById('finding').value;
+        const box = document.getElementById('res');
+        box.style.display = 'block';
+        const map = {
+            mass: '<b>PDAC</b> (typical): hypovascular, ill-defined, hypoenhancing relative to normal parenchyma — best seen on the <b>pancreatic phase (40-45s)</b>. Assess SMA / celiac axis encasement for resectability.',
+            double: '<b>Double-duct sign</b> → head PDAC obstructing both CBD and MPD. Note: <b>uncinate</b> tumours are often far from the ducts and may show <b>no</b> double-duct sign (detected late, early vascular/duodenal invasion).',
+            occult: '<b>Isoattenuating PDAC</b> — up to 11% (27% if ≤2 cm) are isodense on CT. Suspect on indirect signs: abrupt MPD cut-off, distal parenchymal atrophy, focal contour change → go to <b>MRI or EUS</b>.',
+            duct: '<b>Duct-penetrating sign</b> (duct passes through the mass without obstruction) favours <b>focal chronic pancreatitis</b> over PDAC.',
+            hyper: '<b>Hypervascular</b> mass argues against PDAC → think <b>neuroendocrine tumour</b> (strong arterial enhancement) or solid pseudopapillary tumour.'
+        };
+        box.innerHTML = map[v] || '⚠️ Select a finding.';
+    }
+
+    const classDesc = {
+        ".malig": "PDAC / malignant feature — see modality cheat-sheet.",
+        ".benign": "Imaging mimic of PDAC — distinguishing feature in tooltip."
+    };
+    const nodeDesc = {
+        "PANCP": "<b>Pancreatic phase (40-45s)</b>: detection phase. Normal pancreas bright, PDAC dark (hypovascular) — maximal contrast.",
+        "PVP": "<b>Portal venous (60-70s)</b>: staging — SMV/PV involvement and liver metastases.",
+        "EUS": "<b>EUS</b>: highest sensitivity for &lt;2 cm tumours; best route for FNA/FNB tissue diagnosis.",
+        "MASS": "<b>Hypovascular mass</b>: ill-defined, infiltrative, enhances less than normal parenchyma.",
+        "DDUCT": "<b>Double-duct sign</b>: simultaneous CBD + MPD dilatation (head tumours). Absent in many uncinate tumours.",
+        "SEC": "<b>Secondary signs</b>: MPD dilatation/cut-off, distal atrophy, splenic-vein thrombosis (head/body malignancy).",
+        "ISO": "<b>Isoattenuating PDAC</b>: 11% (27% if ≤2 cm) isodense → rely on abrupt MPD cut-off, distal atrophy, contour change; confirm with MRI/EUS.",
+        "CP": "<b>Focal chronic pancreatitis</b>: duct-penetrating sign (duct passes through, not obstructed).",
+        "NET": "<b>Neuroendocrine tumour</b>: hypervascular, strong arterial enhancement (opposite of PDAC).",
+        "SPN": "<b>Solid pseudopapillary tumour</b>: typically young women; mixed solid-cystic, haemorrhagic.",
+        "AIP": "<b>Autoimmune pancreatitis</b>: diffuse 'sausage' gland with peripheral halo; responds to steroids."
+    };
+
+    setTimeout(() => {
+        Object.keys(nodeDesc).forEach(id => {
+            document.querySelectorAll('.mermaid .node').forEach(n => {
+                if (n.id && n.id.includes('-' + id + '-')) tippy(n, { allowHTML: true, theme: 'light-border', content: nodeDesc[id], placement: 'top' });
+            });
+        });
+    }, 1200);
+</script>
+</body>
+</html>

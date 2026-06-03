@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liver — jamesxxx1997 notes</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-top: 6px solid #10b981; }
+        h1, h2 { color: #064e3b; text-align: center; }
+        h1 .tag { font-size: 0.95rem; color: #10b981; font-weight: 600; }
+        .card { border: 1px solid #d1fae5; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #f8fefb; }
+        .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 15px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #047857; }
+        input, select { padding: 10px; border: 1px solid #a7f3d0; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        button.analyze { width: 100%; background: #059669; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .result-box { background: #ecfdf5; padding: 18px; border-radius: 8px; border-left: 5px solid #059669; margin-top: 15px; line-height: 1.55; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 900px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th, td { border: 1px solid #d1fae5; padding: 7px 9px; text-align: left; vertical-align: top; }
+        th { background: #d1fae5; color: #064e3b; }
+        .two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 900px){ .two { grid-template-columns: 1fr; } }
+        .tippy-box[data-theme~='light-border'] { background:#fff !important; color:#1e293b !important; box-shadow:0 4px 15px rgba(0,0,0,0.15); font-size:0.9rem; border:1px solid #a7f3d0; max-width:340px !important; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Focal Liver Lesions — Dynamic-Enhancement First <span class="tag">· jamesxxx1997</span></h1>
+    <p style="text-align:center;color:#475569;max-width:860px;margin:0 auto 20px;font-size:0.92rem;">
+        Sorted by the arterial → portal/delayed → hepatobiliary (HBP) behaviour, with T2, DWI/ADC and chemical-shift as ancillary signs. Built from my MRI notes.
+    </p>
+
+    <div class="card">
+        <h2>Enhancement-Pattern Interpreter</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Arterial phase</label>
+                <select id="art">
+                    <option value="">Select…</option>
+                    <option value="hyper">Hyperenhancing (wash-in)</option>
+                    <option value="rim">Peripheral / rim only</option>
+                    <option value="nodular">Peripheral nodular discontinuous</option>
+                    <option value="hypo">Hypovascular / none</option>
+                </select>
+            </div>
+            <div>
+                <label>Portal / Delayed phase</label>
+                <select id="pv">
+                    <option value="">Select…</option>
+                    <option value="washout">Washout (darker than liver)</option>
+                    <option value="iso">Fades to isointense</option>
+                    <option value="persist">Persists (stays bright)</option>
+                    <option value="centripetal">Centripetal fill-in</option>
+                    <option value="central">Delayed central fill (fibrous)</option>
+                    <option value="none">No enhancement</option>
+                </select>
+            </div>
+            <div>
+                <label>Hepatobiliary phase (HBP)</label>
+                <select id="hbp">
+                    <option value="">Select / n/a…</option>
+                    <option value="bright">Bright / iso (uptake)</option>
+                    <option value="dark">Dark (no uptake)</option>
+                </select>
+            </div>
+        </div>
+        <button class="analyze" onclick="interpret()">Interpret pattern</button>
+        <div class="result-box" id="res"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Tree (Hover nodes for imaging features)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Focal Liver Lesion)) --- B1[Arterial hyperenhancing]
+            Root --- B2[Hypovascular / rim]
+            Root --- B3[Non-enhancing fluid]
+
+            B1 --- HCC[HCC -LR5-]
+            B1 --- FNH[FNH]
+            B1 --- HCA1[HCA type 1 -HNF1a-]
+            B1 --- HCA2[HCA type 2 -inflammatory-]
+            B1 --- HEM[Hemangioma]
+
+            B2 --- METS[Metastasis]
+            B2 --- CCC[Cholangiocarcinoma]
+            B2 --- ABS[Abscess]
+
+            B3 --- CYST[Simple Cyst]
+
+            class HCC malig; class CCC malig; class METS malig;
+            class FNH benign; class HCA1 benign; class HCA2 benign; class HEM benign; class CYST benign; class ABS infNode;
+        </div>
+    </div>
+
+    <div class="card" style="border-color:#fca5a5;background:#fff7f7;">
+        <h2 style="color:#991b1b;">LI-RADS v2018 — LR-5 (Definitely HCC) Calculator</h2>
+        <p style="font-size:0.85rem;color:#475569;margin-top:0;">For <b>at-risk patients only</b> (cirrhosis / chronic HBV). LR-5 = observation <b>≥10 mm</b> with <b>nonrim arterial-phase hyperenhancement (APHE)</b> plus the required number of additional major features.</p>
+        <div class="calc-grid">
+            <div><label>Observation size (mm)</label><input type="number" id="lrsize" placeholder="e.g. 22"></div>
+            <div><label>Nonrim APHE?</label><select id="lraphe"><option value="yes">Yes</option><option value="no">No</option></select></div>
+        </div>
+        <label style="margin-top:6px;">Additional major features present:</label>
+        <div style="display:flex;flex-wrap:wrap;gap:18px;margin:6px 0 12px;">
+            <label style="font-weight:normal;color:#1e293b;"><input type="checkbox" id="lrwash" style="width:auto;"> Nonperipheral washout</label>
+            <label style="font-weight:normal;color:#1e293b;"><input type="checkbox" id="lrcap" style="width:auto;"> Enhancing capsule</label>
+            <label style="font-weight:normal;color:#1e293b;"><input type="checkbox" id="lrgrow" style="width:auto;"> Threshold growth (≥50% in ≤6 mo)</label>
+        </div>
+        <button class="analyze" style="background:#b91c1c;" onclick="lirads()">Categorise</button>
+        <div class="result-box" id="lrres" style="border-left-color:#b91c1c;background:#fff1f1;"></div>
+    </div>
+
+    <div class="card">
+        <h2>LI-RADS v2018 Categories (CT/MRI)</h2>
+        <table>
+            <tr><th>Category</th><th>Assessment</th><th>Action / note</th></tr>
+            <tr><td><b>LR-1</b></td><td>Definitely benign</td><td>—</td></tr>
+            <tr><td><b>LR-2</b></td><td>Probably benign</td><td>—</td></tr>
+            <tr><td><b>LR-3</b></td><td>Intermediate probability (e.g. dysplastic nodule)</td><td>Follow-up ~3-6 months</td></tr>
+            <tr><td><b>LR-4</b></td><td>Probably HCC</td><td>Multidisciplinary / close follow-up</td></tr>
+            <tr><td><b>LR-5</b></td><td><b>Definitely HCC</b></td><td>Treat as HCC (biopsy not required)</td></tr>
+            <tr><td><b>LR-M</b></td><td>Probably/definitely malignant but <b>not specific for HCC</b> (rim APHE, peripheral washout, delayed central enhancement → think iCCA / combined)</td><td>Often biopsy</td></tr>
+            <tr><td><b>LR-TIV</b></td><td>Tumour in vein</td><td>—</td></tr>
+            <tr><td><b>LR-NC</b></td><td>Not categorizable (quality / omission)</td><td>Repeat / alternative imaging</td></tr>
+        </table>
+        <p style="font-size:0.8rem;color:#64748b;margin-bottom:0;">Source: my note "LI-RADS-CT-MRI-2018-Core". The size/feature rule shown (≥20 mm needs 1 major feature; 10-19 mm needs 2) is the teaching simplification; the official table has minor size-specific nuances — verify for borderline cases.</p>
+    </div>
+
+    <div class="two">
+        <div class="card">
+            <h2>Chemical Shift (IP / OOP)</h2>
+            <table>
+                <tr><th>Tissue</th><th>Example</th><th>OOP behaviour</th></tr>
+                <tr><td>Water + fat</td><td>steatosis, fat-containing HCC, adenoma</td><td><b>Drops (darkens)</b></td></tr>
+                <tr><td>Water only</td><td>cyst, hemangioma, most mets</td><td>Unchanged</td></tr>
+                <tr><td>Fat only</td><td>hepatic lipoma</td><td>Stays bright</td></tr>
+                <tr><td>Neither</td><td>iron deposition (haemochromatosis)</td><td>Low on both (T2* loss)</td></tr>
+            </table>
+        </div>
+        <div class="card">
+            <h2>T2 Brightness Ladder</h2>
+            <table>
+                <tr><th>T2</th><th>Lesion</th><th>Heavy-T2 (long TE) clue</th></tr>
+                <tr><td>Very bright (≈CSF)</td><td>cyst, biliary hamartoma</td><td>Stays bright</td></tr>
+                <tr><td>Bright</td><td>hemangioma</td><td>Loses a little signal</td></tr>
+                <tr><td>Mild/moderate</td><td>HCC, most mets, adenoma</td><td><b>Clearly fades</b></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="two">
+        <div class="card">
+            <h2>DWI / ADC</h2>
+            <table>
+                <tr><th>Lesion</th><th>DWI / ADC</th><th>ADC (×10⁻³ mm²/s)</th></tr>
+                <tr><td>Simple cyst</td><td>dark / bright — free</td><td>≈ 2.94</td></tr>
+                <tr><td>Hemangioma</td><td>mild / mid — mild restrict</td><td>≈ 1.37</td></tr>
+                <tr><td>Cholangio / HCC</td><td>bright / dark — <b>restricted</b></td><td>≈ 0.91</td></tr>
+                <tr><td>HCA / FNH</td><td>bright / dark — restricted*</td><td>* benign but cellular — can mimic malignancy</td></tr>
+                <tr><td>Tumour PV thrombus</td><td>bright / dark — restricted + enhances</td><td>vs bland thrombus (no restriction)</td></tr>
+            </table>
+        </div>
+        <div class="card">
+            <h2>Haemorrhage on MRI</h2>
+            <table>
+                <tr><th>Stage</th><th>Product</th><th>T1 / T2</th></tr>
+                <tr><td>Acute / subacute</td><td>methaemoglobin</td><td><b>T1 bright</b> (precontrast T1-FS) / variable</td></tr>
+                <tr><td>Chronic</td><td>haemosiderin</td><td>T1 dark / T2 very dark</td></tr>
+            </table>
+            <p style="font-size:0.8rem;color:#64748b;margin-bottom:0;">Precontrast T1 fat-sat bright foci = strongest sign of haemorrhage (e.g. inflammatory HCA, bleeding HCC).</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    function interpret() {
+        const a = document.getElementById('art').value;
+        const p = document.getElementById('pv').value;
+        const h = document.getElementById('hbp').value;
+        const box = document.getElementById('res');
+        box.style.display = 'block';
+        if (!a) { box.innerHTML = '⚠️ Select at least the arterial phase.'; return; }
+        let out = [];
+        if (a === 'hyper') {
+            if (p === 'washout') out.push(h === 'bright'
+                ? '<b>FNH unusual</b> — but washout + HBP uptake is atypical; if true washout + capsule and HBP dark ⇒ <b>HCC (LR-5)</b>.'
+                : '<b>HCC (LR-5)</b>: wash-in + washout (+ capsule), HBP dark. <i>Mimic:</i> HCA type 1 (HNF-1α) — also arterial-bright then washout.');
+            if (p === 'iso') out.push(h === 'bright'
+                ? '<b>FNH</b>: arterial hyperenhancement, fades to isointense, HBP bright/iso, central scar (scar enhances late).'
+                : '<b>FNH</b> likely (HBP uptake confirms functioning hepatocytes); confirm HBP.');
+            if (p === 'persist') out.push('<b>HCA type 2 (inflammatory)</b>: strong arterial, <b>persists</b> (no washout), highest bleed risk (~30%). HBP usually dark.');
+            if (p === 'centripetal') out.push('<b>Hemangioma</b> — but classic hemangioma is peripheral <i>nodular</i> arterial, not uniform; recheck arterial pattern.');
+        }
+        if (a === 'nodular') out.push('<b>Hemangioma</b>: peripheral nodular discontinuous arterial enhancement → <b>centripetal fill-in</b>; HBP dark (no hepatocytes).');
+        if (a === 'rim' || a === 'hypo') {
+            if (p === 'central') out.push('<b>Cholangiocarcinoma</b>: peripheral rim + <b>delayed central fill</b> (fibrous stroma). HBP dark.');
+            out.push('<b>Metastasis</b>: hypovascular ± rim, HBP very dark, DWI restricted; usually known primary.');
+            out.push('<b>Abscess</b>: rim enhancement + intense DWI restriction that <b>resolves on follow-up</b> after antibiotics (key vs mets).');
+        }
+        if (a === 'hypo' && p === 'none') out.unshift('<b>Simple cyst</b>: no enhancement, T2 very bright, T1 dark, ADC high.');
+        if (!out.length) out.push('Pattern not in my note set — correlate with T2, DWI/ADC and clinical history.');
+        box.innerHTML = out.join('<br><br>');
+    }
+
+    const descriptions = {
+        ".malig": "Malignant — confirm with washout / DWI restriction / HBP behaviour as noted.",
+        ".benign": "Benign — classic features below; HBP and chemical-shift help confirm.",
+        ".infNode": "Inflammatory — check markers and treatment response."
+    };
+    function lirads() {
+        const size = parseFloat(document.getElementById('lrsize').value);
+        const aphe = document.getElementById('lraphe').value;
+        const n = ['lrwash','lrcap','lrgrow'].filter(id => document.getElementById(id).checked).length;
+        const box = document.getElementById('lrres');
+        box.style.display = 'block';
+        if (isNaN(size)) { box.innerHTML = '⚠️ Enter the observation size (mm).'; return; }
+        if (aphe === 'no') {
+            box.innerHTML = '<b>Not the LR-5 pathway.</b> Nonrim APHE is required for LR-5. Without APHE, washout/capsule/growth give LR-3 or LR-4; rim APHE / peripheral washout / targetoid features → consider <b>LR-M</b>.';
+            return;
+        }
+        let cat, msg;
+        if (size < 10) {
+            cat = 'LR-3 / LR-4';
+            msg = '&lt;10 mm with APHE: 0 additional features → LR-3; ≥1 additional → LR-4. Too small for LR-5.';
+        } else if (size <= 19) {
+            if (n >= 2) { cat = 'LR-5'; msg = '10-19 mm + APHE + ≥2 major features → <b>Definitely HCC</b>.'; }
+            else if (n === 1) { cat = 'LR-4'; msg = '10-19 mm + APHE + 1 major feature → Probably HCC.'; }
+            else { cat = 'LR-3'; msg = '10-19 mm + APHE + 0 major features → Intermediate probability.'; }
+        } else {
+            if (n >= 1) { cat = 'LR-5'; msg = '≥20 mm + APHE + ≥1 major feature → <b>Definitely HCC</b>.'; }
+            else { cat = 'LR-3'; msg = '≥20 mm + APHE + 0 major features → Intermediate probability (LR-3).'; }
+        }
+        const color = cat === 'LR-5' ? '#b91c1c' : (cat === 'LR-4' ? '#ea580c' : '#64748b');
+        box.style.borderLeftColor = color;
+        box.innerHTML = `<b style="font-size:1.15rem;color:${color};">${cat}</b><br>${msg}<br><span style="font-size:0.8rem;color:#64748b;">At-risk patients only (cirrhosis / chronic HBV) — does not apply to average-risk livers.</span>`;
+    }
+
+    const nodeDesc = {
+        "HCC": "<b>HCC (LR-5)</b>: arterial wash-in (APHE) → portal washout → delayed hypo, enhancing capsule. HBP dark (no OATP). DWI restricted.",
+        "FNH": "<b>FNH</b>: intense homogeneous arterial wash-in (scar spared) → isointense → HBP bright/iso (functioning hepatocytes); central scar enhances late.",
+        "HCA1": "<b>HCA type 1 (HNF-1α)</b>: ~30-35%, lowest malignant risk. Mild arterial then <b>washout</b> → easily mimics HCC. HBP dark.",
+        "HCA2": "<b>HCA type 2 (inflammatory)</b>: most common (40-50%), <b>highest bleed risk (~30%)</b>. Strong arterial that <b>persists</b> (no washout). HBP usually dark.",
+        "HEM": "<b>Hemangioma</b>: peripheral nodular discontinuous arterial enhancement → centripetal fill. Very T2 bright. HBP dark.",
+        "METS": "<b>Metastasis</b>: usually hypovascular ± rim; HBP very dark (black hole); DWI restricted. Known primary.",
+        "CCC": "<b>Cholangiocarcinoma</b>: peripheral rim + progressive <b>delayed central</b> enhancement (fibrous stroma). HBP dark.",
+        "ABS": "<b>Abscess</b>: rim enhancement + strong DWI restriction; restriction <b>resolves on follow-up</b> after antibiotics — distinguishes from metastasis.",
+        "CYST": "<b>Simple cyst</b>: no enhancement, T2 very bright, T1 dark, ADC high (free diffusion)."
+    };
+
+    setTimeout(() => {
+        Object.keys(nodeDesc).forEach(id => {
+            document.querySelectorAll('.mermaid .node').forEach(n => {
+                if (n.id && n.id.includes('-' + id + '-')) tippy(n, { allowHTML: true, theme: 'light-border', content: nodeDesc[id], placement: 'top' });
+            });
+        });
+    }, 1200);
+</script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Pancreas</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 850px; }
+
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Pancreas Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Primary Imaging Feature</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select primary feature...</option>
+                    <option value="solid_hypo">Branch 1: SOLID Hypovascular Mass</option>
+                    <option value="solid_hyper">Branch 2: SOLID Hypervascular Mass</option>
+                    <option value="cystic">Branch 3: CYSTIC Lesions</option>
+                    <option value="inflammatory">Branch 4: INFLAMMATORY Mimics</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology / Sub-branch</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzePancreas()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Pancreatic Findings</button>
+        <div class="result-box" id="result"></div>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 25px;">
+        <a href="../Prognosis/pancreatic_adenoCA.html" 
+           style="display: inline-block; padding: 12px 24px; background-color: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: bold; text-decoration: none; transition: background-color 0.2s;">
+           &rarr; Pancreatic Adenocarcinoma Prognosis Tool
+        </a>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Pancreatic Lesion)) --- B1[Branch 1: Solid Hypovascular]
+            Root --- B2[Branch 2: Solid Hypervascular]
+            Root --- B3[Branch 3: Cystic]
+            Root --- B4[Branch 4: Inflammatory]
+
+            B1 --- B1A(1A: Focal Mass/Duct Obstruction)
+            B1A --- PDAC[Pancreatic Adenocarcinoma]
+            B1A --- CHOL[Cholangiocarcinoma]
+            B1A --- AMP[Ampullary Carcinoma]
+            B1A --- PMET[Pancreatic Metastasis]
+            B1A --- PLYM[Pancreatic Lymphoma]
+
+            B1 --- B1B(1B: Diffuse/Infiltrative)
+            B1B --- AIP[Autoimmune Pancreatitis]
+            B1B --- PLYM2[Lymphoma - Diffuse]
+            B1B --- MFCP[Mass-forming Chronic Pancreatitis]
+            B1B --- GRP[Groove Pancreatitis]
+
+            B2 --- PNET[Neuroendocrine Tumor]
+            B2 --- SPN[Solid Pseudopapillary Neoplasm]
+            B2 --- HMET[Hypervascular Metastases]
+            B2 --- ACC[Acinar Cell Carcinoma]
+
+            B3 --- B3A(3A: Unilocular)
+            B3A --- SCY[Simple Cyst]
+            B3A --- SCAM[Serous Cystadenoma - Macrocystic]
+            B3A --- PCY[Pseudocyst]
+
+            B3 --- B3B(3B: Multilocular/Complex)
+            B3B --- SCM[Serous Cystadenoma - Microcystic]
+            B3B --- MCN[Mucinous Cystic Neoplasm]
+            B3B --- IPMN[IPMN]
+            B3B --- CPNET[Cystic PNET]
+
+            B4 --- B4A(4A: Acute Process)
+            B4A --- AFPN[Focal Acute Pancreatitis]
+            B4A --- IPN[Infected Pancreatic Necrosis]
+            B4 --- B4B(4B: Chronic Process)
+            B4B --- MFCP2[Mass-forming Chronic Pancreatitis]
+            B4B --- GRP2[Groove Pancreatitis]
+            B4B --- AIP2[Focal Autoimmune Pancreatitis]
+
+            class PDAC pdac_s; class AIP aip_s; class MFCP mfcp_s; class PNET pnet_s;
+            class SCM scm_s; class MCN mcn_s; class IPMN ipmn_s; class GRP grp_s;
+            class SPN spn_s; class PCY pcy_s; class CHOL chol_s; class AMP amp_s;
+            class CPNET cpnet_s; class AFPN afpn_s; class IPN ipn_s; 
+            class MFCP2 mfcp2_s; class GRP2 grp2_s; class AIP2 aip2_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "solid_hypo": ["1A: Focal Mass with Duct Obstruction", "1B: Diffuse/Infiltrative Pattern"],
+        "solid_hyper": ["N/A"],
+        "cystic": ["3A: Unilocular Cyst", "3B: Multilocular/Complex Cyst"],
+        "inflammatory": ["4A: Acute Inflammatory Process", "4B: Chronic Inflammatory Mass"],
+        "differentiation": ["Features Favoring PDAC", "Features Favoring Autoimmune Pancreatitis", "Features Favoring Mass-forming Chronic Pancreatitis"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".pdac_s": "<b>Pancreatic Ductal Adenocarcinoma</b>: Abrupt duct cutoff, upstream atrophy, and vascular encasement.",
+        ".aip_s": "<b>Autoimmune Pancreatitis</b>: Sausage-shaped enlargement, capsule-like rim, and homogeneous delayed enhancement.",
+        ".mfcp_s": "<b>Mass-forming Chronic Pancreatitis</b>: Duct-penetrating sign, multiple strictures, and displaced calcifications.",
+        ".pnet_s": "<b>Neuroendocrine Tumor</b>: Avid arterial enhancement. Well-defined; may have cystic degeneration.",
+        ".scm_s": "<b>Serous Cystadenoma</b>: Microcystic pattern with a central calcified scar. Benign.",
+        ".mcn_s": "<b>Mucinous Cystic Neoplasm</b>: Female predilection, body/tail location, 'ovarian-type' stroma.",
+        ".ipmn_s": "<b>IPMN</b>: Communicates with the main pancreatic duct. 'Bunch of grapes' appearance.",
+        ".grp_s": "<b>Groove Pancreatitis</b>: Sheet-like soft tissue in the pancreaticoduodenal groove with duodenal wall thickening.",
+        ".spn_s": "<b>Solid Pseudopapillary Neoplasm</b>: Large, well-encapsulated mass with hemorrhage in young women.",
+        ".pcy_s": "<b>Pseudocyst</b>: History of acute pancreatitis; lacks an epithelial lining.",
+        ".chol_s": "<b>Cholangiocarcinoma</b>: Similar appearance to PDAC when involving the distal biliary system.",
+        ".amp_s": "<b>Ampullary Carcinoma</b>: Centered at the ampulla; often presents with the 'double duct' sign.",
+        ".cpnet_s":"<b>Cystic PNET</b>: Rare variant of PNET with cystic degeneration.",
+        ".afpn_s":"<b>Focal Acute Pancreatitis</b>: Peripancreatic stranding (81% in acute pancreatitis vs. AIP), fluid collections, history of acute episode.",
+        ".ipn_s":"<b>Infected Pancreatic Necrosis</b>: Gas within necrotic tissue, rim enhancement.",
+        ".mfcp2_s":"<b>Mass-forming Chronic Pancreatitis</b>: Displaced calcifications favor chronic pancreatitis over PDAC, irregular MPD with strictures.",
+        ".grp2_s":"<b>Groove Pancreatitis</b>: Sheet-like soft tissue in pancreaticoduodenal groove, duodenal wall thickening.",
+        ".aip2_s":"<b>Focal Autoimmune Pancreatitis</b>: Homogeneous delayed enhancement, low ADC, tapered MPD narrowing."
+    };
+
+    function analyzePancreas() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const resBox = document.getElementById('result');
+        
+        let res = "";
+        let color = "#0f172a";
+
+        if (prim === 'solid_hypo') {
+            if (sec.includes('1a')) {
+                res = "<b>Branch 1A: Focal Mass with Duct Obstruction</b>\n• Pancreatic ductal adenocarcinoma (PDAC)\n• Distal Cholangiocarcinoma\n• Ampullary carcinoma\n• Metastasis to pancreas\n• Pancreatic Lymphoma";
+                color = "#ef4444";
+            } else {
+                res = "<b>Branch 1B: Diffuse/Infiltrative Pattern</b>\n• Autoimmune pancreatitis (AIP)\n• Pancreatic Lymphoma\n• Mass-forming chronic pancreatitis\n• Groove pancreatitis (paraduodenal)";
+                color = "#f59e0b";
+            }
+        } else if (prim === 'solid_hyper') {
+            res = "<b>Branch 2: Solid Hypervascular Mass</b>\n• Pancreatic neuroendocrine tumor (PNET)\n• Solid pseudopapillary neoplasm\n• Hypervascular Metastases (Renal cell, melanoma)\n• Acinar cell carcinoma";
+            color = "#10b981";
+        } else if (prim === 'cystic') {
+            if (sec.includes('3a')) {
+                res = "<b>Branch 3A: Unilocular Cyst</b>\n• Simple pancreatic cyst\n• Serous cystadenoma (macrocystic variant)\n• Pseudocyst";
+                color = "#3b82f6";
+            } else {
+                res = "<b>Branch 3B: Multilocular/Complex Cyst</b>\n• Serous cystadenoma (microcystic variant)\n• Mucinous cystic neoplasm (MCN)\n• Intraductal papillary mucinous neoplasm (IPMN)\n• Cystic PNET";
+                color = "#8b5cf6";
+            }
+        } else if (prim === 'inflammatory') {
+            if (sec.includes('4a')) {
+                res = "<b>Branch 4A: Acute Inflammatory Process</b>\n• Focal acute pancreatitis\n• Infected pancreatic necrosis";
+                color = "#f43f5e";
+            } else {
+                res = "<b>Branch 4B: Chronic Inflammatory Mass</b>\n• Mass-forming chronic pancreatitis\n• Groove pancreatitis\n• Focal autoimmune pancreatitis";
+                color = "#f59e0b";
+            }
+        } else if (prim === 'differentiation') {
+            if (sec.includes('pdac')) {
+                res = "<b>Features Favoring PDAC:</b>\n• Discrete mass (DOR 35)\n• Target-type enhancement (DOR 41)\n• Upstream Main Pancreatic Duct dilatation >4 mm\n• Upstream parenchymal atrophy (DOR 5)\n• Vascular encasement and abrupt duct cutoff\n• Peripancreatic fat infiltration (DOR 10)";
+            } else if (sec.includes('autoimmune')) {
+                res = "<b>Features Favoring Autoimmune Pancreatitis:</b>\n• Diffuse/sausage-shaped enlargement (64-88%)\n• Capsule-like rim (59%)\n• Homogeneous delayed enhancement\n• Multiple Main Pancreatic Duct strictures (DOR 47)\n• Duct-penetrating sign (DOR 14)\n• Low Apparent Diffusion Coefficient value (≤0.88 × 10⁻³ mm²/s)";
+            } else {
+                res = "<b>Features Favoring Mass-forming Chronic Pancreatitis:</b>\n• Duct-penetrating sign\n• Calcifications (especially if displaced)\n• Skip strictures of Main Pancreatic Duct or bile duct\n• Larger lesion size";
+            }
+            color = "#64748b";
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1000);
+</script>
+</body>
+</html>

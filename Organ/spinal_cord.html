@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Spinal Cord</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 1400px; }
+
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div style="max-width:1400px;margin:20px auto 0;padding:12px 20px;background:#e0f2fe;border-left:6px solid #0ea5e9;border-radius:8px;font-family:'Segoe UI',sans-serif;color:#0369a1;font-size:0.95rem;line-height:1.5;">
+  📘 <b>Source: Dr. Irene Lee (學姊)</b> — this diagnostic tree is adapted in full from her
+  <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank" style="color:#0284c7;">original meta-site</a>.
+  Re-hosted by jamesxxx1997 with attribution.
+</div>
+
+
+<div class="container">
+    <h1>Spinal Cord Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Primary Radiological Feature</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select primary feature...</option>
+                    <option value="compressive">Branch 1: COMPRESSIVE Myelopathy (Mass Effect)</option>
+                    <option value="non_compressive">Branch 2: NON-COMPRESSIVE Myelopathy</option>
+                    <option value="enhancement">Branch 3: SPECIFIC Enhancement Patterns</option>
+                    <option value="tract">Branch 4: SPECIFIC Anatomical Tracts</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology / Distribution</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzeSpine()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Spinal Findings</button>
+        <div class="result-box" id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Spinal Finding)) --- B1[Branch 1: Compressive]
+            Root --- B2[Branch 2: Non-Compressive]
+            Root --- B3[Branch 3: Enhancement Patterns]
+            Root --- B4[Branch 4: Anatomical Tracts]
+
+            %% Branch 1
+            B1 --- B1A(1A: Epidural)
+            B1A --- DCSM[Degenerative Spondylotic Myelopathy]
+            B1A --- EABS[Epidural Abscess]
+            B1 --- B1B(1B: Intradural Extramedullary)
+            B1B --- MEN[Meningioma]
+            B1B --- NST[Nerve Sheath Tumor]
+            B1 --- B1C(1C: Intramedullary Mass)
+            B1C --- EPEN[Ependymoma]
+            B1C --- ASTRO1[Astrocytoma]
+            B1C --- SMET1[Spinal Cord Metastasis]
+
+            %% Branch 2
+            B2 --- B2A(2A: Short Segment)
+            B2A --- MS1[Multiple Sclerosis]
+            B2A --- SACD1[Subacute Combined Degeneration]
+            B2A --- SCI1[Spinal Cord Infarction]
+            B2 --- B2B(2B: Long Segment)
+            B2B --- NMOSD1[Neuromyelitis Optica Spectrum Disorder]
+            B2B --- ADEM[Acute Disseminated Encephalomyelitis]
+            B2B --- SARC1[Sarcoidosis]
+
+            %% Branch 3
+            B3 --- B3A[3A: Pancake/Band Enhancement]
+            B3A --- DCSM2[Degenerative Spondylotic Myelopathy]
+            B3 --- B3B[3B: Missing-Piece Sign]
+            B3B --- SDAVF[Spinal Dural Arteriovenous Fistula]
+            B3 --- B3C[3C: Rim and Flame Sign]
+            B3C --- SMET2[Spinal Cord Metastasis]
+            B3C --- ASTRO2[Astrocytoma]
+
+            %% Branch 4
+            B4 --- B4A[4A: Dorsal Column / Inverted V]
+            B4A --- SACD2[Subacute Combined Degeneration]
+            B4 --- B4B[4B: Anterior Horn / Owl's Eyes]
+            B4B --- SCI2[Spinal Cord Infarction]
+            B4B --- ALS[Amyotrophic Lateral Sclerosis]
+            B4 --- B4C[4C: Central Cord]
+            B4C --- NMOSD2[Neuromyelitis Optica Spectrum Disorder]
+            B4 --- B4D[4D: Peripheral / Wedge-Shaped]
+            B4D --- MS2[Multiple Sclerosis]
+
+            %% Class Mapping for Reuse
+            class DCSM,DCSM2 dcsm_s; class MS1,MS2 ms_s; class SACD1,SACD2 sacd_s;
+            class NMOSD1,NMOSD2 nmosd_s; class SMET1,SMET2 smet_s; class ASTRO1,ASTRO2 astro_s;
+            class SCI1,SCI2 sci_s; class EABS eabs_s; class MEN men_s; class NST nst_s;
+            class EPEN epen_s; class ADEM adem_s; class SARC1 sarc_s; class SDAVF sdavf_s;
+            class ALS als_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "compressive": ["1A: Epidural", "1B: Intradural Extramedullary", "1C: Intramedullary Mass"],
+        "non_compressive": ["2A: Short Segment (<3 Segments)", "2B: Long Segment (≥3 Segments)"],
+        "enhancement": ["3A: Pancake-like Transverse Band", "3B: Missing-Piece Sign", "3C: Rim and Flame Pattern"],
+        "tract": ["4A: Dorsal Column (Inverted V)", "4B: Anterior Horn (Owl's Eyes)", "4C: Central Cord", "4D: Peripheral / Wedge-Shaped"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".sacd_s": "<b>Subacute Combined Degeneration</b>: Vitamin B12 or copper deficiency; dorsal column involvement ('inverted V' or 'inverted rabbit ears' on axial); no enhancement.",
+        ".dcsm_s": "<b>Degenerative Cervical Spondylotic Myelopathy</b>: Most common cause in adults >55; 'pancake-like' transverse band enhancement just below maximal stenosis.",
+        ".ms_s": "<b>Multiple Sclerosis</b>: Wedge-shaped on axial; &lt;1 vertebral segment; brain lesions in 90%; 'open-ring sign' enhancement.",
+        ".nmosd_s": "<b>Neuromyelitis Optica Spectrum Disorder</b>: Aquaporin-4 antibody positive; central cord involvement; 'bright spotty lesions'; longitudinally extensive (≥3 segments).",
+        ".smet_s": "<b>Spinal Cord Metastasis</b>: 'Rim and flame' enhancement (more intense thin rim with flame-shaped superior/inferior aspect).",
+        ".astro_s": "<b>Astrocytoma</b>: Most common intramedullary tumor in children; eccentric location; heterogeneous enhancement; 'rim and flame' pattern.",
+        ".sci_s": "<b>Spinal Cord Infarction</b>: Acute onset; 'owl's eyes' or 'snake eyes' pattern in anterior spinal artery territory; restricted diffusion.",
+        ".sdavf_s": "<b>Spinal Dural Arteriovenous Fistula</b>: Chronic progressive; 'missing-piece sign' (alternating enhancement); flow voids on T2 imaging.",
+        ".eabs_s": "<b>Epidural Abscess</b>: Rim-enhancing fluid collection; surrounding soft tissue edema; clinical fever.",
+        ".men_s": "<b>Meningioma</b>: Homogeneous enhancement; 'dural tail' sign; middle-aged women.",
+        ".nst_s": "<b>Nerve Sheath Tumor</b>: Schwannoma/Neurofibroma; enlarges neural foramen; 'dumbbell' shape.",
+        ".epen_s": "<b>Ependymoma</b>: Most common in adults; central location; 'cap sign' (hemosiderin at poles).",
+        ".adem_s": "<b>Acute Disseminated Encephalomyelitis</b>: Post-infectious; children/young adults; bilateral asymmetric white matter involvement.",
+        ".sarc_s": "<b>Sarcoidosis</b>: Dorsal subpial enhancement; 'trident sign' (3-pronged axial enhancement); chronic progressive.",
+        ".als_s": "<b>Amyotrophic Lateral Sclerosis</b>: Chronic progressive; bilateral symmetric anterior horn signal abnormality; no enhancement."
+    };
+
+    function analyzeSpine() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const resBox = document.getElementById('result');
+        let res = ""; let color = "#0f172a";
+
+        if (prim === 'compressive') {
+            if (sec.includes('epidural')) res = "• Degenerative Cervical Spondylotic Myelopathy\n• Epidural Abscess\n• Epidural Metastases";
+            else if (sec.includes('intradural')) res = "• Meningioma\n• Nerve Sheath Tumor\n• Metastatic Leptomeningeal Disease";
+            else res = "• Ependymoma\n• Astrocytoma\n• Spinal Cord Metastasis";
+            color = "#ef4444";
+        } else if (prim === 'non_compressive') {
+            if (sec.includes('short')) res = "• Multiple Sclerosis\n• Subacute Combined Degeneration\n• Spinal Cord Infarction\n• Acute Transverse Myelitis";
+            else res = "• Neuromyelitis Optica Spectrum Disorder\n• Acute Disseminated Encephalomyelitis\n• Sarcoidosis";
+            color = "#3b82f6";
+        } else if (prim === 'enhancement') {
+            if (sec.includes('pancake')) res = "• Compressive Myelopathy (Cervical Spondylosis)";
+            else if (sec.includes('missing')) res = "• Spinal Dural Arteriovenous Fistula (sDAVF)";
+            else res = "• Spinal Cord Metastasis\n• Astrocytoma";
+            color = "#10b981";
+        } else if (prim === 'tract') {
+            if (sec.includes('dorsal')) res = "• Subacute Combined Degeneration\n• Tabes Dorsalis";
+            else if (sec.includes('anterior')) res = "• Spinal Cord Infarction\n• Poliomyelitis\n• Amyotrophic Lateral Sclerosis";
+            else if (sec.includes('central')) res = "• Neuromyelitis Optica Spectrum Disorder\n• Syringomyelia";
+            else res = "• Multiple Sclerosis";
+            color = "#8b5cf6";
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res ? "<b>Possible Differential Diagnoses:</b>\n" + res.replace(/\n/g, "<br>") : "";
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1200);
+</script>
+</body>
+</html>

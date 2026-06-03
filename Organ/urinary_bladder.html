@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Urinary Bladder</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 850px; }
+
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div style="max-width:1400px;margin:20px auto 0;padding:12px 20px;background:#e0f2fe;border-left:6px solid #0ea5e9;border-radius:8px;font-family:'Segoe UI',sans-serif;color:#0369a1;font-size:0.95rem;line-height:1.5;">
+  📘 <b>Source: Dr. Irene Lee (學姊)</b> — this diagnostic tree is adapted in full from her
+  <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank" style="color:#0284c7;">original meta-site</a>.
+  Re-hosted by jamesxxx1997 with attribution.
+</div>
+
+
+<div class="container">
+    <h1>Urinary Bladder Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Primary Imaging Feature</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select primary feature...</option>
+                    <option value="focal_polypoid">Branch 1: FOCAL MASS - Polypoid/Papillary</option>
+                    <option value="focal_intramural">Branch 2: FOCAL MASS - Submucosal/Intramural</option>
+                    <option value="diffuse_thickening">Branch 3: DIFFUSE WALL THICKENING</option>
+                    <option value="focal_thickening">Branch 4: FOCAL WALL THICKENING</option>
+                    <option value="filling_defect">Branch 5: FILLING DEFECTS (Non-Mass)</option>
+                    <option value="cystic">Branch 6: CYSTIC Lesions</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology / Enhancement</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzeBladder()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Bladder Findings</button>
+        <div class="result-box" id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Bladder Lesion)) --- B1[Branch 1: Focal Polypoid]
+            Root --- B2[Branch 2: Focal Intramural]
+            Root --- B3[Branch 3: Diffuse Thickening]
+            Root --- B4[Branch 4: Focal Thickening]
+            Root --- B5[Branch 5: Filling Defects]
+            Root --- B6[Branch 6: Cystic Lesions]
+
+            B1 --- B1A(1A: Single Mass)
+            B1A --- UC[Urothelial Carcinoma]
+            B1A --- SCC[Squamous Cell Carcinoma]
+            B1A --- AD[Adenocarcinoma]
+            B1A --- PUN[PUNLMP]
+            B1A --- LGP[Low-grade Papillary Carcinoma]
+            
+            B1 --- B1B(1B: Multiple Masses)
+            B1B --- MUC[Multifocal Urothelial Carcinoma]
+            B1B --- MET[Metastases]
+            B1B --- LYM[Lymphoma]
+
+            B2 --- B2A(2A: Mesenchymal Origin)
+            B2A --- RMS[Rhabdomyosarcoma]
+            B2A --- LMS[Leiomyosarcoma]
+            B2A --- LMY[Leiomyoma]
+            
+            B2 --- B2B(2B: Specific Submucosal)
+            B2B --- END[Endometriosis]
+            B2B --- PGN[Paraganglioma]
+            B2B --- IMT[Inflammatory Myofibroblastic Tumor]
+
+            B3 --- B3A(3A: Smooth Symmetric)
+            B3A --- CBO[Chronic Outlet Obstruction]
+            B3A --- NGB[Neurogenic Bladder]
+            B3A --- USB[Underdistended Bladder]
+            
+            B3 --- B3B(3B: Irregular/Asymmetric)
+            B3B --- RAC[Radiation Cystitis]
+            B3B --- CHC[Chemotherapy Cystitis]
+            B3B --- ABC[Acute Bacterial Cystitis]
+            B3B --- TUB[Tuberculosis]
+            B3B --- SCH[Schistosomiasis]
+
+            B4 --- FCY[Focal Cystitis]
+            B4 --- MAL[Malacoplakia]
+            B4 --- NAD[Nephrogenic Adenoma]
+            B4 --- FRC[Fistula-related Changes]
+
+            B5 --- BCL[Blood Clot]
+            B5 --- BCA[Bladder Calculus]
+            B5 --- FBA[Fungus Ball]
+            B5 --- EXC[Extrinsic Compression]
+
+            B6 --- BDI[Bladder Diverticulum]
+            B6 --- URC[Urachal Cyst]
+            B6 --- MDC[Müllerian Duct Cyst]
+            B6 --- CUC[Cystic Urothelial Carcinoma]
+
+            class UC uc_s; class SCC scc_s; class AD ad_s; class PUN pun_s; class LGP lgp_s;
+            class MUC muc_s; class MET met_s; class LYM lym_s; class RMS rms_s; class LMS lms_s;
+            class LMY lmy_s; class END end_s; class PGN pgn_s; class IMT imt_s; class CBO cbo_s;
+            class NGB ngb_s; class USB usb_s; class RAC rac_s; class CHC chc_s; class ABC abc_s;
+            class TUB tub_s; class SCH sch_s; class FCY fcy_s; class MAL mal_s; class NAD nad_s;
+            class FRC frc_s; class BCL bcl_s; class BCA bca_s; class FBA fba_s; class EXC exc_s;
+            class BDI bdi_s; class URC urc_s; class MDC mdc_s; class CUC cuc_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "focal_polypoid": ["Single Mass - Irregular/Broad", "Single Mass - Smooth/Frond-like", "Multiple Masses"],
+        "focal_intramural": ["Mesenchymal - Pediatric", "Mesenchymal - Adult", "Specific Submucosal (Hemorrhagic/Vascular)"],
+        "diffuse_thickening": ["Smooth/Symmetric Thickening", "Irregular/Asymmetric (Mucosal Irregularity)", "Irregular/Asymmetric (Infectious/Calcified)"],
+        "focal_thickening": ["Localized Abnormality / Mimic Malignancy", "Fistula-related Changes"],
+        "filling_defect": ["High Attenuation / Mobile", "Fungus Ball", "Extrinsic Compression"],
+        "cystic": ["Outpouching / Diverticulum", "Midline Supravesical / Posterior", "Cystic Degeneration Variant"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".uc_s": "<b>Urothelial Carcinoma</b>: Most common bladder malignancy (90%), typically in men aged 50-70 years, associated with smoking.",
+        ".scc_s": "<b>Squamous Cell Carcinoma</b>: 2-15% of bladder cancers, associated with chronic infection/irritation or schistosomiasis.",
+        ".ad_s": "<b>Adenocarcinoma</b>: &lt;2% of bladder cancers; may be primary, urachal origin (dome), or metastatic.",
+        ".pun_s": "<b>PUNLMP</b>: Most common benign bladder lesion in children, presenting with a low-grade papillary appearance.",
+        ".lgp_s": "<b>Low-grade Papillary Urothelial Carcinoma</b>: Characterized by multifocal tendency and good prognosis.",
+        ".muc_s": "<b>Multifocal Urothelial Carcinoma</b>: Low-grade papillary tumors tend to be multifocal and recurrent.",
+        ".met_s": "<b>Metastases</b>: From melanoma, breast, lung, or gastric primaries; often bilateral or multiple lesions.",
+        ".lym_s": "<b>Lymphoma</b>: Homogeneous masses with minimal enhancement and associated lymphadenopathy.",
+        ".rms_s": "<b>Rhabdomyosarcoma</b>: Most common pediatric bladder malignancy; 'grape-like' polypoid masses with heterogeneous enhancement.",
+        ".lms_s": "<b>Leiomyosarcoma</b>: Most common mesenchymal bladder tumor in adults, presenting as a large heterogeneous mass.",
+        ".lmy_s": "<b>Leiomyoma</b>: Smooth, well-defined, benign tumor with homogeneous enhancement.",
+        ".end_s": "<b>Endometriosis</b>: Submucosal mass with hemorrhagic foci (T1 hyperintense on MRI) and cyclic hematuria.",
+        ".pgn_s": "<b>Paraganglioma</b>: Rare, hypervascular tumor with characteristic MRI features.",
+        ".imt_s": "<b>Inflammatory Myofibroblastic Tumor</b>: Most common benign non-urothelial lesion; presents as an ulcerated polypoid mass.",
+        ".cbo_s": "<b>Chronic Bladder Outlet Obstruction</b>: Smooth symmetric wall thickening, trabeculation, and diverticula.",
+        ".ngb_s": "<b>Neurogenic Bladder</b>: Smooth thickening and large capacity in patients with neurologic disease history.",
+        ".usb_s": "<b>Underdistended Bladder</b>: Pseudothickening of the wall that resolves with adequate filling.",
+        ".rac_s": "<b>Radiation Cystitis</b>: History of pelvic radiation; mucosal ulceration and wall thickening.",
+        ".chc_s": "<b>Chemotherapy Cystitis</b>: History of cyclophosphamide; presents as hemorrhagic cystitis.",
+        ".abc_s": "<b>Acute Bacterial Cystitis</b>: Diffuse wall thickening, mucosal enhancement, and perivesical stranding.",
+        ".tub_s": "<b>Tuberculosis</b>: Chronic infection causing wall thickening, calcifications, and a small contracted bladder.",
+        ".sch_s": "<b>Schistosomiasis</b>: Endemic areas; presents with wall thickening and 'eggshell' bladder calcifications.",
+        ".fcy_s": "<b>Focal Cystitis/Inflammatory Pseudotumor</b>: Ulcerated mass that may mimic malignancy.",
+        ".mal_s": "<b>Malacoplakia</b>: Nonspecific imaging; characterized by Michaelis-Gutmann bodies on pathology.",
+        ".nad_s": "<b>Nephrogenic Adenoma</b>: Benign metaplastic lesion; no typical imaging features.",
+        ".frc_s": "<b>Fistula-related Changes</b>: Focal wall abnormality with extravesical findings like gas or contrast.",
+        ".bcl_s": "<b>Blood Clot</b>: High attenuation on non-contrast CT, no enhancement, and mobile.",
+        ".bca_s": "<b>Bladder Calculus</b>: High attenuation on CT; may be mobile.",
+        ".fba_s": "<b>Fungus Ball</b>: Seen in immunocompromised patients (e.g., Candidiasis).",
+        ".exc_s": "<b>Extrinsic Compression</b>: Enlarged prostate (median lobe) or distal ureteral mass causing filling defect.",
+        ".bdi_s": "<b>Bladder Diverticulum</b>: Outpouching that communicates with the lumen; may harbor malignancy.",
+        ".urc_s": "<b>Urachal Cyst</b>: Midline supravesical location between the bladder dome and umbilicus.",
+        ".mdc_s": "<b>Müllerian Duct Cyst</b>: Posterior bladder wall midline cyst in males.",
+        ".cuc_s": "<b>Cystic Urothelial Carcinoma</b>: Rare variant presenting with cystic degeneration."
+    };
+
+    function analyzeBladder() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const resBox = document.getElementById('result');
+        let res = "";
+        let color = "#0f172a";
+
+        if (prim === 'focal_polypoid') {
+            if (sec.includes('irregular')) {
+                res = "<b>Branch 1A: Single Irregular Mass</b>\n• Urothelial carcinoma (most common)\n• Squamous cell carcinoma\n• Adenocarcinoma";
+                color = "#ef4444";
+            } else if (sec.includes('smooth')) {
+                res = "<b>Branch 1A: Single Smooth Mass</b>\n• PUNLMP (most common in children)\n• Low-grade papillary urothelial carcinoma";
+                color = "#10b981";
+            } else {
+                res = "<b>Branch 1B: Multiple Masses</b>\n• Multifocal urothelial carcinoma\n• Metastases or Lymphoma";
+                color = "#ef4444";
+            }
+        } else if (prim === 'focal_intramural') {
+            if (sec.includes('pediatric')) {
+                res = "<b>Branch 2A: Pediatric Mesenchymal Origin</b>\n• Rhabdomyosarcoma (most common pediatric bladder malignancy)";
+                color = "#ef4444";
+            } else if (sec.includes('specific')) {
+                res = "<b>Branch 2B: Specific Submucosal Lesions</b>\n• Endometriosis (hemorrhagic foci)\n• Paraganglioma or Inflammatory myofibroblastic tumor";
+                color = "#8b5cf6";
+            } else {
+                res = "<b>Branch 2A: Adult Mesenchymal Origin</b>\n• Leiomyosarcoma (malignant) or Leiomyoma (benign)";
+                color = "#3b82f6";
+            }
+        } else if (prim === 'diffuse_thickening') {
+            if (sec.includes('smooth')) {
+                res = "<b>Branch 3A: Smooth Symmetric Thickening</b>\n• Chronic bladder outlet obstruction\n• Neurogenic bladder\n• Underdistended bladder";
+                color = "#3b82f6";
+            } else if (sec.includes('mucosal')) {
+                res = "<b>Branch 3B: Irregular Asymmetric (Mucosal)</b>\n• Cystitis (various types)\n• Radiation or Chemotherapy cystitis";
+                color = "#f59e0b";
+            } else {
+                res = "<b>Branch 3B: Irregular Asymmetric (Infectious/Calcified)</b>\n• Acute bacterial cystitis\n• Tuberculosis or Schistosomiasis (calcified)";
+                color = "#f43f5e";
+            }
+        } else if (prim === 'focal_thickening') {
+            res = "<b>Branch 4: Focal Wall Thickening</b>\n• Focal cystitis or Malacoplakia\n• Nephrogenic adenoma or Fistula-related changes";
+            color = "#f43f5e";
+        } else if (prim === 'filling_defect') {
+            res = "<b>Branch 5: Filling Defects (Non-Mass)</b>\n• Blood clot or Bladder calculus\n• Fungus ball or Extrinsic compression";
+            color = "#8b5cf6";
+        } else if (prim === 'cystic') {
+            res = "<b>Branch 6: Cystic Lesions</b>\n• Bladder diverticulum or Urachal cyst\n• Müllerian duct cyst or Cystic urothelial carcinoma";
+            color = "#06b6d4";
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1000);
+</script>
+</body>
+</html>

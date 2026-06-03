@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adrenal — jamesxxx1997 notes</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-top: 6px solid #10b981; }
+        h1, h2 { color: #064e3b; text-align: center; }
+        h1 .tag { font-size: 0.95rem; color: #10b981; font-weight: 600; }
+        .card { border: 1px solid #d1fae5; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #f8fefb; }
+        .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 15px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #047857; }
+        input, select { padding: 10px; border: 1px solid #a7f3d0; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        button.analyze { width: 100%; background: #059669; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .result-box { background: #ecfdf5; padding: 18px; border-radius: 8px; border-left: 5px solid #059669; margin-top: 15px; line-height: 1.55; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 720px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { border: 1px solid #d1fae5; padding: 8px 10px; text-align: left; }
+        th { background: #d1fae5; color: #064e3b; }
+        .tippy-box[data-theme~='light-border'] { background:#fff !important; color:#1e293b !important; box-shadow:0 4px 15px rgba(0,0,0,0.15); font-size:0.9rem; border:1px solid #a7f3d0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Adrenal Lesions — MRI Chemical-Shift First <span class="tag">· jamesxxx1997</span></h1>
+    <p style="text-align:center;color:#475569;max-width:820px;margin:0 auto 20px;font-size:0.92rem;">
+        Complementary angle to Dr. Lee's HU-branch tree: this version sorts lesions first by the
+        <b>out-of-phase (OOP) signal behaviour</b> and <b>T2 signal</b>, the discriminators emphasised in my notes.
+    </p>
+
+    <div class="card">
+        <h2>Chemical-Shift Signal-Drop Helper</h2>
+        <p style="font-size:0.85rem;color:#475569;margin-top:0;">Enter dual-echo signal intensities to estimate the in/out-of-phase drop. Marked drop ⇒ intracellular lipid ⇒ favours <b>lipid-rich adenoma</b>.</p>
+        <div class="calc-grid">
+            <div><label>In-phase SI (IP)</label><input type="number" id="ip" placeholder="e.g. 200"></div>
+            <div><label>Out-of-phase SI (OOP)</label><input type="number" id="oop" placeholder="e.g. 110"></div>
+        </div>
+        <button class="analyze" onclick="calcSII()">Compute signal drop</button>
+        <div class="result-box" id="sii"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Tree (Hover nodes for imaging features)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Adrenal Mass)) --- A[OOP signal DROP<br>intracellular lipid]
+            Root --- B[Macroscopic FAT<br>India-ink line only]
+            Root --- C[FLUID<br>T1 dark / T2 very bright]
+            Root --- D[Solid, NO OOP drop]
+
+            A --- ADEN[Lipid-rich Adenoma]
+            B --- MYEL[Myelolipoma]
+            C --- CYST[Simple Cyst]
+            D --- D1[T2 lightbulb-bright<br>strong heterogeneous enh.]
+            D --- D2[T2 mid-high<br>known primary]
+            D1 --- PHEO[Pheochromocytoma]
+            D2 --- METS[Metastasis]
+
+            class ADEN aden_s; class MYEL myel_s; class CYST cyst_s; class PHEO pheo_s; class METS mets_s;
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Quick Reference Table (from my notes)</h2>
+        <table>
+            <tr><th>Lesion</th><th>CT</th><th>MRI T1 / T2</th><th>Chemical shift (IP→OOP)</th><th>Enhancement</th></tr>
+            <tr><td><b>Lipid-rich adenoma</b></td><td>&le; 10 HU</td><td>—</td><td>IP bright → OOP <b>marked drop</b></td><td>Rapid wash-in &amp; washout (APW &ge; 60%)</td></tr>
+            <tr><td><b>Myelolipoma</b></td><td>macroscopic fat (&lt; −30 HU)</td><td>fat bright on T1 &amp; T2</td><td><b>India-ink line</b> at fat interface (no whole-lesion drop)</td><td>Very weak</td></tr>
+            <tr><td><b>Simple cyst</b></td><td>water (&lt; 20 HU)</td><td>T1 dark / T2 very bright</td><td>no drop</td><td>None</td></tr>
+            <tr><td><b>Pheochromocytoma</b></td><td>&gt; 40 HU (can &gt; 150)</td><td>T1 iso / T2 <b>lightbulb bright</b></td><td>no drop (no intracellular lipid)</td><td>Strong, heterogeneous; necrosis/haemorrhage</td></tr>
+            <tr><td><b>Metastasis</b></td><td>irregular margin, &gt; 10 HU</td><td>T1 low / T2 mid-high</td><td>no drop</td><td>Peripheral irregular; <b>slow washout</b></td></tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    function calcSII() {
+        const ip = parseFloat(document.getElementById('ip').value);
+        const oop = parseFloat(document.getElementById('oop').value);
+        const box = document.getElementById('sii');
+        box.style.display = 'block';
+        if (isNaN(ip) || isNaN(oop) || ip === 0) { box.innerHTML = '⚠️ Enter both in-phase and out-of-phase signal intensities.'; return; }
+        const drop = ((ip - oop) / ip) * 100;
+        let txt = `<b>Signal-intensity drop = ${drop.toFixed(1)}%</b><br>`;
+        if (drop >= 16.5) {
+            txt += '➡️ <b>Significant drop</b> — intracellular lipid present ⇒ favours <b>lipid-rich adenoma</b>.';
+        } else if (drop > 0) {
+            txt += '➡️ Minimal drop — intracellular lipid not convincingly shown; consider lipid-poor adenoma, pheochromocytoma, metastasis (correlate with washout / T2 / history).';
+        } else {
+            txt += '➡️ No drop / signal gain — argues against an intracellular-lipid adenoma.';
+        }
+        txt += '<br><span style="font-size:0.8rem;color:#64748b;">Note: the ~16.5% threshold is a commonly cited literature reference value, not from my own notes — verify against your local protocol.</span>';
+        box.innerHTML = txt;
+    }
+
+    const descriptions = {
+        ".aden_s": "<b>Lipid-rich Adenoma</b>: CT &le;10 HU. IP bright, <b>marked OOP drop</b> (intracellular lipid). Rapid wash-in &amp; washout, APW &ge; 60%.",
+        ".myel_s": "<b>Myelolipoma</b>: macroscopic fat &lt; −30 HU; bright on T1 &amp; T2. Drop only as an <b>India-ink line</b> at the fat/soft-tissue interface, not the whole lesion. Very weak enhancement.",
+        ".cyst_s": "<b>Simple Cyst</b>: water density &lt;20 HU. T1 dark, T2 very bright. No enhancement, no diffusion restriction.",
+        ".pheo_s": "<b>Pheochromocytoma</b>: dense (&gt;40 HU). T1 iso, T2 <b>lightbulb bright</b>. No OOP drop. Strong heterogeneous enhancement with necrosis/haemorrhage.",
+        ".mets_s": "<b>Metastasis</b>: irregular margin, &gt;10 HU. T1 low, T2 mid-high. No OOP drop. Peripheral irregular enhancement, <b>slow washout</b>; usually a known primary (lung, melanoma, RCC)."
+    };
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(c => tippy(c, { allowHTML: true, theme: 'light-border', content: descriptions[c], placement: 'top' }));
+    }, 1000);
+</script>
+</body>
+</html>

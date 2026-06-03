@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Bone</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 1000px; }
+
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div style="max-width:1400px;margin:20px auto 0;padding:12px 20px;background:#e0f2fe;border-left:6px solid #0ea5e9;border-radius:8px;font-family:'Segoe UI',sans-serif;color:#0369a1;font-size:0.95rem;line-height:1.5;">
+  📘 <b>Source: Dr. Irene Lee (學姊)</b> — this diagnostic tree is adapted in full from her
+  <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank" style="color:#0284c7;">original meta-site</a>.
+  Re-hosted by jamesxxx1997 with attribution.
+</div>
+
+
+<div class="container">
+    <h1>Bone Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Patient Age</label>
+                <select id="patientAge">
+                    <option value="pediatric">Pediatric / Adolescent (&lt;20 years)</option>
+                    <option value="young_adult">Young Adult (20-40 years)</option>
+                    <option value="middle_age">Middle-Aged (40-65 years)</option>
+                    <option value="older_adult">Older Adult (&gt;65 years)</option>
+                </select>
+            </div>
+            <div>
+                <label>Imaging Feature</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select primary feature...</option>
+                    <option value="lytic">Branch 1: LYTIC (Radiolucent)</option>
+                    <option value="sclerotic">Branch 2: SCLEROTIC (Radiodense)</option>
+                    <option value="mixed">Branch 3: MIXED Lytic-Sclerotic</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+            <div>
+                <label>Location</label>
+                <select id="locationFilter">
+                    <option value="any">Unspecified / Any</option>
+                    <option value="epiphyseal">Epiphyseal</option>
+                    <option value="metaphyseal">Metaphyseal</option>
+                    <option value="diaphyseal">Diaphyseal</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzeBone()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Bone Findings</button>
+        <div class="result-box" id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Bone Pattern)) --- B1[Branch 1: Lytic Pattern]
+            Root --- B2[Branch 2: Sclerotic Pattern]
+            Root --- B3[Branch 3: Mixed Pattern]
+
+            %% Branch 1: Lytic
+            B1 --- B1A(1A: Solitary Lytic)
+            B1A --- B1A_Geo[Geographic Margin]
+            B1A_Geo --- SBC[Simple Bone Cyst]
+            B1A_Geo --- ENC[Enchondroma]
+            B1A_Geo --- GCT[Giant Cell Tumor]
+            B1A_Geo --- FD[Fibrous Dysplasia]
+            B1A_Geo --- ABC[Aneurysmal Bone Cyst]
+            
+            B1A --- B1A_Perm[Permeative / Moth-eaten]
+            B1A_Perm --- OST[Osteomyelitis]
+            B1A_Perm --- ES[Ewing Sarcoma]
+            B1A_Perm --- METL[Metastatic Disease]
+            B1A_Perm --- PBL[Primary Bone Lymphoma]
+            
+            B1 --- B1B(1B: Multiple Lytic)
+            B1B --- MM[Multiple Myeloma]
+            B1B --- LCH[Langerhans Cell Histiocytosis]
+
+            %% Branch 2: Sclerotic
+            B2 --- B2A(2A: Solitary Sclerotic)
+            B2A --- OO[Osteoid Osteoma]
+            B2A --- OB[Osteoblastoma]
+            B2A --- OOS[Osteoblastic Osteosarcoma]
+            
+            B2 --- B2B(2B: Multiple Sclerotic)
+            B2B --- METS[Sclerotic Metastases]
+            B2B --- PAG[Paget Disease]
+
+            %% Branch 3: Mixed
+            B3 --- B3A[3A: Organized / Geometric]
+            B3A --- HFR[Healing Fracture]
+            B3A --- ON[Osteonecrosis]
+            B3 --- B3B[3B: Amorphous / Aggressive]
+            B3B --- COS[Chondroblastic Osteosarcoma]
+            B3B --- TOS[Telangiectatic Osteosarcoma]
+
+            class SBC sbc_s; class ENC enc_s; class GCT gct_s; class FD fd_s; class ABC abc_s;
+            class OST ost_s; class ES es_s; class MM mm_s; class OO oo_s; class OB ob_s;
+            class OOS oos_s; class PAG pag_s; class ON on_s; class PBL pbl_s;
+            class HFR hfr_s; class COS cos_s; class TOS tos_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "lytic": ["Solitary (Geographic Margin)", "Solitary (Permeative Margin)", "Multiple Lytic Lesions"],
+        "sclerotic": ["Solitary (Small/Cortical)", "Solitary (Larger/Well-defined)", "Solitary (Aggressive Mass)", "Multiple Sclerotic Lesions"],
+        "mixed": ["Organized/Geometric Pattern", "Amorphous / Aggressive Sclerosis"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".sbc_s": "<b>Simple Bone Cyst</b>: Central metaphyseal location; 'fallen fragment' sign after pathologic fracture.",
+        ".enc_s": "<b>Enchondroma</b>: Small tubular bones of hand; chondroid matrix featuring rings and arcs calcification.",
+        ".gct_s": "<b>Giant Cell Tumor</b>: Epiphyseal, eccentric, skeletally mature; extends to subchondral bone.",
+        ".fd_s": "<b>Fibrous Dysplasia</b>: Geographic margins, 'ground glass' matrix, and organized sclerosis pattern.",
+        ".abc_s": "<b>Aneurysmal Bone Cyst</b>: Eccentric metaphyseal, 'soap bubble' appearance, fluid-fluid levels on Magnetic Resonance Imaging.",
+        ".ost_s": "<b>Osteomyelitis</b>: Permeative metaphyseal pattern; soft tissue swelling; serpiginous tract on MRI.",
+        ".es_s": "<b>Ewing Sarcoma</b>: Diaphyseal location, 'onion skin' periosteal reaction, and large soft tissue mass disproportionate to bone destruction.",
+        ".mm_s": "<b>Multiple Myeloma</b>: 'Punched out' lytic lesions in adults > 40 years; characteristically lacks periosteal reaction.",
+        ".oo_s": "<b>Osteoid Osteoma</b>: Intracortical nidus less than 2 centimeters with surrounding cortical thickening; pain relieved by salicylates.",
+        ".ob_s": "<b>Osteoblastoma</b>: Similar to osteoid osteoma but greater than 2 centimeters; posterior elements of spine common.",
+        ".oos_s": "<b>Osteosarcoma</b>: Metaphyseal location (around knee); 'sunburst' reaction and Codman triangle.",
+        ".pag_s": "<b>Paget Disease</b>: Bone expansion with 'cotton wool' skull and 'picture frame' vertebrae.",
+        ".on_s": "<b>Osteonecrosis</b>: Serpentine sclerosis and 'crescent sign' in subchondral locations.",
+        ".pbl_s": "<b>Primary Bone Lymphoma</b>: Diaphyseal location; patchy ill-defined osteolysis and bulky soft tissue mass with relatively preserved bone architecture.",
+        ".hfr_s": "<b>Healing Fracture</b>: Linear sclerosis, callus formation, history of trauma.",
+        ".cos_s": "<b>Chondroblastic Osteosarcoma</b>: Mixed lytic-sclerotic; chondroid matrix with osteoid production; metaphyseal.",
+        ".tos_s": "<b>Telangiectatic Osteosarcoma</b>: Predominantly lytic with areas of sclerosis and aggressive periosteal reaction; may show fluid-fluid levels."
+    };
+
+    const allDiseases = [
+        { name: "Osteosarcoma", age: ["pediatric"], features: ["metaphyseal", "sunburst", "sclerotic", "mixed", "aggressive", "amorphous"], locs: ["metaphyseal"], desc: "Most common primary bone malignancy in adolescents (peak age 10-20 years), metaphyseal around knee (distal femur 40%, proximal tibia 20%), 'sunburst' periosteal reaction, Codman triangle; large soft tissue component often exceeds intraosseous component." },
+        { name: "Ewing Sarcoma", age: ["pediatric"], features: ["diaphyseal", "onion_skin", "lytic", "permeative", "aggressive"], locs: ["diaphyseal"], desc: "Diaphyseal location in long bones, 'onion skin' periosteal reaction, large soft tissue mass, age < 20 years; characteristically large soft tissue mass disproportionate to bone destruction." },
+        { name: "Osteomyelitis", age: ["pediatric"], features: ["metaphyseal", "lytic", "permeative", "aggressive"], locs: ["metaphyseal"], desc: "Metaphyseal in hematogenous spread (especially in children due to rich vascularity), soft tissue swelling, periosteal reaction, serpiginous tract on Magnetic Resonance Imaging." },
+        { name: "Simple Bone Cyst", age: ["pediatric"], features: ["metaphyseal", "geographic", "lytic"], locs: ["metaphyseal"], desc: "Central metaphyseal location in long bones, children/adolescents, 'fallen fragment' sign after pathologic fracture." },
+        { name: "Aneurysmal Bone Cyst", age: ["pediatric", "young_adult"], features: ["metaphyseal", "geographic", "lytic", "aggressive"], locs: ["metaphyseal"], desc: "Eccentric metaphyseal, 'soap bubble' appearance, fluid-fluid levels on Magnetic Resonance Imaging." },
+        { name: "Giant Cell Tumor", age: ["young_adult"], features: ["epiphyseal", "geographic", "lytic"], locs: ["epiphyseal"], desc: "Epiphyseal location in skeletally mature patients (20-40 years), eccentric, extends to subchondral bone." },
+        { name: "Fibrous Dysplasia", age: ["pediatric", "young_adult", "middle_age"], features: ["geographic", "lytic", "mixed", "organized"], locs: ["metaphyseal", "diaphyseal"], desc: "Geographic margins, 'ground glass' matrix, organized sclerosis pattern; can involve metaphysis or diaphysis." },
+        { name: "Enchondroma", age: ["pediatric", "young_adult", "middle_age"], features: ["geographic", "lytic"], locs: [], desc: "Small tubular bones of hand most common, chondroid matrix featuring rings and arcs calcification." },
+        { name: "Metastatic Disease", age: ["middle_age", "older_adult"], features: ["metaphyseal", "permeative", "lytic", "multiple", "sclerotic", "aggressive"], locs: ["metaphyseal"], desc: "Metaphyseal predilection (red marrow distribution), age > 40 years, known primary malignancy; most common malignant bone lesion overall; often no periosteal reaction." },
+        { name: "Primary Bone Lymphoma", age: ["pediatric", "young_adult", "middle_age"], features: ["diaphyseal", "permeative", "lytic", "mixed", "amorphous"], locs: ["diaphyseal"], desc: "Patchy ill-defined osteolysis and sclerosis; diaphyseal location; bulky soft tissue mass with relatively preserved bone architecture." },
+        { name: "Multiple Myeloma", age: ["middle_age", "older_adult"], features: ["multiple", "lytic", "geographic"], locs: [], desc: "'Punched out' lytic lesions in adults > 40 years; characteristically lacks periosteal reaction." },
+        { name: "Osteoid Osteoma", age: ["pediatric", "young_adult"], features: ["sclerotic", "small"], locs: [], desc: "Intracortical nidus less than 2 centimeters with surrounding cortical thickening; adolescents/young adults; pain relieved by salicylates." },
+        { name: "Osteoblastoma", age: ["young_adult"], features: ["sclerotic", "well-defined", "larger"], locs: [], desc: "Posterior elements of spine common, greater than 2 centimeters well-defined sclerotic mass; similar to osteoid osteoma." },
+        { name: "Paget Disease", age: ["older_adult"], features: ["multiple", "sclerotic"], locs: [], desc: "'Cotton wool' skull, 'picture frame' vertebrae, bone expansion; bone expansion." },
+        { name: "Healing Fracture", age: ["pediatric", "young_adult", "middle_age", "older_adult"], features: ["mixed", "organized"], locs: [], desc: "Linear sclerosis, callus formation, history of trauma." },
+        { name: "Osteonecrosis", age: ["young_adult", "middle_age"], features: ["mixed", "organized"], locs: ["epiphyseal"], desc: "Serpentine or peripheral sclerosis, 'crescent sign', subchondral (epiphyseal) location." },
+        { name: "Telangiectatic Osteosarcoma", age: ["young_adult"], features: ["lytic", "amorphous", "aggressive"], locs: [], desc: "Predominantly lytic with areas of sclerosis, aggressive periosteal reaction, fluid-fluid levels mimicking Aneurysmal Bone Cyst." },
+        { name: "Chondroblastic Osteosarcoma", age: ["pediatric", "young_adult"], features: ["mixed", "amorphous"], locs: ["metaphyseal"], desc: "Mixed lytic-sclerotic, chondroid matrix with osteoid production, metaphyseal location." }
+    ];
+
+    function analyzeBone() {
+        const age = document.getElementById('patientAge').value;
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const loc = document.getElementById('locationFilter').value;
+        const resBox = document.getElementById('result');
+        
+        if (prim === "none") return;
+
+        let filtered = allDiseases.filter(d => d.age.includes(age));
+        filtered = filtered.filter(d => d.features.some(f => sec.includes(f) || prim.includes(f)));
+
+        if (loc !== "any") {
+            filtered = filtered.filter(d => {
+                if (d.locs.length === 0) return true;
+                return d.locs.includes(loc);
+            });
+        }
+
+        if (filtered.length > 0) {
+            res = `<b>Differential Diagnosis for the ${document.getElementById('patientAge').selectedOptions[0].text} population:</b>\n\n` + 
+                  filtered.map(d => `• <b>${d.name}</b>: ${d.desc}`).join("\n\n");
+            color = "#0ea5e9";
+        } else {
+            res = "<b>No direct match in this specific age and location profile.</b>\nConsider broadening search parameters.";
+            color = "#64748b";
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1200);
+</script>
+</body>
+</html>

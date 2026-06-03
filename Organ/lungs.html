@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Lungs</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 1200px; }
+
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div style="max-width:1400px;margin:20px auto 0;padding:12px 20px;background:#e0f2fe;border-left:6px solid #0ea5e9;border-radius:8px;font-family:'Segoe UI',sans-serif;color:#0369a1;font-size:0.95rem;line-height:1.5;">
+  📘 <b>Source: Dr. Irene Lee (學姊)</b> — this diagnostic tree is adapted in full from her
+  <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank" style="color:#0284c7;">original meta-site</a>.
+  Re-hosted by jamesxxx1997 with attribution.
+</div>
+
+
+<div class="container">
+    <h1>Lungs Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Primary Imaging Pattern</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select primary pattern...</option>
+                    <option value="reticular">Branch 1: RETICULAR Pattern</option>
+                    <option value="nodular">Branch 2: NODULAR Pattern</option>
+                    <option value="ggo">Branch 3: GROUND-GLASS OPACITY / CONSOLIDATION</option>
+                    <option value="cystic">Branch 4: CYSTIC Pattern</option>
+                    <option value="cavitary">Branch 5: CAVITARY Lesions</option>
+                    <option value="decreased">Branch 6: DECREASED LUNG DENSITY</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology / Distribution</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzeLungs()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Pulmonary Findings</button>
+        <div class="result-box" id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            %% Primary Nodes
+            Root((Lung Pattern)) --- B1[Branch 1: Reticular Pattern]
+            Root --- B2[Branch 2: Nodular Pattern]
+            Root --- B3[Branch 3: Ground-Glass / Consolidation]
+            Root --- B4[Branch 4: Cystic Pattern]
+            Root --- B5[Branch 5: Cavitary Lesions]
+            Root --- B6[Branch 6: Decreased Lung Density]
+
+            %% Branch 1: Reticular
+            B1 --- B1_Peripheral[Peripheral and Basal]
+            B1_Peripheral --- IPF[Idiopathic Pulmonary Fibrosis]
+            B1_Peripheral --- NSIP[Nonspecific Interstitial Pneumonia]
+            B1_Peripheral --- ASB[Asbestosis]
+            B1 --- B1_Upper[Upper Lobe Predominance]
+            B1_Upper --- CHP1[Chronic Hypersensitivity Pneumonitis]
+            B1_Upper --- SARC1[Sarcoidosis]
+            B1_Upper --- SIL1[Silicosis]
+
+            %% Branch 2: Nodular
+            B2 --- B2_Centri[Centrilobular Nodules]
+            B2_Centri --- TIB[Tree-in-bud: Infection]
+            B2_Centri --- GGCN[Ground-glass Nodules: Hypersensitivity Pneumonitis]
+            B2 --- B2_Peri[Perilymphatic Nodules]
+            B2_Peri --- SARC2[Sarcoidosis]
+            B2_Peri --- LC[Lymphangitic Carcinomatosis]
+            B2 --- B2_Random[Random Nodules]
+            B2_Random --- MTB[Miliary Tuberculosis]
+            B2_Random --- HMET[Hematogenous Metastases]
+
+            %% Branch 3: GGO / Consolidation
+            B3 --- B3_GGO[Diffuse Ground-Glass Opacity]
+            B3_GGO --- PCP[Pneumocystis Pneumonia]
+            B3_GGO --- DAH[Diffuse Alveolar Hemorrhage]
+            B3 --- B3_Cons[Consolidation Pattern]
+            B3_Cons --- BPN[Bacterial Pneumonia]
+            B3_Cons --- COP[Cryptogenic Organizing Pneumonia]
+
+            %% Branch 4: Cystic
+            B4 --- B4_Upper[Upper Lobe Predominance]
+            B4_Upper --- LCH[Langerhans Cell Histiocytosis]
+            B4 --- B4_Diffuse[Diffuse Distribution]
+            B4_Diffuse --- LAM[Lymphangioleiomyomatosis]
+            B4_Diffuse --- LIP[Lymphocytic Interstitial Pneumonia]
+
+            %% Branch 5: Cavitary
+            B5 --- B5_Acute[Acute / Subacute < 12 weeks]
+            B5_Acute --- ABS[Bacterial Abscess]
+            B5_Acute --- SEMB[Septic Emboli]
+            B5 --- B5_Chronic[Chronic >= 12 weeks]
+            B5_Chronic --- CTB[Chronic Tuberculosis]
+            B5_Chronic --- MAL[Malignancy]
+
+            %% Branch 6: Decreased Density
+            B6 --- B6_Mosaic[Mosaic Attenuation]
+            B6_Mosaic --- AIR[Airway Disease]
+            B6_Mosaic --- VASC[Vascular Disease]
+            B6_Mosaic --- INF[Infiltrative Disease]
+            B6 --- B6_Emph[Diffuse Emphysema]
+            B6_Emph --- CLE[Centrilobular Emphysema]
+            B6_Emph --- PLE[Panlobular Emphysema]
+            B6_Emph --- PSE[Paraseptal Emphysema]
+
+            %% Tooltip Assignments
+            class IPF ipf_s; class NSIP nsip_s; class ASB asb_s; class CHP1 chp_s;
+            class SARC1 sarc_s; class SARC2 sarc_s; class SIL1 sil_s;
+            class TIB tib_s; class GGCN ggcn_s; class LC lc_s; class MTB mtb_s;
+            class HMET hmet_s; class PCP pcp_s; class DAH dah_s;
+            class BPN bpn_s; class COP cop_s; class LCH lch_s;
+            class LAM lam_s; class LIP lip_s; class ABS abs_s;
+            class SEMB semb_s; class CTB ctb_s; class MAL mal_s;
+            class AIR air_s; class VASC vasc_s; class INF inf_s;
+            class CLE cle_s; class PLE ple_s; class PSE pse_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "reticular": ["1A: Peripheral/Basal (Honeycombing Present)", "1A: Peripheral/Basal (No Honeycombing)", "1B: Upper Lobe Predominance"],
+        "nodular": ["2A: Centrilobular (Tree-in-bud)", "2A: Centrilobular (Ground-glass)", "2B: Perilymphatic", "2C: Random"],
+        "ggo": ["3A: Diffuse Ground-Glass Opacity (Mosaic)", "3A: Diffuse Ground-Glass Opacity (No Mosaic)", "3B: Consolidation (Lobar)", "3B: Consolidation (Peripheral)"],
+        "cystic": ["4A: Upper Lobe Predominance", "4B: Diffuse Distribution"],
+        "cavitary": ["5A: Acute/Subacute (<12 weeks)", "5B: Chronic (>=12 weeks)"],
+        "decreased": ["6A: Mosaic Attenuation (Airway Disease)", "6A: Mosaic Attenuation (Vascular Disease)", "6A: Mosaic Attenuation (Infiltrative Disease)", "6B: Diffuse Emphysema"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".ipf_s": "<b>Idiopathic Pulmonary Fibrosis</b>: Usual interstitial pneumonia pattern with subpleural honeycombing and traction bronchiectasis.",
+        ".nsip_s": "<b>Nonspecific Interstitial Pneumonia</b>: Ground-glass opacity with reticulation and characteristic subpleural sparing.",
+        ".asb_s": "<b>Asbestosis</b>: Lower lobe reticulation and honeycombing associated with pleural plaques.",
+        ".chp_s": "<b>Chronic Hypersensitivity Pneumonitis</b>: Upper/mid lung predominance with mosaic attenuation and centrilobular nodules.",
+        ".sarc_s": "<b>Sarcoidosis</b>: Perilymphatic nodules along bronchovascular bundles and subpleural surfaces.",
+        ".sil_s": "<b>Silicosis</b>: Upper lobe nodules and progressive massive fibrosis from occupational dust exposure.",
+        ".tib_s": "<b>Infectious Bronchiolitis</b>: Bacterial or mycobacterial infection showing a tree-in-bud pattern.",
+        ".ggcn_s": "<b>Hypersensitivity Pneumonitis</b>: Centrilobular ground-glass nodules with mosaic attenuation on expiratory imaging.",
+        ".lc_s": "<b>Lymphangitic Carcinomatosis</b>: Irregular septal thickening and nodules in a patient with a known malignancy.",
+        ".mtb_s": "<b>Miliary Tuberculosis</b>: Diffuse, tiny random nodules throughout both lungs.",
+        ".hmet_s": "<b>Hematogenous Metastases</b>: Multiple random nodules of variable size from a known primary malignancy.",
+        ".pcp_s": "<b>Pneumocystis Pneumonia</b>: Diffuse ground-glass opacity; often seen in immunocompromised patients.",
+        ".dah_s": "<b>Diffuse Alveolar Hemorrhage</b>: Bilateral ground-glass opacities presenting with hemoptysis and anemia.",
+        ".bpn_s": "<b>Bacterial Pneumonia</b>: Lobar or bronchopneumonia consolidation pattern with fever and cough.",
+        ".cop_s": "<b>Cryptogenic Organizing Pneumonia</b>: Peripheral subpleural consolidation; may show the reverse halo sign.",
+        ".lch_s": "<b>Langerhans Cell Histiocytosis</b>: Bizarre-shaped cysts in young smokers; spares costophrenic angles.",
+        ".lam_s": "<b>Lymphangioleiomyomatosis</b>: Women of childbearing age; diffuse, uniform thin-walled cysts.",
+        ".lip_s": "<b>Lymphocytic Interstitial Pneumonia</b>: Thin-walled cysts associated with Sjögren syndrome.",
+        ".abs_s": "<b>Bacterial Abscess</b>: Thick irregular walls with air-fluid levels and fever.",
+        ".semb_s": "<b>Septic Emboli</b>: Peripheral wedge-shaped lesions often with a feeding vessel sign.",
+        ".ctb_s": "<b>Chronic Tuberculosis</b>: Upper lobe cavities associated with tree-in-bud nodules.",
+        ".mal_s": "<b>Malignancy</b>: Primary squamous cell carcinoma appearing as a thick-walled cavity.",
+        ".air_s": "<b>Airway Disease Pattern</b>: Vessels are smaller in dark areas (air trapping). Includes constrictive bronchiolitis, asthma, chronic obstructive pulmonary disease, and HP (chronic).",
+        ".vasc_s": "<b>Vascular Disease Pattern</b>: Vessels are smaller in bright areas (vascular occlusion). Includes chronic thromboembolic pulmonary hypertension and pulmonary arterial hypertension.",
+        ".inf_s": "<b>Infiltrative Disease Pattern</b>: Vessels are normal caliber; brighter areas represent ground-glass abnormality. Includes HP (subacute), pneumocystis pneumonia, and organizing pneumonia.",
+        ".cle_s": "<b>Centrilobular Emphysema</b>: Smoking-related lucencies without walls in the upper lobes.",
+        ".ple_s": "<b>Panlobular Emphysema</b>: Alpha-1 antitrypsin deficiency; typically lower lobe predominance.",
+        ".pse_s": "<b>Paraseptal Emphysema</b>: Subpleural blebs and bullae; risk factor for spontaneous pneumothorax."
+    };
+
+    function analyzeLungs() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const resBox = document.getElementById('result');
+        
+        let res = "";
+        let color = "#0f172a";
+
+        if (prim === 'reticular') {
+            if (sec.includes('honeycombing_present')) {
+                res = "<b>Branch 1A: Peripheral/Basal (Honeycombing Present)</b>\n• Idiopathic Pulmonary Fibrosis: Usual Interstitial Pneumonia pattern\n• Connective Tissue Disease-related Usual Interstitial Pneumonia\n• Chronic Hypersensitivity Pneumonitis (fibrotic stage)";
+                color = "#ef4444";
+            } else if (sec.includes('no_honeycombing')) {
+                res = "<b>Branch 1A: Peripheral/Basal (No Honeycombing)</b>\n• Nonspecific Interstitial Pneumonia: Subpleural sparing\n• Asbestosis: Pleural plaques, lower lobe predominance";
+                color = "#3b82f6";
+            } else {
+                res = "<b>Branch 1B: Upper Lobe Predominance</b>\n• Chronic Hypersensitivity Pneumonitis: Mosaic attenuation\n• Sarcoidosis: Perilymphatic distribution\n• Silicosis: Progressive massive fibrosis";
+                color = "#8b5cf6";
+            }
+        } else if (prim === 'nodular') {
+            if (sec.includes('tree_in_bud')) {
+                res = "<b>Branch 2A: Centrilobular (Tree-in-bud)</b>\n• Infectious Bronchiolitis (Bacterial, Tuberculosis, Atypical)\n• Aspiration: Lower lobe predominance";
+                color = "#f43f5e";
+            } else if (sec.includes('ground_glass')) {
+                res = "<b>Branch 2A: Centrilobular (Ground-glass)</b>\n• Subacute Hypersensitivity Pneumonitis: Mid/upper lobe\n• Respiratory Bronchiolitis-Interstitial Lung Disease: Smoking history";
+                color = "#3b82f6";
+            } else if (sec.includes('perilymphatic')) {
+                res = "<b>Branch 2B: Perilymphatic Nodules</b>\n• Sarcoidosis: Peribronchovascular distribution\n• Lymphangitic Carcinomatosis: Known malignancy\n• Silicosis / Coal Worker's Pneumoconiosis";
+                color = "#8b5cf6";
+            } else {
+                res = "<b>Branch 2C: Random Nodules</b>\n• Miliary Tuberculosis: Tiny diffuse nodules\n• Hematogenous Metastases: Variable sizes\n• Disseminated Fungal infection: Immunocompromised";
+                color = "#ef4444";
+            }
+        } else if (prim === 'ggo') {
+            if (sec.includes('3a')) {
+                res = (sec.includes('mosaic')) ? "<b>Branch 3A: Diffuse Ground-Glass Opacity (Mosaic)</b>\n• Hypersensitivity Pneumonitis: Air trapping on expiration\n• Pneumocystis Pneumonia: Sparing of nodules" :
+                                                "<b>Branch 3A: Diffuse Ground-Glass Opacity (No Mosaic)</b>\n• Drug-related Pneumonitis\n• Diffuse Alveolar Hemorrhage: Hemoptysis, anemia\n• Pulmonary Edema: Hydrostatic or permeability related";
+                color = "#10b981";
+            } else {
+                res = (sec.includes('lobar')) ? "<b>Branch 3B: Consolidation (Lobar)</b>\n• Bacterial Pneumonia: Fever, productive cough\n• Organizing Pneumonia: Peribronchovascular distribution" :
+                                                "<b>Branch 3B: Consolidation (Peripheral)</b>\n• Cryptogenic Organizing Pneumonia: Reverse halo sign\n• Chronic Eosinophilic Pneumonia: Photographic negative of edema";
+                color = "#f59e0b";
+            }
+        } else if (prim === 'cystic') {
+            res = (sec.includes('4a')) ? "<b>Branch 4A: Upper Lobe Predominance</b>\n• Langerhans Cell Histiocytosis: Young smokers, bizarre cysts\n• Pneumocystis Pneumonia: Cysts in 10-35% of cases" :
+                                        "<b>Branch 4B: Diffuse Distribution</b>\n• Lymphangioleiomyomatosis: Women, chylous effusion\n• Lymphocytic Interstitial Pneumonia: Sjögren syndrome";
+            color = "#3b82f6";
+        } else if (prim === 'cavitary') {
+            res = (sec.includes('5a')) ? "<b>Branch 5A: Acute/Subacute (<12 weeks)</b>\n• Bacterial Abscess / Necrotizing Pneumonia\n• Septic Emboli: Feeding vessel sign\n• Angioinvasive Fungal infection (Aspergillosis)" :
+                                        "<b>Branch 5B: Chronic (>=12 weeks)</b>\n• Tuberculosis: Upper lobe cavities, tree-in-bud nodules\n• Nontuberculous Mycobacterial infection: Lady Windermere\n• Malignancy: Primary squamous cell carcinoma\n• Granulomatosis with Polyangiitis: ANCA-positive";
+            color = "#f43f5e";
+        } else if (prim === 'decreased') {
+            if (sec.includes('mosaic_attenuation')) {
+                res = "<b>Branch 6A: Mosaic Attenuation Pattern Analysis</b>\n• Airway Disease Pattern: Vessels smaller in dark areas (Air trapping present)\n• Vascular Disease Pattern: Vessels smaller in bright areas (Vascular pruning/CTEPH)\n• Infiltrative Disease Pattern: Vessels normal caliber; brighter areas are Ground-Glass Opacity";
+            } else {
+                res = "<b>Branch 6B: Diffuse Emphysema</b>\n• Centrilobular Emphysema: Smoking-related, upper lobe\n• Panlobular Emphysema: Alpha-1 Antitrypsin deficiency, lower lobe\n• Paraseptal Emphysema: Subpleural blebs/bullae";
+            }
+            color = "#64748b";
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1000);
+</script>
+</body>
+</html>

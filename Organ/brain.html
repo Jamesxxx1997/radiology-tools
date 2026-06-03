@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Brain</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 1400px; }
+
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div style="max-width:1400px;margin:20px auto 0;padding:12px 20px;background:#e0f2fe;border-left:6px solid #0ea5e9;border-radius:8px;font-family:'Segoe UI',sans-serif;color:#0369a1;font-size:0.95rem;line-height:1.5;">
+  📘 <b>Source: Dr. Irene Lee (學姊)</b> — this diagnostic tree is adapted in full from her
+  <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank" style="color:#0284c7;">original meta-site</a>.
+  Re-hosted by jamesxxx1997 with attribution.
+</div>
+
+
+<div class="container">
+    <h1>Brain Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Primary Imaging Feature</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select primary feature...</option>
+                    <option value="temporal">Branch 1: TEMPORAL LOBE Predominant</option>
+                    <option value="cortex">Branch 2: CEREBRAL CORTEX Predominant</option>
+                    <option value="deep_gray">Branch 3: DEEP GRAY MATTER (Basal Ganglia/Thalami)</option>
+                    <option value="white_matter">Branch 4: WHITE MATTER Predominant</option>
+                    <option value="ring">Branch 5: RING-ENHANCING Lesions</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology / Sub-branch</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzeBrain()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Neuroimaging Findings</button>
+        <div class="result-box" id="result"></div>
+
+        </div>
+
+            <div style="text-align: center; margin-bottom: 25px;">
+            <a href="../Prognosis/brain_tumor.html" 
+            style="display: inline-block; padding: 12px 24px; background-color: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: bold; text-decoration: none; transition: background-color 0.2s;">
+            &rarr; Brain Tumor Prognosis Tool
+            </a>
+        </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Intracranial Lesion)) --- B1[Branch 1: Temporal Lobe]
+            Root --- B2[Branch 2: Cerebral Cortex]
+            Root --- B3[Branch 3: Deep Gray Matter]
+            Root --- B4[Branch 4: White Matter]
+            Root --- B5[Branch 5: Ring-Enhancing]
+
+            %% Branch 1
+            B1 --- B1A(1A: Bilateral Mesial Temporal)
+            B1A --- HSE[Herpes Simplex Encephalitis]
+            B1A --- LIM[Limbic Encephalitis]
+            B1A --- SE1[Status Epilepticus]
+            B1A --- ALZ[Alzheimer Disease]
+            B1A --- SEM[Semantic Dementia]
+            B1 --- B1B(1B: Unilateral Temporal)
+            B1B --- LGG[Low-grade Glioma]
+            B1B --- GAN[Ganglioglioma]
+            B1B --- DNET[DNET]
+
+            %% Branch 2
+            B2 --- B2A(2A: Diffuse Cortical)
+            B2A --- HIE[Hypoxic-Ischemic Encephalopathy]
+            B2A --- CJD[Creutzfeldt-Jakob Disease]
+            B2A --- PRES[PRES]
+            B2A --- HYP[Hypoglycemia]
+            B2 --- B2B(2B: Focal Cortical)
+            B2B --- AIS[Acute Ischemic Stroke]
+            B2B --- CD[Cortical Dysplasia]
+
+            %% Branch 3
+            B3 --- B3A(3A: Bilateral Symmetric)
+            B3A --- COP[Carbon Monoxide Poisoning]
+            B3A --- MET[Methanol Poisoning]
+            B3A --- WER[Wernicke Encephalopathy]
+            B3A --- HEP[Hepatic Encephalopathy]
+            B3 --- B3B(3B: Unilateral / Asymmetric)
+            B3B --- LYM[Central Nervous System Lymphoma]
+            B3B --- TOX[Toxoplasmosis]
+            B3B --- DVT[Deep Venous Thrombosis]
+
+            %% Branch 4
+            B4 --- B4A(4A: Periventricular / Subcortical)
+            B4A --- MS[Multiple Sclerosis]
+            B4A --- SVID[Small Vessel Ischemic Disease]
+            B4A --- CAD[CADASIL]
+            B4A --- TDL[Tumefactive Demyelination]
+            B4 --- B4B(4B: Diffuse White Matter)
+            B4B --- PML[Progressive Multifocal Leukoencephalopathy]
+            B4B --- ADEM[Acute Disseminated Encephalomyelitis]
+
+            %% Branch 5
+            B5 --- B5A(5A: Solitary Ring)
+            B5A --- ABS[Pyogenic Abscess]
+            B5A --- GBM[Glioblastoma]
+            B5A --- MET2[Metastasis]
+            B5 --- B5B(5B: Multiple Ring)
+            B5B --- TOX2[Toxoplasmosis]
+            B5B --- LYM2[Central Nervous System Lymphoma]
+
+            class HSE hse_s; class LIM lim_s; class ALZ alz_s; class SEM sem_s; 
+            class SE1 se_s; class LGG lgg_s; class GAN gan_s; class DNET dnet_s;
+            class HIE hie_s; class CJD cjd_s; class PRES pres_s; class HYP hyp_s;
+            class AIS ais_s; class CD cd_s; class COP cop_s; class MET met_s;
+            class WER wer_s; class HEP hep_s; class LYM lym_s; class TOX tox_s;
+            class MS ms_s; class SVID svid_s; class CAD cad_s; class TDL tdl_s;
+            class PML pml_s; class ADEM adem_s; class ABS abs_s; class GBM gbm_s;
+            class DVT dvt_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "temporal": ["1A: Bilateral Mesial Temporal", "1B: Unilateral Temporal Lesion"],
+        "cortex": ["2A: Diffuse Cortical Involvement", "2B: Focal Cortical Lesion"],
+        "deep_gray": ["3A: Bilateral Symmetric", "3B: Unilateral or Asymmetric"],
+        "white_matter": ["4A: Periventricular and Subcortical", "4B: Diffuse White Matter Disease"],
+        "ring": ["5A: Solitary Ring-Enhancing Lesion", "5B: Multiple Ring-Enhancing Lesions"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".hse_s": "<b>Herpes Simplex Encephalitis</b>: Bilateral asymmetric mesial temporal and inferior frontal involvement; hemorrhagic component common.",
+        ".lim_s": "<b>Limbic Encephalitis</b>: Autoimmune or paraneoplastic; bilateral symmetric mesial temporal hyperintensity on T2-weighted and Fluid-Attenuated Inversion Recovery imaging.",
+        ".se_s": "<b>Status Epilepticus</b>: Bilateral hippocampal or cortical hyperintensity on T2-weighted imaging, restricted diffusion, and gyral swelling.",
+        ".alz_s": "<b>Alzheimer Disease</b>: Bilateral hippocampal atrophy; temporoparietal hypometabolism on Positron Emission Tomography.",
+        ".sem_s": "<b>Semantic Dementia</b>: Asymmetric antero-inferior temporal lobe atrophy.",
+        ".lgg_s": "<b>Low-grade Glioma</b>: Hyperintense on T2-weighted and Fluid-Attenuated Inversion Recovery; involves cortex with minimal or no contrast enhancement.",
+        ".gan_s": "<b>Ganglioglioma</b>: Temporal lobe most common; cystic appearance with an enhancing mural nodule.",
+        ".dnet_s": "<b>Dysembryoplastic Neuroepithelial Tumor</b>: Cortical-based, benign neuroepithelial tumor with a 'bubbly' appearance on T2-weighted imaging; no peritumoral edema.",
+        ".hie_s": "<b>Hypoxic-Ischemic Encephalopathy</b>: Watershed distribution; cortical laminar necrosis and restricted diffusion in deep gray matter.",
+        ".cjd_s": "<b>Creutzfeldt-Jakob Disease</b>: Cortical ribboning on Diffusion-Weighted Imaging; 'pulvinar sign' in the basal ganglia.",
+        ".pres_s": "<b>Posterior Reversible Encephalopathy Syndrome</b>: Bilateral symmetric vasogenic edema with parieto-occipital predominance; associated with hypertension.",
+        ".hyp_s": "<b>Hypoglycemia</b>: Selective occipital and parietal cortex involvement with restricted diffusion.",
+        ".ais_s": "<b>Acute Ischemic Stroke</b>: Vascular territory distribution; restricted diffusion (94% sensitivity).",
+        ".cd_s": "<b>Cortical Dysplasia</b>: Focal cortical thickening, blurred gray-white junction, and absence of contrast enhancement.",
+        ".cop_s": "<b>Carbon Monoxide Poisoning</b>: Selective bilateral globus pallidus involvement with restricted diffusion and T2 hyperintensity.",
+        ".met_s": "<b>Methanol Poisoning</b>: Bilateral putaminal necrosis and potential hemorrhage.",
+        ".wer_s": "<b>Wernicke Encephalopathy</b>: Bilateral symmetric thalami, mammillary bodies, and periaqueductal gray involvement.",
+        ".hep_s": "<b>Hepatic Encephalopathy</b>: Bilateral globus pallidus hyperintensity on T1-weighted imaging due to manganese deposition.",
+        ".lym_s": "<b>Central Nervous System Lymphoma</b>: Periventricular or deep gray matter location; homogeneous enhancement and low Apparent Diffusion Coefficient values.",
+        ".tox_s": "<b>Toxoplasmosis</b>: Multiple ring-enhancing lesions with 'eccentric target sign'; predilection for basal ganglia in immunocompromised patients.",
+        ".dvt_s": "<b>Deep Venous Thrombosis</b>: Thalamic edema and hemorrhage; specifically thalamic venous infarction.",
+        ".ms_s": "<b>Multiple Sclerosis</b>: Periventricular 'Dawson fingers' perpendicular to ventricles; incomplete open-ring enhancement.",
+        ".svid_s": "<b>Small Vessel Ischemic Disease</b>: Confluent periventricular and deep white matter hyperintensities on T2-weighted imaging.",
+        ".cad_s": "<b>CADASIL</b>: Cerebral Autosomal Dominant Arteriopathy with Subcortical Infarcts and Leukoencephalopathy. Anterior temporal lobe and external capsule involvement.",
+        ".tdl_s": "<b>Tumefactive Demyelinating Lesion</b>: Large lesion (>2 cm) with incomplete 'open-ring' enhancement and high Apparent Diffusion Coefficient values.",
+        ".pml_s": "<b>Progressive Multifocal Leukoencephalopathy</b>: Asymmetric subcortical white matter disease without enhancement or mass effect; immunocompromised status.",
+        ".adem_s": "<b>Acute Disseminated Encephalomyelitis</b>: Bilateral asymmetric white matter and deep gray matter; post-infectious and monophasic.",
+        ".abs_s": "<b>Pyogenic Abscess</b>: Smooth thin wall (<3 mm) with central restricted diffusion and complete T2 hypointense rim.",
+        ".gbm_s": "<b>Glioblastoma</b>: Thick irregular wall (>5 mm) with facilitated diffusion and arc-pattern T2 hypointensity."
+    };
+
+    function analyzeBrain() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const resBox = document.getElementById('result');
+        
+        let res = "";
+        let color = "#0f172a";
+
+        if (prim === 'temporal') {
+            res = (sec.includes('1a')) ? 
+                "<b>Branch 1A: Bilateral Mesial Temporal</b>\n• Herpes Simplex Encephalitis (Asymmetric, hemorrhagic)\n• Limbic Encephalitis (Autoimmune/Paraneoplastic)\n• Status Epilepticus (Restricted diffusion, seizure history)\n• Alzheimer Disease (Hippocampal atrophy)\n• Semantic Dementia (Antero-inferior temporal atrophy)" : 
+                "<b>Branch 1B: Unilateral Temporal</b>\n• Low-grade Glioma (Cortical involvement, minimal enhancement)\n• Ganglioglioma (Cystic with enhancing mural nodule)\n• Dysembryoplastic Neuroepithelial Tumor ('Bubbly' appearance, no edema)";
+        } else if (prim === 'cortex') {
+            res = (sec.includes('2a')) ?
+                "<b>Branch 2A: Diffuse Cortical</b>\n• Hypoxic-Ischemic Encephalopathy (Watershed, laminar necrosis)\n• Creutzfeldt-Jakob Disease (Cortical ribboning)\n• Status Epilepticus (Gyral swelling)\n• Posterior Reversible Encephalopathy Syndrome (Parieto-occipital vasogenic edema)\n• Hypoglycemia (Occipital/Parietal predominance)" :
+                "<b>Branch 2B: Focal Cortical</b>\n• Acute Ischemic Stroke (Vascular territory distribution)\n• Cortical Dysplasia (Blurred gray-white junction)\n• Focal Encephalitis (Variable enhancement)";
+        } else if (prim === 'deep_gray') {
+            res = (sec.includes('3a')) ?
+                "<b>Branch 3A: Bilateral Symmetric Deep Gray Matter</b>\n• Carbon Monoxide Poisoning (Globus pallidus)\n• Methanol Poisoning (Putaminal necrosis)\n• Hypoxic-Ischemic Injury (Basal ganglia/Thalami)\n• Wernicke Encephalopathy (Mammillary bodies)\n• Hepatic Encephalopathy (T1 globus pallidus hyperintensity)\n• Hyperglycemia (T1 basal ganglia hyperintensity)\n• Neuroferritinopathy ('Eye of the tiger' sign)" :
+                "<b>Branch 3B: Unilateral or Asymmetric</b>\n• Central Nervous System Lymphoma (Homogeneous enhancement)\n• Toxoplasmosis (Multiple ring-enhancing lesions)\n• Deep Venous Thrombosis (Thalamic edema)";
+        } else if (prim === 'white_matter') {
+            res = (sec.includes('4a')) ?
+                "<b>Branch 4A: Periventricular and Subcortical White Matter</b>\n• Multiple Sclerosis (Dawson fingers, open-ring sign)\n• Small Vessel Ischemic Disease (Confluent white matter disease)\n• CADASIL (Anterior temporal lobe, external capsule)\n• Tumefactive Demyelinating Lesion (>2 cm, incomplete enhancement)\n• High-grade Glioma (Irregular enhancement, mass effect)\n• Central Nervous System Lymphoma (Periventricular location)" :
+                "<b>Branch 4B: Diffuse White Matter</b>\n• Progressive Multifocal Leukoencephalopathy (Asymmetric subcortical)\n• Acute Disseminated Encephalomyelitis (Bilateral asymmetric, post-infectious)\n• Posterior Reversible Encephalopathy Syndrome";
+        } else if (prim === 'ring') {
+            if (sec.includes('5a')) {
+                res = "<b>Branch 5A: Solitary Ring-Enhancing Lesion</b>\n• <i>Central Restricted Diffusion (Low ADC):</i>\n  • Pyogenic Abscess (Smooth thin wall, complete T2 hypointense rim)\n  • Epidermoid Cyst (Restricted diffusion but lacks enhancement)\n• <i>Central Facilitated Diffusion (High ADC):</i>\n  • Glioblastoma (Thick irregular wall, arc-pattern T2 hypointensity)\n  • Metastasis (Disproportionate edema, known primary)\n  • Tumefactive Demyelinating Lesion (Incomplete 'open-ring' sign)\n  • Central Nervous System Lymphoma (Periventricular location)";
+                color = "#ef4444";
+            } else {
+                res = "<b>Branch 5B: Multiple Ring-Enhancing Lesions</b>\n• <i>Immunocompromised Patients:</i>\n  • Toxoplasma gondii Infection (Eccentric target sign, basal ganglia predilection)\n  • Central Nervous System Lymphoma\n  • Progressive Multifocal Leukoencephalopathy\n  • Fungal Microabscesses\n• <i>Immunocompetent Patients:</i>\n  • Mycobacterium tuberculosis Infection (Tuberculomas, basal meningeal enhancement)\n  • Multiple Sclerosis / Demyelinating Disease (Multiple lesions at different stages)\n  • Metastases (Gray-white junction location, variable sizes)\n  • Septic Emboli (Peripheral wedge-shaped, 'feeding vessel' sign)";
+                color = "#8b5cf6";
+            }
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1200);
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Spleen</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 850px; }
+
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div style="max-width:1400px;margin:20px auto 0;padding:12px 20px;background:#e0f2fe;border-left:6px solid #0ea5e9;border-radius:8px;font-family:'Segoe UI',sans-serif;color:#0369a1;font-size:0.95rem;line-height:1.5;">
+  📘 <b>Source: Dr. Irene Lee (學姊)</b> — this diagnostic tree is adapted in full from her
+  <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank" style="color:#0284c7;">original meta-site</a>.
+  Re-hosted by jamesxxx1997 with attribution.
+</div>
+
+
+<div class="container">
+    <h1>Spleen Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Primary Imaging Feature</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select primary feature...</option>
+                    <option value="solitary_cystic">Branch 1: SOLITARY CYSTIC Lesion</option>
+                    <option value="multiple_cystic">Branch 2: MULTIPLE CYSTIC Lesions</option>
+                    <option value="solitary_solid">Branch 3: SOLITARY SOLID Lesion</option>
+                    <option value="multiple_solid">Branch 4: MULTIPLE SOLID Lesions</option>
+                    <option value="diffuse">Branch 5: DIFFUSE Splenomegaly</option>
+                    <option value="vascular">Branch 6: VASCULAR Abnormalities</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology / Enhancement Pattern</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzeSpleen()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Splenic Findings</button>
+        <div class="result-box" id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Splenic Lesion)) --- B1[Branch 1: Solitary Cystic]
+            Root --- B2[Branch 2: Multiple Cystic]
+            Root --- B3[Branch 3: Solitary Solid]
+            Root --- B4[Branch 4: Multiple Solid]
+            Root --- B5[Branch 5: Diffuse Splenomegaly]
+            Root --- B6[Branch 6: Vascular]
+
+            B1 --- B1A(1A: Simple Cyst)
+            B1A --- ECY[True Epithelial Cyst]
+            B1A --- PCY[Pseudocyst]
+            B1A --- LMA[Simple Lymphangioma]
+            
+            B1 --- B1B(1B: Complex Cyst)
+            B1B --- ABS[Splenic Abscess]
+            B1B --- HYD[Hydatid Cyst]
+            B1B --- HEM[Hematoma]
+
+            B2 --- MAB[Microabscesses]
+            B2 --- MLMA[Multiple Lymphangiomas]
+            B2 --- CLYM[Cystic Lymphoma]
+
+            B3 --- B3A(3A: Hypervascular)
+            B3A --- HMG[Hemangioma]
+            B3A --- HAM[Hamartoma]
+            B3A --- SANT[SANT]
+            
+            B3 --- B3B(3B: Hypovascular)
+            B3B --- LYM[Lymphoma]
+            B3B --- MET[Metastasis]
+            B3B --- IPT[Inflammatory Pseudotumor]
+
+            B3 --- B3C(3C: Aggressive/Mixed)
+            B3C --- ASARC[Angiosarcoma]
+
+            B4 --- B4A(4A: Hypovascular Multi)
+            B4A --- MLYM[Multifocal Lymphoma]
+            B4A --- MMET[Multiple Metastases]
+            B4A --- SAR[Sarcoidosis]
+
+            B4 --- B4B(4B: Hypervascular Multi)
+            B4B --- LCA[Littoral Cell Angioma]
+
+            B5 --- CONG[Congestive/Portal HTN]
+            B5 --- INFECT[Infectious/EBV]
+            B5 --- HEMA[Hematologic/Leukemia]
+            B5 --- INFILT[Infiltrative/Gaucher]
+
+            B6 --- INFAR[Splenic Infarction]
+            B6 --- ANEU[Artery Aneurysm]
+            B6 --- AVM[AVM]
+            class ECY ecy_s; class PCY pcy_s; class LMA lma_s; class ABS abs_s;
+            class HYD hyd_s; class HEM hem_s; class MAB mab_s; class MLMA mlma_s;
+            class CLYM clym_s; class HMG hmg_s; class HAM ham_s; class SANT sant_s;
+            class LYM lym_s; class MET met_s; class IPT ipt_s; class ASARC asarc_s;
+            class MLYM mlym_s; class MMET mmet_s; class SAR sar_s; class LCA lca_s;
+            class CONG cong_s; class INFECT infect_s; class HEMA hema_s; class INFILT infilt_s;
+            class INFAR infar_s; class ANEU aneu_s; class AVM avm_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "solitary_cystic": ["Simple Cyst Characteristics", "Complex Cyst Features"],
+        "multiple_cystic": ["Multiple Small Lesions (<1 cm)", "Multiple Complex Cystic Spaces"],
+        "solitary_solid": ["Hypervascular Pattern", "Hypovascular / Hypoenhancing Pattern", "Heterogeneous / Aggressive Features"],
+        "multiple_solid": ["Hypovascular Multiple Lesions", "Hypervascular Multiple Lesions"],
+        "diffuse": ["N/A"],
+        "vascular": ["N/A"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".ecy_s": "<b>True (Epithelial) Cyst</b>: Most common solitary cystic lesion. Congenital, thin-walled, water attenuation.",
+        ".pcy_s": "<b>Pseudocyst</b>: Post-traumatic origin. Lacks epithelial lining; check for history of trauma.",
+        ".lma_s": "<b>Lymphangioma</b>: Benign cystic neoplasm. Can be solitary or multiple; may have thin septations.",
+        ".abs_s": "<b>Abscess</b>: Clinical signs of infection + rim enhancement and internal debris.",
+        ".hyd_s": "<b>Hydatid Cyst</b>: Daughter cysts and wall calcifications. Consider if from endemic areas.",
+        ".hem_s": "<b>Hematoma</b>: History of trauma. Evolving attenuation over time.",
+        ".mab_s": "<b>Microabscesses</b>: Small (<1cm) hypoattenuating lesions in immunocompromised (fungal, bacterial).",
+        ".hmg_s": "<b>Hemangioma</b>: Peripheral nodular enhancement with centripetal fill-in. T2 hyperintense.",
+        ".ham_s": "<b>Hamartoma</b>: Homogeneous enhancement, well-defined, T2 hyperintense.",
+        ".sant_s": "<b>SANT</b>: Sclerosing Angiomatoid Nodular Transformation. Spoke-wheel enhancement pattern with fibrous septa.",
+        ".lym_s": "<b>Lymphoma</b>: Most common malignant splenic lesion. Hypoenhancing (OR >10) and diffusion restriction.",
+        ".met_s": "<b>Metastasis</b>: Most common from melanoma, breast, lung, or ovarian primary.",
+        ".asarc_s": "<b>Angiosarcoma</b>: Most common primary malignant non-hematolymphoid tumor. Heterogeneous with hemorrhage/necrosis.",
+        ".sar_s": "<b>Sarcoidosis</b>: Multiple small hypoenhancing nodules. Systemic disease with lymphadenopathy.",
+        ".lca_s": "<b>Littoral Cell Angioma</b>: Multiple hypervascular nodules; benign vascular tumor.",
+        ".cong_s": "<b>Portal Hypertension</b>: Most common cause of splenomegaly in adults. Look for varices and ascites.",
+        ".infect_s": "<b>Infectious Mononucleosis (EBV)</b>: Most common cause in young adults (15-24 years).",
+        ".infilt_s": "<b>Gaucher Disease</b>: Lysosomal storage disorder causing massive splenomegaly.",
+        ".infar_s": "<b>Splenic Infarction</b>: Wedge-shaped peripheral non-enhancement; 'cortical rim sign'.",
+        ".aneu_s": "<b>Splenic Artery Aneurysm</b>: Vascular dilatation; risk of rupture causing LUQ pain.",
+        ".avm_s": "<b>Arteriovenous Malformation</b>: Early venous filling, enlarged vessels."
+    };
+
+    function analyzeSpleen() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const resBox = document.getElementById('result');
+        let res = "";
+        let color = "#0f172a";
+
+        if (prim === 'solitary_cystic') {
+            if (sec.includes('simple')) {
+                res = "<b>Branch 1A: Simple Cyst</b>\n• True (Epithelial) Cyst (Most common)\n• Pseudocyst (History of trauma)\n• Simple Lymphangioma";
+                color = "#10b981";
+            } else {
+                res = "<b>Branch 1B: Complex Cyst</b>\n• Abscess (Clinical infection/Rim enhancement)\n• Hydatid Cyst (Daughter cysts/calcification)\n• Hematoma (Traumatic history)";
+                color = "#f59e0b";
+            }
+        } else if (prim === 'multiple_cystic') {
+            res = "<b>Branch 2: Multiple Cystic Lesions</b>\n• Microabscesses (Immunocompromised/Fungal)\n• Lymphangioma (Multiple spaces)\n• Multiple Hydatid Cysts\n• Cystic Lymphoma (Rare)";
+            color = "#ef4444";
+        } else if (prim === 'solitary_solid') {
+            if (sec.includes('hypervascular')) {
+                res = "<b>Branch 3A: Hypervascular Solid</b>\n• Hemangioma (Nodular fill-in)\n• Hamartoma (Well-defined)\n• SANT (Spoke-wheel pattern)\n• Littoral Cell Angioma";
+                color = "#10b981";
+            } else if (sec.includes('hypovascular')) {
+                res = "<b>Branch 3B: Hypovascular (High Malignancy Risk)</b>\n• Lymphoma (Diffusion restriction)\n• Metastasis (Known primary)\n• Inflammatory Pseudotumor";
+                color = "#ef4444";
+            } else {
+                res = "<b>Branch 3C: Aggressive/Mixed Features</b>\n• Angiosarcoma (Hemorrhage/Necrosis)\n• Heterogeneous Metastasis";
+                color = "#ef4444";
+            }
+        } else if (prim === 'multiple_solid') {
+            if (sec.includes('hypovascular')) {
+                res = "<b>Branch 4A: Multiple Hypovascular</b>\n• Lymphoma (Splenomegaly/Adenopathy)\n• Metastases\n• Sarcoidosis (Small nodules)";
+                color = "#ef4444";
+            } else {
+                res = "<b>Branch 4B: Multiple Hypervascular</b>\n• Littoral Cell Angioma (Multiple hypervascular nodules)\n• Multiple Hemangiomas\n• Diffuse Hemangiomatosis";
+                color = "#3b82f6";
+            }
+        } else if (prim === 'diffuse') {
+            res = "<b>Branch 5: Diffuse Splenomegaly (No Focal Mass)</b>\n• 5A: Congestive (Portal HTN, Varices, Splenic vein thrombosis, CHF)\n• 5B: Infectious (EBV Mono, HIV, TB, Malaria)\n• 5C: Hematologic (Lymphoma, Leukemia, Myeloproliferative disorders, EMH)\n• 5D: Infiltrative (Sarcoidosis, Amyloidosis, Gaucher Disease)";
+            color = "#8b5cf6";
+        } else if (prim === 'vascular') {
+            res = "<b>Branch 6: Vascular Abnormalities</b>\n• Splenic Infarction (Wedge-shaped, Rim sign)\n• Splenic Artery Aneurysm/Pseudoaneurysm\n• Arteriovenous Malformation (Early venous filling)\n• Peliosis (Blood-filled cystic spaces)";
+            color = "#f43f5e";
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1000);
+</script>
+</body>
+</html>

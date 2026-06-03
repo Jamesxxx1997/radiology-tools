@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Bowel</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 1200px; }
+
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div style="max-width:1400px;margin:20px auto 0;padding:12px 20px;background:#e0f2fe;border-left:6px solid #0ea5e9;border-radius:8px;font-family:'Segoe UI',sans-serif;color:#0369a1;font-size:0.95rem;line-height:1.5;">
+  📘 <b>Source: Dr. Irene Lee (學姊)</b> — this diagnostic tree is adapted in full from her
+  <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank" style="color:#0284c7;">original meta-site</a>.
+  Re-hosted by jamesxxx1997 with attribution.
+</div>
+
+
+<div class="container">
+    <h1>Bowel Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Primary Imaging Pattern</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select pattern...</option>
+                    <option value="wall_thick">Branch 1: WALL THICKENING</option>
+                    <option value="obstruction">Branch 2: OBSTRUCTION Pattern</option>
+                    <option value="ischemia">Branch 3: VASCULAR / Ischemia</option>
+                    <option value="mass">Branch 4: BOWEL MASS (Focal)</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology / Enhancement</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+            <div>
+                <label>Anatomic Location</label>
+                <select id="locationFilter">
+                    <option value="any">Unspecified / Any</option>
+                    <option value="small_bowel">Small Intestine</option>
+                    <option value="large_bowel">Large Intestine (Colon)</option>
+                    <option value="terminal_ileum">Terminal Ileum</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzeBowel()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Bowel Findings</button>
+        <div class="result-box" id="result"></div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 25px;">
+        <a href="../Prognosis/pancreatic_adenoCA.html" 
+        style="display: inline-block; padding: 12px 24px; background-color: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: bold; text-decoration: none; transition: background-color 0.2s;">
+        &rarr; Colorectal Carcinoma Prognosis Tool
+        </a>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root(("Bowel Abnormal")) --- B1["Branch 1: Wall Thickening"]
+            Root --- B2["Branch 2: Obstruction"]
+            Root --- B3["Branch 3: Vascular"]
+            Root --- B4["Branch 4: Focal Mass"]
+
+            %% Branch 1: Thickening
+            B1 --- B1A("1A: Target Sign / Stratified")
+            B1A --- CD1["Crohn Disease"]
+            B1A --- UC1["Ulcerative Colitis"]
+            B1A --- ISC1["Ischemic Bowel"]
+            
+            B1 --- B1B("1B: Homogeneous / Soft Tissue")
+            B1B --- ADENO1["Adenocarcinoma"]
+            B1B --- LYM1["Bowel Lymphoma"]
+            
+            B1 --- B1C("1C: Low Attenuation / Edema")
+            B1C --- GAST["Infectious Enterocolitis"]
+            B1C --- GVHD["Graft-Versus-Host Disease"]
+
+            %% Branch 2: Obstruction
+            B2 --- B2A["Mechanical Obstruction"]
+            B2A --- ADH["Adhesions"]
+            B2A --- HER["Hernia"]
+            B2A --- VOL["Volvulus"]
+            B2A --- INTUS["Intussusception"]
+            B2 --- B2B["Functional (Ileus)"]
+            B2B --- PLI["Paralytic Ileus"]
+            B2B --- OGI["Ogilvie Syndrome"]
+
+            %% Branch 3: Ischemia
+            B3 --- B3A["Arterial Occlusive"]
+            B3A --- SMAT["SMA Thrombosis"]
+            B3 --- B3B["Non-Occlusive"]
+            B3B --- NOMI["Non-occlusive Mesenteric Ischemia"]
+            B3 --- B3C["Venous Occlusive"]
+            B3C --- SMVT["SMV Thrombosis"]
+
+            %% Branch 4: Focal Mass
+            B4 --- B4A["Malignant"]
+            B4A --- ADENO2["Adenocarcinoma"]
+            B4A --- CARC["Carcinoid Tumor"]
+            B4A --- GIST["Gastrointestinal Stromal Tumor"]
+            B4 --- B4B["Benign"]
+            B4B --- POL["Polyps"]
+            B4B --- LIP["Lipoma"]
+
+            class CD1 cd_s; class UC1 uc_s; class ISC1 isc_s;
+            class ADENO1,ADENO2 adeno_s; class LYM1 lym_s;
+            class GAST gast_s; class GVHD gvhd_s; class ADH adh_s;
+            class HER her_s; class VOL vol_s; class INTUS intus_s;
+            class PLI pli_s; class OGI ogi_s; class SMAT smat_s;
+            class NOMI nomi_s; class SMVT smvt_s; class GIST gist_s;
+            class CARC carc_s; class POL pol_s; class LIP lip_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "wall_thick": ["1A: Stratified (Target Sign)", "1B: Homogeneous (Malignant Profile)", "1C: Fluid-Attenuation Edema"],
+        "obstruction": ["Small Bowel Obstruction (Transition point)", "Large Bowel Obstruction", "Ileus (Diffuse Dilatation)"],
+        "ischemia": ["Pneumatosis (Gas in wall)", "Mesenteric Vessel Occlusion", "Paper-thin Wall"],
+        "mass": ["Intraluminal Polypoid", "Exophytic (Extraluminal)", "Infiltrative / Annular"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".cd_s": "<b>Crohn Disease</b>: Transmural involvement; skip lesions; terminal ileum predilection; vasa recta engorgement ('comb sign').",
+        ".uc_s": "<b>Ulcerative Colitis</b>: Continuous involvement starting from rectum; superficial mucosal disease; 'lead pipe' appearance in chronic stages.",
+        ".isc_s": "<b>Ischemic Bowel</b>: Stratified wall thickening (wet ischemia) or paper-thin wall (dry ischemia); pneumatosis intestinalis in advanced cases.",
+        ".adeno_s": "<b>Adenocarcinoma</b>: Focal short-segment annular thickening ('apple-core' lesion); significant upstream obstruction.",
+        ".lym_s": "<b>Bowel Lymphoma</b>: Aneurysmal dilatation of the bowel lumen; marked homogeneous wall thickening without obstruction.",
+        ".gast_s": "<b>Infectious Enterocolitis</b>: Diffuse fluid-filled loops; low-attenuation wall edema; perienteric stranding.",
+        ".vol_s": "<b>Volvulus</b>: 'Whirl sign' of mesenteric vessels; closed-loop obstruction pattern.",
+        ".ogi_s": "<b>Ogilvie Syndrome</b>: Acute colonic pseudo-obstruction; massive dilatation of the colon without a mechanical point of transition.",
+        ".smat_s": "<b>Superior Mesenteric Artery Thrombosis</b>: Sudden arterial occlusion; lack of wall enhancement; associated with cardiovascular risk factors.",
+        ".smvt_s": "<b>Superior Mesenteric Vein Thrombosis</b>: Mesenteric edema and 'misty mesentery'; prominent venous collateralization.",
+        ".gist_s": "<b>Gastrointestinal Stromal Tumor</b>: Large exophytic mass with heterogeneous enhancement; typically lacks significant lymphadenopathy.",
+        ".carc_s": "<b>Carcinoid Tumor</b>: Enhancing distal ileal mass with a characteristic desmoplastic reaction in the mesentery.",
+        ".intus_s": "<b>Intussusception</b>: 'Target' or 'sausage' shaped mass on axial imaging; 'bowel-within-bowel' appearance.",
+        ".gvhd_s": "<b>Graft-Versus-Host Disease</b>: Generalized mucosal thickening with 'lead pipe' appearance; often seen in post-transplant patients.",
+        ".adh_s": "<b>Adhesions</b>: Post-surgical or post-infectious adhesions causing mechanical obstruction; often seen in small bowel.",
+        ".pli_s": "<b>Paralytic Ileus</b>: Generalized bowel dilatation without obstruction; often seen in post-operative patients.",
+        ".lip_s": "<b>Lipoma</b>: Well-circumscribed, homogeneous mass with no enhancement; typically seen in the mesentery.",
+        ".pol_s": "<b>Polyps</b>: Small, well-circumscribed masses; often seen in the colon; can be hyperplastic or adenomatous.",
+        ".her_s": "<b>Hernia</b>: Herniation of bowel through anatomic defect; often associated with obstruction or dilation.",
+        ".nomi_s": "<b>Non-Occlusive Mesenteric Ischemia</b>: Edema of the mesentery; prominent venous collateralization; no arterial occlusion.",
+    };
+
+    const bowelDiseases = [
+        { name: "Crohn Disease", features: ["wall", "stratified", "terminal_ileum"], locs: ["small_bowel", "terminal_ileum"], desc: "Transmural inflammation, skip lesions, and 'comb sign' (engorged vasa recta)." },
+        { name: "Adenocarcinoma", features: ["wall", "homogeneous", "short_segment", "mass", "annular"], locs: ["large_bowel", "small_bowel"], desc: "Focal annular thickening ('apple core') with significant upstream obstruction." },
+        { name: "Ischemic Bowel", features: ["wall", "ischemia", "pneumatosis"], locs: ["small_bowel", "large_bowel"], desc: "Paper-thin wall or stratified thickening; gas within the bowel wall (pneumatosis)." },
+        { name: "Bowel Lymphoma", features: ["wall", "homogeneous", "aneurysmal"], locs: ["small_bowel"], desc: "Marked thickening with aneurysmal dilatation of the lumen; typically lacks obstruction." },
+        { name: "Volvulus", features: ["obstruction", "whirl"], locs: ["large_bowel"], desc: "Torsion of the mesentery showing the 'whirl sign' and closed-loop obstruction." },
+        { name: "Carcinoid Tumor", features: ["mass", "desmoplastic"], locs: ["small_bowel", "terminal_ileum"], desc: "Intensely enhancing mass with mesenteric desmoplastic 'starburst' reaction." },
+        { name: "Ulcerative Colitis", features: ["wall", "stratified", "continuous"], locs: ["large_bowel"], desc: "Continuous colonic involvement starting from the rectum; loss of haustral markings ('lead pipe')." },
+        { name: "Intussusception", features: ["obstruction", "mass", "target"], locs: ["small_bowel", "large_bowel"], desc: "Bowel-within-bowel appearance; 'target' sign on axial images." },
+        { name: "Superior Mesenteric Artery Thrombosis", features: ["ischemia", "arterial"], locs: ["small_bowel"], desc: "Lack of wall enhancement; acute arterial filling defect." }
+    ];
+
+    function analyzeBowel() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const loc = document.getElementById('locationFilter').value;
+        const resBox = document.getElementById('result');
+        
+        if (prim === "none") return;
+
+        let filtered = bowelDiseases.filter(d => {
+            const patternMatch = d.features.some(f => sec.includes(f) || prim.includes(f));
+            if (loc !== "any") {
+                return patternMatch && d.locs.includes(loc);
+            }
+            return patternMatch;
+        });
+
+        if (filtered.length > 0) {
+            let res = `<b>Differential Diagnosis for this Bowel Pattern:</b>\n\n` + 
+                      filtered.map(d => `• <b>${d.name}</b>: ${d.desc}`).join("\n\n");
+            resBox.innerHTML = res.replace(/\n/g, "<br>");
+            resBox.style.borderLeftColor = "#0ea5e9";
+        } else {
+            resBox.innerHTML = "<b>No specific match in the current tree.</b><br>Consider infections or idiopathic patterns if features are non-specific.";
+            resBox.style.borderLeftColor = "#64748b";
+        }
+        resBox.style.display = "block";
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1200);
+</script>
+</body>
+</html>

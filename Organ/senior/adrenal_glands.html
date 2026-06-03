@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Adrenal Glands</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        
+        /* Layout Grids */
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        .hu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        input, select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 850px; }
+
+        /* Strictly enforced light-border styling for legibility */
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Adrenal Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support & Washout Calculator</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Primary Imaging Feature</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select primary feature...</option>
+                    <option value="low_atten">Branch 1: LOW ATTENUATION (≤10 HU)</option>
+                    <option value="macro_fat">Branch 2: MACROSCOPIC FAT</option>
+                    <option value="high_atten">Branch 3: INTERMEDIATE/HIGH ATTENUATION (>10 HU)</option>
+                    <option value="cystic">Branch 4: CYSTIC/FLUID ATTENUATION</option>
+                    <option value="bilateral">Branch 5: BILATERAL ADRENAL MASSES</option>
+                </select>
+            </div>
+            <div>
+                <label>Sub-Branch / Pattern</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="hu-grid">
+            <div><label>Non-Contrast (HU)</label><input type="number" id="nc" placeholder="e.g. 15"></div>
+            <div><label>Portal Venous (HU)</label><input type="number" id="pv" placeholder="e.g. 80"></div>
+            <div><label>Delayed 15m (HU)</label><input type="number" id="del" placeholder="e.g. 35"></div>
+            <div><label>Lesion Size (cm)</label><input type="number" id="size" placeholder="e.g. 3"></div>
+        </div>
+        
+        <button onclick="analyzeAdrenal()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Presentation</button>
+        <div class="result-box" id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Adrenal Mass)) --- B1[Branch 1: Low Attenuation]
+            Root --- B2[Branch 2: Macroscopic Fat]
+            Root --- B3[Branch 3: High Attenuation]
+            Root --- B4[Branch 4: Cystic/Fluid]
+            Root --- B5[Branch 5: Bilateral]
+
+            B1 --- ADEN[Adrenal Adenoma]
+            B1 --- CSA[Cortisol Secreting Adenoma]
+            B1 --- ASA[Aldosterone Secreting Adenoma]
+            
+            B2 --- MYEL[Myelolipoma]
+            B2 --- LRAT[Lipid-rich Adenoma Variant]
+            B2 --- ACCF[Adrenocortical Carcinoma with Fat]
+
+            B3 --- B3A(3A: Homogeneous)
+            B3A --- LPAD[Lipid-poor Adenoma]
+            B3A --- SPHE[Small Pheochromocytoma]
+            B3A --- METS[Metastasis]
+            
+            B3 --- B3B(3B: Heterogeneous)
+            B3B --- ACC[Adrenocortical Carcinoma]
+            B3B --- LPHE[Large Pheochromocytoma]
+            B3B --- HMET[Heterogeneous Metastasis]
+
+            B4 --- ACYST[Adrenal Cyst]
+            B4 --- HEMO[Adrenal Hemorrhage]
+            B4 --- CPHE[Cystic Pheochromocytoma]
+            B4 --- NACC[Necrotic Adrenocortical Carcinoma]
+
+            B5 --- B5A(5A: Nodular Pattern)
+            B5A --- ABH[Bilateral Adrenal Hyperplasia]
+            B5A --- BMET[Bilateral Metastases]
+            B5A --- BPHE[Bilateral Pheochromocytomas]
+            
+            B5 --- B5B(5B: Diffuse Enlargement)
+            B5B --- CAH[Congenital Adrenal Hyperplasia]
+            B5B --- LYM[Lymphoma]
+            B5B --- INF[Infection]
+            B5B --- BHEM[Bilateral Hemorrhage]
+
+            class ADEN aden_s; class CSA csa_s; class ASA asa_s; class MYEL myel_s; class LRAT lrat_s; 
+            class ACCF accf_s; class LPAD lpad_s; class SPHE sphe_s; class METS mets_s; class ACC acc_s; 
+            class LPHE lphe_s; class HMET hmet_s; class ACYST acyst_s; class HEMO hemo_s; class CPHE cphe_s; 
+            class NACC nacc_s; class ABH abh_s; class BMET bmet_s; class BPHE bphe_s; class CAH cah_s; 
+            class LYM lym_s; class INF inf_s; class BHEM bhem_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    // Dynamic Logic for Selection Boxes
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "low_atten": ["N/A"],
+        "macro_fat": ["N/A"],
+        "high_atten": ["3A: Homogeneous Pattern", "3B: Heterogeneous Pattern"],
+        "cystic": ["N/A"],
+        "bilateral": ["5A: Nodular Pattern", "5B: Diffuse Enlargement"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    // Diagnostic Descriptions for Tooltips
+    const descriptions = {
+        ".aden_s": "<b>Adrenal Adenoma (Nonfunctioning)</b>: Most common adrenal mass (71-84% of incidentalomas). Homogeneous with smooth margins.",
+        ".csa_s": "<b>Cortisol-secreting Adenoma</b>: Homogeneous, smooth margins; nonfunctioning on imaging unless biochemically proven.",
+        ".asa_s": "<b>Aldosterone-secreting Adenoma</b>: Typically small (<2 cm).",
+        ".myel_s": "<b>Myelolipoma</b>: Well-defined mass with variable fat and soft tissue; fat attenuation is equal to retroperitoneal fat.",
+        ".lrat_s": "<b>Lipid-rich Adenoma Variant</b>: Rare variant containing prominent macroscopic fat.",
+        ".accf_s": "<b>Adrenocortical Carcinoma with Fat</b>: Rare; typically large and heterogeneous with other concerning features.",
+        ".lpad_s": "<b>Lipid-poor Adenoma</b>: ~30% of adenomas. Shows rapid washout (APW >60%).",
+        ".sphe_s": "<b>Small Pheochromocytoma</b>: Highly vascular; can mimic adenoma washout characteristics.",
+        ".mets_s": "<b>Metastasis</b>: Most common malignant adrenal tumor; usually shows slow washout.",
+        ".acc_s": "<b>Adrenocortical Carcinoma</b>: Typically large (>6 cm) with irregular margins, necrosis, and calcifications.",
+        ".lphe_s": "<b>Large Pheochromocytoma</b>: Heterogeneous with necrotic/cystic areas; hyperintense on T2 MRI.",
+        ".hmet_s": "<b>Heterogeneous Metastasis</b>: Often from melanoma, renal cell, or lung primaries.",
+        ".acyst_s": "<b>Adrenal Cyst</b>: No enhancement, homogeneous fluid signal.",
+        ".hemo_s": "<b>Adrenal Hemorrhage</b>: High attenuation acutely; chronic phase shows fluid attenuation.",
+        ".cphe_s": "<b>Cystic Pheochromocytoma</b>: Peripheral enhancement, high T2 signal.",
+        ".nacc_s": "<b>Necrotic Adrenocortical Carcinoma</b>: Thick irregular walls and solid components.",
+        ".abh_s": "<b>Bilateral Adrenal Hyperplasia (5A)</b>: 'Cluster of grapes' appearance.",
+        ".bmet_s": "<b>Bilateral Metastases (5A)</b>: Most common cause of bilateral masses in cancer patients.",
+        ".bphe_s": "<b>Bilateral Pheochromocytomas (5A)</b>: Associated with hereditary syndromes (MEN2, VHL).",
+        ".cah_s": "<b>Congenital Adrenal Hyperplasia (5B)</b>: Enlarged glands with a cerebriform surface.",
+        ".lym_s": "<b>Lymphoma (5B)</b>: Homogeneous, minimal enhancement.",
+        ".inf_s": "<b>Infection (5B)</b>: TB or histoplasmosis; may show calcifications.",
+        ".bhem_s": "<b>Bilateral Hemorrhage (5B)</b>: High attenuation in the acute phase."
+    };
+
+    // Primary Analysis and Washout Logic
+    function analyzeAdrenal() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const nc = parseFloat(document.getElementById('nc').value);
+        const pv = parseFloat(document.getElementById('pv').value);
+        const del = parseFloat(document.getElementById('del').value);
+        const size = parseFloat(document.getElementById('size').value);
+        const resBox = document.getElementById('result');
+
+        let res = "";
+        let color = "#0f172a";
+
+        // Absolute Washout Calculation
+        const apw = (!isNaN(nc) && !isNaN(pv) && !isNaN(del)) ? ((pv - del) / (pv - nc)) * 100 : null;
+
+        if (prim === 'low_atten') {
+            res = "<b>Branch 1: Low Attenuation (≤10 HU)</b>\n• Adrenal adenoma (nonfunctioning)\n• Cortisol-secreting adenoma\n• Aldosterone-secreting adenoma";
+            color = "#10b981";
+        } else if (prim === 'macro_fat') {
+            res = "<b>Branch 2: Macroscopic Fat</b>\n• Myelolipoma\n• Lipid-rich adenoma with prominent fat\n• Adrenocortical carcinoma with fat";
+            color = "#f59e0b";
+        } else if (prim === 'high_atten') {
+            if (sec.includes('homogeneous')) {
+                res = "<b>Branch 3A: Homogeneous Pattern</b>\n";
+                if (apw !== null) {
+                    res += `Calculated Washout (APW): ${apw.toFixed(1)}%\n`;
+                    if (apw > 60) {
+                        res += "<b>Pattern: Rapid Washout</b>\n• Lipid-poor adenoma\n• Small pheochromocytoma";
+                        color = "#3b82f6";
+                    } else {
+                        res += "<b>Pattern: Slow Washout</b>\n• Metastasis\n• Adrenocortical carcinoma\n• Pheochromocytoma";
+                        color = "#ef4444";
+                    }
+                } else {
+                    res += "⚠️ Enter HU values (Non-contrast, Portal, Delayed) for Washout Analysis.";
+                }
+            } else if (sec.includes('heterogeneous')) {
+                res = "<b>Branch 3B: Heterogeneous Pattern</b>\n";
+                if (!isNaN(size)) {
+                    if (size > 4) {
+                        res += "<b>Pattern: Large Size (>4cm)</b>\n• Adrenocortical carcinoma\n• Large pheochromocytoma\n• Metastasis";
+                        color = "#ef4444";
+                    } else {
+                        res += "<b>Pattern: Small/Medium Size</b>\n• Pheochromocytoma\n• Metastasis\n• Atypical adenoma";
+                        color = "#f59e0b";
+                    }
+                } else {
+                    res += "⚠️ Enter Lesion Size for analysis.";
+                }
+            }
+        } else if (prim === 'cystic') {
+            res = "<b>Branch 4: Cystic/Fluid Attenuation</b>\n• Adrenal cyst\n• Adrenal hemorrhage\n• Cystic pheochromocytoma\n• Necrotic adrenocortical carcinoma";
+            color = "#06b6d4";
+        } else if (prim === 'bilateral') {
+            if (sec.includes('5a')) {
+                res = "<b>Branch 5A: Bilateral Nodular Pattern</b>\n• Bilateral adrenal hyperplasia\n• Metastases\n• Bilateral pheochromocytomas";
+                color = "#8b5cf6";
+            } else {
+                res = "<b>Branch 5B: Bilateral Diffuse Enlargement</b>\n• Congenital adrenal hyperplasia\n• Lymphoma\n• Infection\n• Bilateral hemorrhage";
+                color = "#9b59b6";
+            }
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top'
+            });
+        });
+    }, 1000);
+</script>
+</body>
+</html>

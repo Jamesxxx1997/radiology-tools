@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Heart</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 1500px; }
+
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div style="max-width:1400px;margin:20px auto 0;padding:12px 20px;background:#e0f2fe;border-left:6px solid #0ea5e9;border-radius:8px;font-family:'Segoe UI',sans-serif;color:#0369a1;font-size:0.95rem;line-height:1.5;">
+  📘 <b>Source: Dr. Irene Lee (學姊)</b> — this diagnostic tree is adapted in full from her
+  <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank" style="color:#0284c7;">original meta-site</a>.
+  Re-hosted by jamesxxx1997 with attribution.
+</div>
+
+
+<div class="container">
+    <h1>Heart Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Clinical Presentation (Master Branch)</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select presentation...</option>
+                    <option value="acute_pain">Branch 1: ACUTE CHEST PAIN</option>
+                    <option value="hf_thickness">Branch 2: HEART FAILURE (Wall Thickness)</option>
+                    <option value="restrictive">Branch 3: RESTRICTIVE Physiology</option>
+                    <option value="valvular">Branch 4: VALVULAR Heart Disease</option>
+                    <option value="arrhythmia">Branch 5: ARRHYTHMIAS and SCD Risk</option>
+                    <option value="cardiac_mass">Branch 6: CARDIAC MASS</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology / Key Imaging Discriminator</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzeHeart()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Cardiac Findings</button>
+        <div class="result-box" id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Cardiac Presentation)) --- B1[Branch 1: Acute Chest Pain]
+            Root --- B2[Branch 2: Heart Failure - Wall Thickness]
+            Root --- B3[Branch 3: Restrictive Physiology]
+            Root --- B4[Branch 4: Valvular Disease]
+            Root --- B5[Branch 5: Arrhythmias & Risk]
+            Root --- B6[Branch 6: Cardiac Mass]
+
+            %% Branch 1
+            B1 --- B1A(1A: Acute Coronary Syndrome)
+            B1A --- STEMI[ST-Elevation Myocardial Infarction]
+            B1A --- NSTEMI[Non-ST-Elevation Myocardial Infarction]
+            B1A --- MINOCA[MINOCA Etiologies]
+            B1 --- B1B(1B: Acute Aortic Syndromes)
+            B1B --- ADIS[Aortic Dissection]
+            B1B --- IMH[Intramural Hematoma]
+            B1 --- B1C(1C: Acute Pulmonary Embolism)
+
+            %% Branch 2
+            B2 --- B2A(2A: INCREASED Wall Thickness)
+            B2A --- AMY[Cardiac Amyloidosis]
+            B2A --- HCM[Hypertrophic Cardiomyopathy]
+            B2A --- AFD[Anderson-Fabry Disease]
+            B2 --- B2B(2B: NORMAL/DECREASED Wall Thickness)
+            B2B --- ICM[Ischemic Cardiomyopathy]
+            B2B --- NICM[Nonischemic Cardiomyopathy]
+
+            %% Branch 3
+            B3 --- B3A(3A: Constrictive Pattern)
+            B3A --- CP[Constrictive Pericarditis]
+            B3 --- B3B(3B: Restrictive Myocardial)
+            B3B --- RCM[Restrictive Cardiomyopathy]
+
+            %% Branch 4
+            B4 --- AS[Aortic Stenosis]
+            B4 --- MR[Mitral Regurgitation]
+
+            %% Branch 5
+            B5 --- ARVC[Arrhythmogenic Right Ventricular Cardiomyopathy]
+            B5 --- SAR[Cardiac Sarcoidosis]
+
+            %% Branch 6 - Corrected Connection
+            B6 --- B6_Throm[Thrombus vs. Pseudotumor]
+            B6_Throm --- THR[Thrombus]
+            B6_Throm --- PSEUDO[Pseudotumor]
+
+            B6 --- B6_Tumor[True Cardiac Tumor]
+            B6_Tumor --- B6_Benign(Benign Features)
+            B6_Benign --- MYX[Myxoma]
+            B6_Benign --- PFE[Papillary Fibroelastoma]
+
+            B6_Tumor --- B6_Malig(Malignant Features)
+            B6_Malig --- ASAR[Angiosarcoma]
+            B6_Malig --- TMET[Secondary Metastases]
+
+            class STEMI stemi_s; class MINOCA minoca_s; class ADIS adis_s; class AMY amy_s;
+            class HCM hcm_s; class AFD afd_s; class SAR sar_s; class CP cp_s;
+            class ICM icm_s; class NICM nicm_s; class AS as_s; class MR mr_s;
+            class RCM rcm_s; class ARVC arvc_s; class IMH imh_s; 
+            class NSTEMI nstemi_s; class THR thr_s; class PSEUDO pseudo_s; 
+            class MYX myx_s; class PFE pfe_s; class ASAR asar_s; class TMET tmet_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "acute_pain": ["1A: Acute Coronary Syndrome (ACS)", "1B: Acute Aortic Syndromes (AAS)", "1C: Acute Pulmonary Embolism (PE)"],
+        "hf_thickness": ["2A: INCREASED Wall Thickness (Infiltrative)", "2B: NORMAL/DECREASED Wall Thickness"],
+        "restrictive": ["3A: Constrictive Pericarditis (Pericardium >4mm)", "3B: Restrictive Myocardial (Normal Pericardium)"],
+        "valvular": ["4A: Aortic Stenosis", "4B: Mitral Regurgitation"],
+        "arrhythmia": ["5A: Ventricular Arrhythmias / Structural Substrate", "5B: Syncope Evaluation"],
+        // Updated Branch 6 mapping
+        "cardiac_mass": ["Thrombus vs. Pseudotumor", "Benign Tumor Profile", "Malignant Tumor Profile"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".stemi_s": "<b>ST-Elevation Myocardial Infarction</b>: Transmural infarction; Late Gadolinium Enhancement in subendocardial or transmural distribution.",
+        ".nstemi_s": "<b>Non-ST-Elevation Myocardial Infarction</b>: Subendocardial infarction, wall motion abnormality, subendocardial LGE pattern.",
+        ".minoca_s": "<b>MINOCA</b>: Myocardial Infarction with Non-Obstructive Coronary Arteries. Includes Myocarditis (mid-wall LGE) and Takotsubo (apical ballooning).",
+        ".imh_s": "<b>Intramural Hematoma</b>: Crescentic high-attenuation area in aortic wall on CT.",
+        ".adis_s": "<b>Aortic Dissection</b>: Intimal flap on Computed Tomography or Transesophageal Echocardiography; false lumen presence.",
+        ".amy_s": "<b>Cardiac Amyloidosis</b>: Granular sparkling myocardium; 'cherry on top' apical sparing pattern; diffuse subendocardial LGE; elevated Extracellular Volume.",
+        ".hcm_s": "<b>Hypertrophic Cardiomyopathy</b>: Asymmetric septal hypertrophy; systolic anterior motion of mitral valve; mid-wall LGE at RV insertion points.",
+        ".rcm_s": "<b>Restrictive Cardiomyopathy</b>: Normal pericardium, myocardial infiltration or fibrosis.",
+        ".as_s": "<b>Aortic Stenosis</b>: Severe: valve area <1.0 cm², gradient >40 mmHg, peak velocity >4.0 m/s; CT Calcium Scoring for calcific burden.",
+        ".mr_s": "<b>Mitral Regurgitation</b>: Severe: effective regurgitant orifice area ≥0.4 cm², volume ≥60 mL, vena contracta width ≥0.7 cm; Cardiovascular Magnetic Resonance for direct measurement.",
+        ".afd_s": "<b>Anderson-Fabry Disease</b>: Concentric hypertrophy; basal inferolateral wall LGE; low native T1 values (lipid storage).",
+        ".sar_s": "<b>Cardiac Sarcoidosis</b>: Patchy mid-wall or subepicardial LGE; FDG-Positron Emission Tomography uptake indicating active inflammation.",
+        ".arvc_s": "<b>Arrhythmogenic Right Ventricular Cardiomyopathy</b>: RV dilatation and dysfunction, fatty infiltration on CMR, LGE in RV free wall.",
+        ".cp_s": "<b>Constrictive Pericarditis</b>: Pericardial thickness >4 mm; calcification; septal bounce (ventricular interdependence) on echocardiography.",
+        ".icm_s": "<b>Ischemic Cardiomyopathy</b>: Subendocardial or transmural LGE in coronary artery distribution; obstructive disease on angiography.",
+        ".nicm_s": "<b>Nonischemic Cardiomyopathy</b>: Dilated pattern with mid-wall LGE (linear interventricular septum pattern) or subepicardial sparing.",
+        ".thr_s": "<b>Thrombus</b>: No enhancement; homogeneous T1/T2 signal. Commonly located in the Left Atrial Appendage or Left Ventricular apex associated with dysfunction.",
+        ".pseudo_s": "<b>Pseudotumor</b>: Includes Lipomatous hypertrophy of interatrial septum, crista terminalis, and pericardial cysts.",
+        ".myx_s": "<b>Myxoma</b>: Benign; well-defined margins; homogeneous enhancement; characteristically located at the fossa ovalis.",
+        ".pfe_s": "<b>Papillary Fibroelastoma</b>: Benign; well-defined; typically found on heart valves.",
+        ".asar_s": "<b>Malignant Tumor (Primary)</b>: Heterogeneous infiltration; vascular invasion; pericardial involvement; often represents Angiosarcoma.",
+        ".tmet_s": "<b>Secondary Metastases</b>: Malignant; pericardial involvement common; history of primary malignancy elsewhere."
+    };
+
+    function analyzeHeart() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const resBox = document.getElementById('result');
+        
+        let res = "";
+        let color = "#0f172a";
+
+        if (prim === 'acute_pain') {
+            if (sec.includes('1a')) {
+                res = "<b>Branch 1A: Acute Coronary Syndrome (ACS)</b>\n• ST-Elevation Myocardial Infarction (STEMI): Transmural wall motion abnormality\n• Non-ST-Elevation Myocardial Infarction (NSTEMI): Subendocardial patterns\n• Myocarditis: Mid-wall or subepicardial Late Gadolinium Enhancement (LGE)\n• Takotsubo Cardiomyopathy: Apical ballooning, minimal LGE\n• Type 1 MI (Plaque rupture): Subendocardial LGE in coronary distribution";
+                color = "#ef4444";
+            } else if (sec.includes('1b')) {
+                res = "<b>Branch 1B: Acute Aortic Syndromes (AAS)</b>\n• Aortic Dissection: Intimal flap on CT/TEE, false lumen\n• Intramural Hematoma: Crescentic high-attenuation area in aortic wall";
+                color = "#f59e0b";
+            } else {
+                res = "<b>Branch 1C: Acute Pulmonary Embolism (PE)</b>\n• Pulmonary Embolism: Filling defect on CT pulmonary angiography\n• Right ventricular strain on echocardiography";
+                color = "#3b82f6";
+            }
+        } else if (prim === 'hf_thickness') {
+            if (sec.includes('2a')) {
+                res = "<b>Branch 2A: INCREASED Wall Thickness (Infiltrative)</b>\n• Transthyretin Cardiac Amyloidosis (ATTR): Grade 2 or 3 uptake on Tc-99m PYP scan\n• Light Chain Amyloidosis (AL): Positive monoclonal protein screen\n• Hypertrophic Cardiomyopathy (HCM): Asymmetric septal hypertrophy\n• Anderson-Fabry Disease: Low native T1 values, basal inferolateral LGE\n• Cardiac Sarcoidosis: Patchy mid-wall LGE, spares subendocardium\n• Hemochromatosis: Decreased T2* values on Cardiovascular Magnetic Resonance (<20 ms)";
+                color = "#8b5cf6";
+            } else {
+                res = "<b>Branch 2B: NORMAL/DECREASED Wall Thickness</b>\n• Ischemic Cardiomyopathy (ICM): Subendocardial LGE in coronary distribution\n• Dilated Cardiomyopathy (Idiopathic): Mid-wall linear LGE in interventricular septum\n• Myocarditis: Elevated T2 signal (edema), subepicardial LGE\n• Iron Overload: Decreased T2* values, history of transfusions";
+                color = "#10b981";
+            }
+        } else if (prim === 'restrictive') {
+            res = (sec.includes('3a')) ? 
+                "<b>Branch 3A: Constrictive Pericarditis</b>\n• Pericardial thickness >4 mm on CT\n• Septal bounce (Ventricular interdependence)\n• Respiratory variation in mitral inflow >25%" : 
+                "<b>Branch 3B: Restrictive Myocardial</b>\n• Cardiac Amyloidosis: Diffuse subendocardial LGE, elevated Extracellular Volume\n• Restrictive Cardiomyopathy (Other): Myocardial infiltration or fibrosis with normal pericardium";
+            color = "#f43f5e";
+        } else if (prim === 'valvular') {
+            res = (sec.includes('4a')) ?
+                "<b>Branch 4A: Aortic Stenosis</b>\n• Assessment: Valve area <1.0 cm², gradient >40 mmHg\n• CT Calcium Scoring: Quantifies calcific burden\n• Pre-TAVR planning: Annular sizing, coronary height" :
+                "<b>Branch 4B: Mitral Regurgitation</b>\n• Assessment: Effective regurgitant orifice area ≥0.4 cm², volume ≥60 mL\n• Cardiovascular Magnetic Resonance advantages: Direct measurement of regurgitant volume and fraction";
+            color = "#3b82f6";
+        } else if (prim === 'arrhythmia') {
+            res = (sec.includes('5a')) ?
+                "<b>Branch 5A: Ventricular Arrhythmias</b>\n• Arrhythmogenic Right Ventricular Cardiomyopathy: RV dilatation, fatty infiltration\n• Cardiac Sarcoidosis: Patchy mid-wall LGE, high SCD risk\n• Hypertrophic Cardiomyopathy: Extensive LGE (>15% of mass)" :
+                "<b>Branch 5B: Syncope Evaluation</b>\n• Stress Imaging (Echo, Nuclear, CMR): Appropriate if CV abnormalities exist\n• Coronary CT Angiography (CCTA): May be appropriate";
+            color = "#06b6d4";
+        } 
+        // Updated Branch 6 logic to show all diseases for that feature immediately
+        else if (prim === 'cardiac_mass') {
+            if (sec.includes('thrombus')) {
+                res = "<b>Branch 6A: Thrombus vs. Pseudotumor</b>\n• Thrombus: No enhancement, homogeneous T1/T2, location in LAA or LV apex\n• Pseudotumor: Lipomatous hypertrophy of septum, crista terminalis, pericardial cyst";
+                color = "#64748b";
+            } else if (sec.includes('benign')) {
+                res = "<b>Branch 6B: Benign Tumor Profile</b>\n• Myxoma: Fossa ovalis location, well-defined, homogeneous enhancement\n• Papillary Fibroelastoma: Valvular location, benign margins";
+                color = "#10b981";
+            } else if (sec.includes('malignant')) {
+                res = "<b>Branch 6C: Malignant Tumor Profile</b>\n• Primary Malignancy (e.g., Angiosarcoma): Heterogeneous infiltration, vascular invasion\n• Secondary Metastases: Pericardial involvement common, history of primary";
+                color = "#ef4444";
+            }
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1200);
+</script>
+</body>
+</html>
