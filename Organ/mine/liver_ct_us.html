@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abdominal US–CT/MRI Correlation — Liver Teaching Tool</title>
+<style>
+  :root{ --g:#10b981; --gd:#064e3b; --gl:#d1fae5; --gbg:#f8fefb; }
+  *{ box-sizing:border-box; }
+  body{ font-family:'Segoe UI',Tahoma,sans-serif; background:#f8fafc; margin:0; color:#1e293b; }
+  .wrap{ max-width:1180px; margin:22px auto; background:#fff; padding:26px 30px 40px; border-radius:14px;
+         box-shadow:0 10px 25px rgba(0,0,0,.08); border-top:6px solid var(--g); }
+  h1{ color:var(--gd); text-align:center; margin:.2em 0 .1em; font-size:1.7rem; }
+  h1 .tag{ font-size:.85rem; color:var(--g); font-weight:600; }
+  .sub{ text-align:center; color:#475569; font-size:.92rem; max-width:820px; margin:0 auto 14px; }
+  /* sticky in-page nav */
+  .nav{ position:sticky; top:0; z-index:20; background:#ecfdf5; border:1px solid var(--gl);
+        border-radius:10px; padding:8px; display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:14px 0 26px; }
+  .nav a{ text-decoration:none; color:var(--gd); font-weight:600; font-size:.86rem; padding:7px 13px;
+          border-radius:7px; background:#fff; border:1px solid var(--gl); transition:.15s; }
+  .nav a:hover{ background:var(--g); color:#fff; }
+  h2{ color:var(--gd); border-bottom:2px solid var(--gl); padding-bottom:6px; margin-top:8px; font-size:1.28rem; }
+  h3{ color:#047857; margin:18px 0 8px; font-size:1.02rem; }
+  .module{ scroll-margin-top:70px; margin-bottom:38px; }
+  .card{ border:1px solid var(--gl); padding:18px 20px; border-radius:10px; margin:16px 0; background:var(--gbg); }
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media(max-width:880px){ .row{ grid-template-columns:1fr; } }
+  label{ display:block; font-size:.82rem; font-weight:700; margin:0 0 5px; color:#047857; }
+  input,select{ padding:9px 10px; border:1px solid #a7f3d0; border-radius:6px; width:100%; background:#fff; font-size:.92rem; }
+  .calc-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:13px; }
+  button.go{ background:var(--g); color:#fff; border:none; padding:11px 16px; border-radius:6px; cursor:pointer;
+             font-weight:700; font-size:.92rem; margin-top:12px; width:100%; }
+  button.go:hover{ background:#059669; }
+  .res{ margin-top:14px; padding:15px 16px; border-radius:8px; background:#ecfdf5; border-left:5px solid var(--g);
+        line-height:1.58; font-size:.92rem; display:none; }
+  table{ width:100%; border-collapse:collapse; font-size:.85rem; }
+  th,td{ border:1px solid var(--gl); padding:7px 9px; text-align:left; vertical-align:top; }
+  th{ background:var(--gl); color:var(--gd); }
+  .pill{ display:inline-block; padding:2px 8px; border-radius:20px; font-size:.74rem; font-weight:700; }
+  .en{ color:#0f766e; } .zh{ color:#475569; }
+  small.note{ color:#64748b; font-size:.8rem; }
+  .bar{ height:11px; border-radius:6px; background:var(--g); }
+  .barwrap{ background:#e2e8f0; border-radius:6px; overflow:hidden; flex:1; }
+  /* segment svg */
+  .seg{ cursor:pointer; transition:.12s; }
+  .seg circle{ fill:#fff; stroke:var(--g); stroke-width:2.5; }
+  .seg text{ fill:var(--gd); font-weight:700; font-size:15px; pointer-events:none; }
+  .seg:hover circle{ fill:#bbf7d0; }
+  .seg.active circle{ fill:var(--g); }
+  .seg.active text{ fill:#fff; }
+  .plane{ stroke:#f59e0b; stroke-width:2; stroke-dasharray:7 5; }
+  .planelab{ fill:#b45309; font-size:11px; font-weight:600; }
+  .usimg{ width:100%; border-radius:8px; border:1px solid #334155; display:block; }
+  .credit{ font-size:.74rem; color:#64748b; text-align:right; margin-top:4px; }
+  .disc{ background:#fffbeb; border:1px solid #fde68a; color:#92400e; border-radius:8px; padding:12px 16px;
+         font-size:.84rem; line-height:1.5; margin-top:8px; }
+  a.rp{ display:inline-block; background:#1e293b; color:#fff; text-decoration:none; padding:9px 14px; border-radius:6px; font-weight:600; font-size:.88rem; }
+  a.rp:hover{ background:#0f172a; }
+  .chip{ display:inline-block; margin:3px; padding:6px 11px; border-radius:7px; border:1px solid var(--gl);
+         background:#fff; cursor:pointer; font-size:.84rem; font-weight:600; color:#047857; }
+  .chip.on{ background:var(--g); color:#fff; }
+  .featgrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:4px 14px; margin:4px 0 6px; }
+  .featgrid label{ font-weight:400; color:#1e293b; font-size:.86rem; }
+  .featgrid input{ width:auto; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Liver Segments · CT Phase · Attenuation <span class="tag">· jamesxxx1997</span></h1>
+  <p class="sub">給超音波室同仁的互動式 CT/US 對照教學頁 — 肝段與門脈定位、CT phase、liver lesion 鑑別、HU attenuation 工具。<br>
+  <span class="en">Interactive CT/US teaching tool — segmental anatomy, contrast phases, lesion differentials, and HU attenuation calculators.</span></p>
+
+  <div class="nav">
+    <a href="#mA">① 肝段 / 門脈 Segments</a>
+    <a href="#mB">② CT Phase</a>
+    <a href="#mC">③ Lesion 鑑別</a>
+    <a href="#mD">④ Attenuation (HU)</a>
+    <a href="#mE">⑤ US LI-RADS</a>
+    <a href="#refs">References 出處</a>
+  </div>
+
+  <!-- ============ MODULE A : SEGMENTS ============ -->
+  <div class="module" id="mA">
+    <h2>① Liver Segment &amp; Portal Vein 肝段與門脈定位</h2>
+    <p class="zh" style="font-size:.9rem;">點任一個 segment 看它的位置、門脈分層與超音波 landmark。Couinaud 把肝臟分成 8 個功能 segment，每段有獨立的血流與膽汁引流，所以 CT/MRI 報告都用 segment 定位。</p>
+
+    <div class="row">
+      <div class="card">
+        <h3>互動 Couinaud 圖 (anterior view)</h3>
+        <svg viewBox="0 0 660 390" style="width:100%;height:auto;background:#fff;border-radius:8px;">
+          <!-- liver silhouette -->
+          <path d="M40,150 Q60,70 200,62 Q400,48 560,72 Q640,84 628,150
+                   Q620,250 470,318 Q300,372 160,322 Q60,288 40,150 Z"
+                fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+          <!-- planes -->
+          <line class="plane" x1="190" y1="70" x2="200" y2="320"/>
+          <text class="planelab" x="120" y="350">RHV plane</text>
+          <line class="plane" x1="315" y1="58" x2="320" y2="345"/>
+          <text class="planelab" x="270" y="360">MHV / Cantlie</text>
+          <line class="plane" x1="448" y1="58" x2="452" y2="330"/>
+          <text class="planelab" x="430" y="352">Falciform</text>
+          <line class="plane" x1="45" y1="190" x2="628" y2="190"/>
+          <text class="planelab" x="560" y="183">PV level</text>
+          <!-- segments -->
+          <g class="seg" data-s="VII"><circle cx="115" cy="135" r="23"/><text x="115" y="141" text-anchor="middle">VII</text></g>
+          <g class="seg" data-s="VIII"><circle cx="250" cy="135" r="23"/><text x="250" y="141" text-anchor="middle">VIII</text></g>
+          <g class="seg" data-s="VI"><circle cx="125" cy="262" r="23"/><text x="125" y="268" text-anchor="middle">VI</text></g>
+          <g class="seg" data-s="V"><circle cx="255" cy="262" r="23"/><text x="255" y="268" text-anchor="middle">V</text></g>
+          <g class="seg" data-s="IVa"><circle cx="382" cy="135" r="23"/><text x="382" y="141" text-anchor="middle">IVa</text></g>
+          <g class="seg" data-s="IVb"><circle cx="382" cy="262" r="23"/><text x="382" y="268" text-anchor="middle">IVb</text></g>
+          <g class="seg" data-s="II"><circle cx="525" cy="135" r="23"/><text x="525" y="141" text-anchor="middle">II</text></g>
+          <g class="seg" data-s="III"><circle cx="525" cy="262" r="23"/><text x="525" y="268" text-anchor="middle">III</text></g>
+          <g class="seg" data-s="I"><circle cx="345" cy="198" r="20" style="stroke-dasharray:4 3;"/><text x="345" y="204" text-anchor="middle" style="font-size:13px;">I</text></g>
+        </svg>
+        <small class="note"><b>Anterior view（patient right 在畫面左側）。</b>右葉 (viewer 左) = V/VI/VII/VIII；左葉 (viewer 右) = II/III/IVa/IVb；I = caudate（虛線，位於後方）。橘色虛線為三個 vertical plane + 門脈水平。</small>
+      </div>
+      <div class="card" id="segInfo" style="background:#ecfdf5;">
+        <h3 id="segName">← 點一個 segment</h3>
+        <div id="segBody" class="zh" style="font-size:.9rem;line-height:1.6;">
+          選一個 segment 會在這裡顯示：所屬肝葉、門脈上下分層、相鄰 landmark，以及超音波對位提示。
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>門脈分支邏輯 Portal vein branching</h3>
+      <div class="row">
+        <div>
+          <table>
+            <tr><th>Portal vein</th><th>分支 → segment</th></tr>
+            <tr><td><b>Right PV</b> · anterior</td><td>上 <b>VIII</b> / 下 <b>V</b></td></tr>
+            <tr><td><b>Right PV</b> · posterior</td><td>上 <b>VII</b> / 下 <b>VI</b></td></tr>
+            <tr><td><b>Left PV</b></td><td><b>II · III · IV</b> (segment 4 = medial)</td></tr>
+          </table>
+          <small class="note">口訣：RPV → 5/8、6/7；LPV → 2,3,4。</small>
+        </div>
+        <div>
+          <table>
+            <tr><th>分層用 Portal vein level</th><th>上 (superior)</th><th>下 (inferior)</th></tr>
+            <tr><td>Right PV level</td><td>VII / VIII</td><td>V / VI</td></tr>
+            <tr><td>Left PV level</td><td>II / IVa</td><td>III / IVb</td></tr>
+          </table>
+          <small class="note">門脈把每葉再切成上下段 → 報告才能講「segment 8 near MHV」「segment 6 subcapsular」。</small>
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <div><img class="usimg" src="assets/seg/pv_rpv_schematic.jpg" alt="right portal vein schematic" style="background:#000;"><small class="note"><b>Right PV</b>：anterior → 上 8 / 下 5；posterior → 上 7 / 下 6。</small></div>
+        <div><img class="usimg" src="assets/seg/pv_lpv_hshape.jpg" alt="left portal vein H-shape" style="background:#fff;"><small class="note"><b>Left PV「工字型」H-shape</b> → segment 2 / 3 / 4 branch + ascending branch。</small></div>
+      </div>
+      <h3>三個 vertical plane</h3>
+      <table>
+        <tr><th>Plane</th><th>Landmark</th><th>分開</th></tr>
+        <tr><td>Middle hepatic vein / Cantlie line</td><td>IVC → gallbladder fossa</td><td>functional right vs left hemiliver</td></tr>
+        <tr><td>Right hepatic vein</td><td>右葉內</td><td>right anterior (V/VIII) vs posterior (VI/VII)</td></tr>
+        <tr><td>Falciform ligament / umbilical fissure</td><td>左葉前緣</td><td>left medial (IV) vs lateral (II/III)</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>軸向「scroll」示意 — 從上往下掃 Axial level scroller</h3>
+      <p class="zh" style="font-size:.88rem;margin-top:0;">拉動下方滑桿，模擬把探頭/CT 由 <b>肝頂 → 門脈 → 肝下緣</b> 掃下去時，同一個切面會出現哪些 segment。（自繪示意，非真實 CT。真實可 scroll 的標註 CT 切面見下方 Radiopaedia。）</p>
+      <input type="range" id="lvl" min="0" max="2" value="1" step="1" style="width:100%;accent-color:var(--g);">
+      <div style="display:flex;justify-content:space-between;font-size:.78rem;color:#64748b;margin-top:2px;">
+        <span>① 肝頂 / hepatic vein 匯入 IVC</span><span>② 門脈分叉 PV bifurcation</span><span>③ 門脈下方 / 肝下緣</span></div>
+      <div class="row" style="margin-top:12px;align-items:center;">
+        <svg id="axSvg" viewBox="0 0 360 260" style="width:100%;background:#0f172a;border-radius:8px;"></svg>
+        <div id="axInfo" class="zh" style="font-size:.9rem;line-height:1.6;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>超音波對位 US correlation <span class="zh" style="font-weight:400;font-size:.8rem;">（我自己的 LOGIQ E9 影像）</span></h3>
+      <div class="row" style="gap:14px;">
+        <div>
+          <img class="usimg" src="assets/us_portal_vein_trv.jpg" alt="Portal vein TRV">
+          <small class="note"><b>Liver TRV — main PV 分叉</b>：看到 right / left PV 的「T 字」分叉是門脈水平的定位基準。</small>
+        </div>
+        <div>
+          <div class="row" style="gap:8px;grid-template-columns:1fr 1fr;">
+            <div><img class="usimg" src="assets/us_pv_hepatopetal.jpg" alt="Hepatopetal flow"><small class="note">此例為 <b>hepatopetal flow</b>（朝肝，正常）。注意：Color Doppler 紅/藍取決於機器 color map 與探頭方向，<b>不可背成「紅一定朝肝」</b>；方向判讀應結合血流相對肝門/肝內走向與 spectral Doppler。</small></div>
+            <div><img class="usimg" src="assets/us_pv_hepatofugal.jpg" alt="Hepatofugal flow"><small class="note">此例示意 <b>hepatofugal flow</b>（離肝，門脈高壓警訊）。顏色本身需依 color map／探頭方向判讀。</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>縱切肝段巡覽 Longitudinal / sagittal segment tour</h3>
+      <p class="zh" style="font-size:.88rem;margin-top:0;">由正中往右掃的矢狀/縱切面 — 探頭位置改變就切到不同 segment。拖滑桿 / ◀ ▶ / <b>圖上滾輪</b> 巡覽；角落 3D 小圖標示該切面對應的 segment。</p>
+      <div style="text-align:center;"><img id="loImg" src="assets/seg/long_1.jpg" alt="longitudinal liver segment US" style="max-width:100%;width:540px;border-radius:8px;border:1px solid #334155;background:#000;cursor:ns-resize;"></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+        <button class="go" style="width:auto;margin:0;padding:7px 14px;" onclick="loStep(-1)">◀</button>
+        <input type="range" id="loRange" min="0" max="5" value="0" step="1" style="flex:1;accent-color:var(--g);">
+        <button class="go" style="width:auto;margin:0;padding:7px 14px;" onclick="loStep(1)">▶</button>
+      </div>
+      <div id="loCap" class="zh" style="font-size:.92rem;margin-top:6px;text-align:center;color:#047857;font-weight:600;"></div>
+      <div class="credit">縱切肝段 US 與角落定位圖：courtesy <a href="https://sonographictendencies.com/2020/02/10/couinauds-liver-segments/" target="_blank" rel="noopener">Sonographic Tendencies (@henry_stax)</a>（保留原浮水印作為出處）。</div>
+    </div>
+
+    <div class="card">
+      <h3>肝韌帶 Liver ligaments — caudate 與 falciform 定位</h3>
+      <div class="row">
+        <div>
+          <img class="usimg" src="assets/seg/lig_venosum.jpg" alt="ligamentum venosum US" style="background:#000;">
+          <small class="note"><b>Ligamentum venosum (LV)</b>：與 <b>retrohepatic IVC</b> + <b>LPV</b> 三者圍出 <b>caudate lobe（segment I, ＊）</b>邊界；橫切（左圖）最好辨識。</small>
+        </div>
+        <div>
+          <img class="usimg" src="assets/seg/lig_teres.jpg" alt="ligamentum teres US" style="background:#000;">
+          <small class="note"><b>Ligamentum teres (LT, round ligament)</b>：貼 <b>LPV</b>、沿肝腹側走，向上接 <b>falciform ligament (FL)</b>。是分 <b>左葉 medial(IV) / lateral(II,III)</b> 的 landmark。</small>
+        </div>
+      </div>
+      <div class="credit">韌帶 US 教學圖：保留原圖說/浮水印作為出處標註。</div>
+    </div>
+
+    <div class="card" style="background:#0f172a;border-color:#334155;">
+      <h3 style="color:#e2e8f0;">真實標註 CT 切面 — 可 scroll Radiopaedia stack</h3>
+      <p style="font-size:.86rem;margin-top:0;color:#cbd5e1;">逐層標註肝段的軸向 CT（24 層，肝頂 → 肝下緣）。拖滑桿、按 ◀ ▶、或 <b>在圖上滾動滑鼠滾輪</b> 即可 scroll。每張左上角為該層出現的 segment / vessel 圖例。</p>
+      <div style="text-align:center;">
+        <img id="rpImg" src="assets/rp/02.jpg" alt="annotated liver segment CT" style="max-width:100%;width:500px;border-radius:8px;border:1px solid #334155;background:#000;cursor:ns-resize;">
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+        <button class="go" style="width:auto;margin:0;padding:7px 14px;background:#0ea5e9;" onclick="rpStep(-1)">◀</button>
+        <input type="range" id="rpRange" min="0" max="23" value="0" step="1" style="flex:1;accent-color:#38bdf8;">
+        <button class="go" style="width:auto;margin:0;padding:7px 14px;background:#0ea5e9;" onclick="rpStep(1)">▶</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.78rem;color:#94a3b8;margin-top:4px;">
+        <span>↑ 肝頂 superior</span><span id="rpLabel">Slice 1 / 24</span><span>肝下緣 inferior ↓</span></div>
+      <div class="credit" style="color:#94a3b8;">Case courtesy of <b>J. Hocking</b>, <a href="https://radiopaedia.org/cases/liver-segments-annotated-ct-1" target="_blank" rel="noopener" style="color:#7dd3fc;">Radiopaedia.org</a> · licensed under <b>CC BY-NC-SA 3.0</b>. 影像版權屬原作者。</div>
+    </div>
+  </div>
+
+  <!-- ============ MODULE B : CT PHASE ============ -->
+  <div class="module" id="mB">
+    <h2>② CT Phase (Abdomen) 顯影分期</h2>
+    <p class="zh" style="font-size:.9rem;">肝臟是 dual blood supply：正常肝實質約 <b>80% 來自 portal vein、20% hepatic artery</b>。所以 hypervascular tumor 在 <b>late arterial</b> 最亮，hypovascular lesion 在 <b>portal venous</b> 最清楚。<b>同一顆病灶不要只看一個 phase。</b></p>
+
+    <div class="card" style="padding:14px 16px;">
+      <h3 style="margin-top:4px;">互動：我看到病灶在哪一期最明顯？</h3>
+      <div id="phaseChips"></div>
+      <div class="res" id="phaseRes" style="display:block;background:#fff;border-left-color:var(--g);"></div>
+    </div>
+
+    <table>
+      <tr><th>Phase</th><th>約略時間</th><th>主要用途</th><th>肝臟病灶重點</th></tr>
+      <tr><td><b>Non-enhanced (NECT)</b></td><td>顯影前</td><td>鈣化、脂肪、出血、高密度結節</td><td>避免把原本高密度結節誤判成 enhancement；脂肪肝定量</td></tr>
+      <tr><td><b>Early arterial</b></td><td>15–20 s</td><td>動脈最亮、器官尚未 enhance</td><td>多用於血管問題，不是肝腫瘤最佳時間</td></tr>
+      <tr><td><b>Late arterial</b></td><td>35–40 s</td><td>動脈供血病灶最明顯</td><td><b>HCC · FNH · adenoma · hypervascular met</b>、部分 hemangioma 變亮</td></tr>
+      <tr><td><b>Portal venous / hepatic</b></td><td>70–80 s</td><td>肝實質 enhance 最強</td><td><b>Hypovascular met · cyst · abscess</b> 最易被看見；HCC <b>可</b>出現 washout（不是必然，且需符合 nonperipheral washout 定義）</td></tr>
+      <tr><td><b>Delayed / equilibrium</b></td><td>6–10 min</td><td>delayed enhancement、纖維組織</td><td><b>Cholangiocarcinoma · 纖維化 · capsule · scar</b></td></tr>
+    </table>
+    <div class="disc">教學句：「看到一顆 liver lesion，不要只問它亮不亮。要問：它在 non-contrast、arterial、portal venous、delayed 分別怎麼變化？」</div>
+
+    <h3 style="margin-top:18px;">MRI 最小必要概念 MRI quick map <span class="zh" style="font-weight:400;font-size:.82rem;">（讓 US 也能跟 MRI 對照）</span></h3>
+    <table>
+      <tr><th>MRI sequence</th><th>要抓的概念</th></tr>
+      <tr><td><b>T1WI</b></td><td>fat、blood product、proteinaceous material 可偏亮</td></tr>
+      <tr><td><b>T2WI</b></td><td>水、cyst、hemangioma 常很亮</td></tr>
+      <tr><td><b>DWI (high b)</b></td><td>細胞密度高或膿瘍可亮（restricted diffusion）</td></tr>
+      <tr><td><b>ADC</b></td><td>真 restricted diffusion 通常 ADC <b>低</b>；小心 <b>T2 shine-through</b></td></tr>
+      <tr><td><b>Dynamic contrast</b></td><td>對應 CT 的 arterial / portal venous / delayed pattern</td></tr>
+      <tr><td><b>HBP（hepatobiliary phase）</b></td><td>gadoxetate MRI 才有（~20 min）；多數非肝細胞性/惡性病灶偏<b>低訊號</b>，但不可單獨診斷</td></tr>
+    </table>
+  </div>
+
+  <!-- ============ MODULE C : LESION ============ -->
+  <div class="module" id="mC">
+    <h2>③ Liver Lesion 鑑別 — 特徵比對 Pattern matching</h2>
+    <p class="zh" style="font-size:.9rem;">選病灶在各 phase 的表現 + 特徵，系統<b>列出每種病灶「對到哪些典型特徵」並計數</b>（透明比對，非加權分數、非機率）。HCC 的正式分級走下方 validated <b>LI-RADS</b>。不用每格都選。</p>
+    <div class="card">
+      <div class="calc-grid">
+        <div><label>NECT 平掃</label>
+          <select id="cNect"><option value="">—</option>
+            <option value="water">Water density 0–20 HU</option>
+            <option value="hypo">Hypodense 低密度</option>
+            <option value="iso">Isodense 等密度</option>
+            <option value="hyper">Hyperdense 高密度</option>
+            <option value="fat">含 macroscopic fat</option>
+            <option value="calc">含 calcification</option>
+          </select></div>
+        <div><label>Arterial 動脈期</label>
+          <select id="cArt"><option value="">—</option>
+            <option value="hyper">Homogeneous hyperenhancement (APHE)</option>
+            <option value="nodular">Peripheral nodular discontinuous</option>
+            <option value="rim">Rim / peripheral 連續</option>
+            <option value="hypo">Hypovascular / 無</option>
+          </select></div>
+        <div><label>Portal venous 門脈期</label>
+          <select id="cPv"><option value="">—</option>
+            <option value="washout">Washout（比肝暗）</option>
+            <option value="iso">Fades to iso 退成等密度</option>
+            <option value="persist">Persist 持續亮</option>
+            <option value="centri">Centripetal 向心填充</option>
+            <option value="hypo">Hypodense / dark（最清楚）</option>
+            <option value="none">No enhancement</option>
+          </select></div>
+        <div><label>Delayed 延遲期</label>
+          <select id="cDelay"><option value="">—</option>
+            <option value="washout">Washout + capsule</option>
+            <option value="iso">Isodense</option>
+            <option value="persist">Persistent central（纖維）</option>
+            <option value="centri">Complete fill-in（≈blood pool）</option>
+            <option value="none">No enhancement</option>
+          </select></div>
+      </div>
+      <label style="margin-top:12px;">特徵 / 病史 Features (可複選)</label>
+      <div class="featgrid">
+        <label><input type="checkbox" id="f_scar"> Central scar 中央疤痕</label>
+        <label><input type="checkbox" id="f_capsule"> Enhancing capsule</label>
+        <label><input type="checkbox" id="f_retraction"> Capsular retraction</label>
+        <label><input type="checkbox" id="f_fatin"> 病灶內 fat</label>
+        <label><input type="checkbox" id="f_hemorrhage"> Hemorrhage 出血</label>
+        <label><input type="checkbox" id="f_multiple"> Multiple / bilobar</label>
+        <label><input type="checkbox" id="f_target"> Target / bull's-eye</label>
+        <label><input type="checkbox" id="f_cirrhosis"> Cirrhosis / chronic HBV</label>
+        <label><input type="checkbox" id="f_biliary"> Biliary dilatation</label>
+        <label><input type="checkbox" id="f_primary" onchange="togglePrimary()"> 已知 extrahepatic 原發癌</label>
+      </div>
+      <div id="primaryWrap" style="display:none;margin:6px 0 2px;padding:11px 13px;background:#fff;border:1px dashed #a7f3d0;border-radius:8px;">
+        <label>↳ 原發癌種類 Primary cancer type（決定 hyper/hypovascular met 表現）</label>
+        <select id="cPrimary">
+          <option value="">— 請選原發癌 —</option>
+          <optgroup label="◤ 常見 HYPERvascular（高血流）轉移">
+            <option value="hyper|腎細胞癌 RCC">腎細胞癌 RCC</option>
+            <option value="hyper|神經內分泌瘤 NET / carcinoid">神經內分泌瘤 NET / carcinoid</option>
+            <option value="hyper|黑色素瘤 Melanoma">黑色素瘤 Melanoma</option>
+            <option value="hyper|甲狀腺癌 Thyroid carcinoma">甲狀腺癌 Thyroid carcinoma</option>
+            <option value="hyper|嗜鉻細胞瘤 Pheochromocytoma">嗜鉻細胞瘤 Pheochromocytoma</option>
+            <option value="hyper|肉瘤 Sarcoma">肉瘤 Sarcoma</option>
+            <option value="hyper|絨毛膜癌 Choriocarcinoma">絨毛膜癌 Choriocarcinoma</option>
+          </optgroup>
+          <optgroup label="◤ 常見 HYPOvascular（低血流）轉移">
+            <option value="hypo|大腸直腸癌 Colorectal">大腸直腸癌 Colorectal</option>
+            <option value="hypo|肺癌 Lung">肺癌 Lung</option>
+            <option value="hypo|胰臟癌 Pancreatic">胰臟癌 Pancreatic</option>
+            <option value="hypo|胃癌 Gastric">胃癌 Gastric</option>
+            <option value="hypo|膽管癌 Cholangiocarcinoma">膽管癌 Cholangiocarcinoma</option>
+            <option value="hypo|乳癌 Breast（多為 hypovascular）">乳癌 Breast（多為 hypovascular）</option>
+            <option value="hypo|卵巢癌 Ovarian">卵巢癌 Ovarian</option>
+            <option value="hypo|泌尿上皮癌 Urothelial">泌尿上皮癌 Urothelial</option>
+          </optgroup>
+        </select>
+      </div>
+      <button class="go" onclick="classify()">跑鑑別診斷 Run differentials</button>
+      <div class="res" id="cRes"></div>
+    </div>
+
+    <div class="card" style="border-color:#fca5a5;background:#fff7f7;">
+      <h3 style="color:#991b1b;">HCC 走 LI-RADS v2018 (validated) — LR 分級</h3>
+      <p style="font-size:.84rem;color:#475569;margin-top:0;">僅適用<b>高風險族群（cirrhosis / chronic HBV）</b>。LR-5 ＝ observation <b>≥10 mm</b> + <b>nonrim APHE</b> + 足夠的 additional major features。一般風險肝臟不適用此演算法。</p>
+
+      <div style="font-weight:700;color:#991b1b;margin:4px 0 6px;">三大 major features 怎麼看 <span style="font-weight:400;font-size:.82rem;color:#64748b;">（示意圖；CT＝attenuation／MR＝signal，原理相同：跟周圍肝實質比）</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;">
+        <div style="background:#fff;border:1px solid #fecaca;border-radius:8px;padding:10px;">
+          <div style="font-weight:700;color:#b91c1c;font-size:.9rem;">① Non-rim APHE 動脈期增強</div>
+          <svg viewBox="0 0 250 122" style="width:100%;height:auto;background:#111;border-radius:6px;">
+            <text x="57" y="15" fill="#cbd5e1" font-size="11" text-anchor="middle">NECT (iso)</text>
+            <rect x="12" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="57" cy="66" r="22" fill="#777" stroke="#9a9a9a" stroke-width="1.5"/>
+            <text x="125" y="72" fill="#cbd5e1" font-size="19" text-anchor="middle">→</text>
+            <text x="193" y="15" fill="#fca5a5" font-size="11" text-anchor="middle">Arterial ↑整顆亮</text>
+            <rect x="148" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="193" cy="66" r="22" fill="#ededed" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+          <div style="font-size:.8rem;color:#475569;margin-top:5px;"><b>哪期：</b>late arterial 35–40s。<br><b>看什麼：</b><b>整顆</b>病灶比肝亮（非只有邊緣）。<br><span style="color:#b45309;">只有 rim 亮 → 想 LR-M（iCCA／mets）。</span></div>
+        </div>
+        <div style="background:#fff;border:1px solid #fecaca;border-radius:8px;padding:10px;">
+          <div style="font-weight:700;color:#b91c1c;font-size:.9rem;">② Nonperipheral washout 沖刷</div>
+          <svg viewBox="0 0 250 122" style="width:100%;height:auto;background:#111;border-radius:6px;">
+            <text x="57" y="15" fill="#fca5a5" font-size="11" text-anchor="middle">Arterial 亮</text>
+            <rect x="12" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="57" cy="66" r="22" fill="#ededed" stroke="#fff" stroke-width="1.5"/>
+            <text x="125" y="72" fill="#cbd5e1" font-size="19" text-anchor="middle">→</text>
+            <text x="193" y="15" fill="#93c5fd" font-size="11" text-anchor="middle">Portal/Delay ↓暗</text>
+            <rect x="148" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="193" cy="66" r="22" fill="#333" stroke="#555" stroke-width="1.5"/>
+          </svg>
+          <div style="font-size:.8rem;color:#475569;margin-top:5px;"><b>哪期：</b>portal venous 70–80s／delayed。<br><b>看什麼：</b>病灶轉成比肝<b>暗</b>，且是<b>中央/整體</b>沖刷。<br><span style="color:#b45309;">只有周邊 washout → LR-M。</span></div>
+        </div>
+        <div style="background:#fff;border:1px solid #fecaca;border-radius:8px;padding:10px;">
+          <div style="font-weight:700;color:#b91c1c;font-size:.9rem;">③ Enhancing capsule 強化包膜</div>
+          <svg viewBox="0 0 250 122" style="width:100%;height:auto;background:#111;border-radius:6px;">
+            <text x="57" y="15" fill="#fca5a5" font-size="11" text-anchor="middle">Arterial</text>
+            <rect x="12" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="57" cy="66" r="22" fill="#bdbdbd" stroke="#cfcfcf" stroke-width="1.5"/>
+            <text x="125" y="72" fill="#cbd5e1" font-size="19" text-anchor="middle">→</text>
+            <text x="193" y="15" fill="#93c5fd" font-size="11" text-anchor="middle">Portal/Delay 亮圈</text>
+            <rect x="148" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="193" cy="66" r="22" fill="#5a5a5a"/><circle cx="193" cy="66" r="22" fill="none" stroke="#ededed" stroke-width="4.5"/>
+          </svg>
+          <div style="font-size:.8rem;color:#475569;margin-top:5px;"><b>哪期：</b>portal venous／delayed。<br><b>看什麼：</b>病灶周圍一圈<b>平滑、比肝亮</b>的包膜。<br>CT／MR 表現一致。</div>
+        </div>
+      </div>
+
+      <div style="font-weight:700;color:#7c3aed;margin:14px 0 6px;">LR-M targetoid 五大特徵 <span style="font-weight:400;font-size:.82rem;color:#64748b;">（任一出現 → 惡性可能高但不具 HCC-specific pattern，想 iCCA／mets／combined，也可能 atypical HCC；下方勾選任一即判 LR-M）</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;">
+        <div style="background:#fff;border:1px solid #ddd6fe;border-radius:8px;padding:10px;">
+          <div style="font-weight:700;color:#7c3aed;font-size:.9rem;">① Rim APHE 周邊環狀增強</div>
+          <svg viewBox="0 0 250 122" style="width:100%;height:auto;background:#111;border-radius:6px;">
+            <text x="57" y="15" fill="#cbd5e1" font-size="11" text-anchor="middle">NECT</text>
+            <rect x="12" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="57" cy="66" r="22" fill="#777" stroke="#999" stroke-width="1.5"/>
+            <text x="125" y="72" fill="#cbd5e1" font-size="19" text-anchor="middle">→</text>
+            <text x="193" y="15" fill="#fca5a5" font-size="11" text-anchor="middle">Arterial: 只有外圈亮</text>
+            <rect x="148" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="193" cy="66" r="22" fill="#555"/><circle cx="193" cy="66" r="22" fill="none" stroke="#ededed" stroke-width="5"/>
+          </svg>
+          <div style="font-size:.8rem;color:#475569;margin-top:5px;"><b>哪期：</b>arterial。<br><b>看什麼：</b>只有<b>外圈一圈</b>強化、中央不亮（≠ HCC 整顆亮）。CT／MR 皆可。</div>
+        </div>
+        <div style="background:#fff;border:1px solid #ddd6fe;border-radius:8px;padding:10px;">
+          <div style="font-weight:700;color:#7c3aed;font-size:.9rem;">② Peripheral washout 周邊沖刷</div>
+          <svg viewBox="0 0 250 122" style="width:100%;height:auto;background:#111;border-radius:6px;">
+            <text x="57" y="15" fill="#fca5a5" font-size="11" text-anchor="middle">Arterial</text>
+            <rect x="12" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="57" cy="66" r="22" fill="#bdbdbd" stroke="#cfcfcf" stroke-width="1.5"/>
+            <text x="125" y="72" fill="#cbd5e1" font-size="19" text-anchor="middle">→</text>
+            <text x="193" y="15" fill="#93c5fd" font-size="11" text-anchor="middle">Delay: 外暗內亮</text>
+            <rect x="148" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="193" cy="66" r="22" fill="#cfcfcf"/><circle cx="193" cy="66" r="22" fill="none" stroke="#2e2e2e" stroke-width="5.5"/>
+          </svg>
+          <div style="font-size:.8rem;color:#475569;margin-top:5px;"><b>哪期：</b>portal／delayed。<br><b>看什麼：</b>只有<b>外圈變暗</b>、<b>中央反而亮</b>＝ targetoid。CT／MR 皆可。</div>
+        </div>
+        <div style="background:#fff;border:1px solid #ddd6fe;border-radius:8px;padding:10px;">
+          <div style="font-weight:700;color:#7c3aed;font-size:.9rem;">③ Delayed central enhancement 延遲中央增強</div>
+          <svg viewBox="0 0 250 122" style="width:100%;height:auto;background:#111;border-radius:6px;">
+            <text x="57" y="15" fill="#fca5a5" font-size="11" text-anchor="middle">Arterial: 中央暗</text>
+            <rect x="12" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="57" cy="66" r="22" fill="#444"/>
+            <text x="125" y="72" fill="#cbd5e1" font-size="19" text-anchor="middle">→</text>
+            <text x="193" y="15" fill="#93c5fd" font-size="11" text-anchor="middle">Delay: 中央變亮</text>
+            <rect x="148" y="22" width="90" height="88" rx="14" fill="#777"/><circle cx="193" cy="66" r="22" fill="#444"/><circle cx="193" cy="66" r="11" fill="#cfcfcf"/>
+          </svg>
+          <div style="font-size:.8rem;color:#475569;margin-top:5px;"><b>哪期：</b>delayed 3–10min。<br><b>看什麼：</b>中央<b>越晚越亮</b>（纖維基質留住對比劑）＝ iCCA 典型。CT／MR 皆可。</div>
+        </div>
+        <div style="background:#fff;border:1px solid #ddd6fe;border-radius:8px;padding:10px;">
+          <div style="font-weight:700;color:#7c3aed;font-size:.9rem;">④ Targetoid DWI <span style="font-size:.78rem;">（MR only）</span></div>
+          <svg viewBox="0 0 250 122" style="width:100%;height:auto;background:#111;border-radius:6px;">
+            <text x="125" y="15" fill="#a5b4fc" font-size="11" text-anchor="middle">DWI (high b) · MR</text>
+            <rect x="80" y="22" width="90" height="88" rx="14" fill="#333"/><circle cx="125" cy="66" r="22" fill="#3f3f3f"/><circle cx="125" cy="66" r="22" fill="none" stroke="#e8e8e8" stroke-width="5"/>
+          </svg>
+          <div style="font-size:.8rem;color:#475569;margin-top:5px;"><b>序列：</b>MR DWI（high b）。<br><b>看什麼：</b><b>周邊一圈亮</b>（restriction）、中央較低＝ target。<span style="color:#7c3aed;">MR 才有。</span></div>
+        </div>
+        <div style="background:#fff;border:1px solid #ddd6fe;border-radius:8px;padding:10px;">
+          <div style="font-weight:700;color:#7c3aed;font-size:.9rem;">⑤ Targetoid HBP <span style="font-size:.78rem;">（MR only）</span></div>
+          <svg viewBox="0 0 250 122" style="width:100%;height:auto;background:#111;border-radius:6px;">
+            <text x="125" y="15" fill="#a5b4fc" font-size="11" text-anchor="middle">HBP ~20min · MR (gadoxetate)</text>
+            <rect x="80" y="22" width="90" height="88" rx="14" fill="#cfcfcf"/><circle cx="125" cy="66" r="22" fill="#3a3a3a"/><circle cx="125" cy="66" r="9" fill="#9a9a9a"/>
+          </svg>
+          <div style="font-size:.8rem;color:#475569;margin-top:5px;"><b>序列：</b>MR hepatobiliary / transitional phase。<br><b>看什麼：</b><b>concentric target pattern</b> — 周邊 moderate-to-marked hypointensity、中央相對較輕微 hypointensity。<span style="color:#7c3aed;">MR 才有。</span></div>
+        </div>
+      </div>
+      <div class="calc-grid">
+        <div><label>高風險族群？</label><select id="lrrisk"><option value="yes">是 (cirrhosis/HBV)</option><option value="no">否</option></select></div>
+        <div><label>Observation size (mm)</label><input type="number" id="lrsize" placeholder="如 22"></div>
+        <div><label>Nonrim APHE?</label><select id="lraphe"><option value="yes">Yes</option><option value="no">No</option></select></div>
+      </div>
+      <label style="margin-top:8px;">Additional major features：</label>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;margin:6px 0 10px;">
+        <label style="font-weight:400;color:#1e293b;"><input type="checkbox" id="lrwash" style="width:auto;"> Nonperipheral washout</label>
+        <label style="font-weight:400;color:#1e293b;"><input type="checkbox" id="lrcap" style="width:auto;"> Enhancing capsule</label>
+        <label style="font-weight:400;color:#1e293b;"><input type="checkbox" id="lrgrow" style="width:auto;"> Threshold growth (≥50% in ≤6 mo)</label>
+      </div>
+      <label style="margin-top:6px;color:#7c3aed;">LR-M targetoid 特徵（任一勾選 → 直接判 LR-M）：</label>
+      <div style="display:flex;flex-wrap:wrap;gap:10px 16px;margin:6px 0 10px;">
+        <label style="font-weight:400;color:#1e293b;"><input type="checkbox" class="lrm" value="Rim APHE" style="width:auto;"> Rim APHE 周邊環狀</label>
+        <label style="font-weight:400;color:#1e293b;"><input type="checkbox" class="lrm" value="Peripheral washout" style="width:auto;"> Peripheral washout 周邊沖刷</label>
+        <label style="font-weight:400;color:#1e293b;"><input type="checkbox" class="lrm" value="Delayed central enhancement" style="width:auto;"> Delayed central enhancement 延遲中央增強</label>
+        <label style="font-weight:400;color:#1e293b;"><input type="checkbox" class="lrm" value="Targetoid DWI" style="width:auto;"> Targetoid DWI (MR)</label>
+        <label style="font-weight:400;color:#1e293b;"><input type="checkbox" class="lrm" value="Targetoid HBP" style="width:auto;"> Targetoid HBP (MR)</label>
+      </div>
+      <button class="go" style="background:#b91c1c;" onclick="lirads()">分級 Categorise</button>
+      <div class="res" id="lrres" style="border-left-color:#b91c1c;background:#fff1f1;"></div>
+      <small class="note">Source: ACR LI-RADS CT/MRI v2018 core。<b>≥20 mm + nonrim APHE</b>：≥1 個 additional → LR-5、0 個 → LR-4。<b>10–19 mm + nonrim APHE</b>：有 nonperipheral washout 或 threshold growth → LR-5；只有 enhancing capsule → LR-4；0 個 → LR-3。borderline 以官方表格為準。</small>
+    </div>
+
+    <small class="note">上方特徵比對：依超音波講義大綱 + Radiology Assistant「Characterisation of liver masses」之 expert-consensus pattern（非量化權重）。HCC 分級：ACR LI-RADS v2018。教學用途，非診斷。</small>
+  </div>
+
+  <!-- ============ MODULE D : ATTENUATION ============ -->
+  <div class="module" id="mD">
+    <h2>④ Attenuation 工具 (HU)</h2>
+    <div class="row">
+      <!-- D1 HU -> DDx -->
+      <div class="card">
+        <h3>1. HU → 密度鑑別對照表 What is this density?</h3>
+        <table style="margin-top:6px;">
+          <tr><th>HU</th><th>組織</th></tr>
+          <tr><td>≈ −1000</td><td>Air 空氣</td></tr>
+          <tr><td>−100 ~ −40</td><td>Fat 脂肪</td></tr>
+          <tr><td>0</td><td>Water 水</td></tr>
+          <tr><td>0 ~ 20</td><td>Simple fluid / ascites</td></tr>
+          <tr><td>30 ~ 70</td><td>Blood / complex fluid（急性出血 ≈45）</td></tr>
+          <tr><td>30 ~ 60</td><td>Soft tissue / 多數實質器官</td></tr>
+          <tr><td>&gt; 100</td><td>Calcium / bone / 顯影劑</td></tr>
+        </table>
+      </div>
+      <!-- D2 true enhancement -->
+      <div class="card">
+        <h3>2. True enhancement? (Δ ≥ 20 HU)</h3>
+        <p class="zh" style="font-size:.85rem;margin-top:0;">同一 ROI，比較打藥前後。增加 <b>≥20 HU</b> 通常代表 true enhancement。</p>
+        <div class="calc-grid">
+          <div><label>Pre-contrast HU</label><input type="number" id="ePre" placeholder="如 30"></div>
+          <div><label>Post-contrast HU</label><input type="number" id="ePost" placeholder="如 65"></div>
+        </div>
+        <button class="go" onclick="enhance()">算 Δ</button>
+        <div class="res" id="eRes"></div>
+        <small class="note">10–20 HU 為灰色地帶（pseudoenhancement，腎/腎上腺病灶尤需小心）。adrenal/renal washout 另有專屬公式，本工具僅判斷 true enhancement 門檻。</small>
+      </div>
+    </div>
+
+    <!-- D3 fatty liver -->
+    <div class="card">
+      <h3>3. 脂肪肝 Hepatic steatosis</h3>
+      <p class="disc" style="margin-top:0;">⚠️ 兩種儀器、兩套標準，不可互換：<b>CT</b> 用 HU（liver vs <u>spleen</u>）；<b>US</b> 用回音對比（liver vs <u>kidney</u>）。請選對應分支。</p>
+      <div class="row">
+        <div>
+          <h3 style="margin-top:4px;">CT 分支（HU）</h3>
+          <div class="calc-grid">
+            <div><label>Liver HU (non-contrast)</label><input type="number" id="fLiver" placeholder="如 35"></div>
+            <div><label>Spleen HU（可選）</label><input type="number" id="fSpleen" placeholder="如 50"></div>
+          </div>
+          <button class="go" onclick="fattyCT()">判讀 CT</button>
+          <div class="res" id="fctRes"></div>
+          <small class="note">門檻：liver &lt; 40 HU，或 liver 比 spleen 低 ≥10 HU（liver−spleen ≤ −10）。僅適用 <b>non-contrast</b> CT。</small>
+        </div>
+        <div>
+          <h3 style="margin-top:4px;">US 分支（肝腎回音對比）</h3>
+          <label>Hepatorenal contrast / 回音分級</label>
+          <select id="fUs"><option value="">—</option>
+            <option value="0">Grade 0：肝與腎皮質等亮、橫膈/血管壁清楚（正常）</option>
+            <option value="1">Grade 1（mild）：肝略亮於腎，血管壁/橫膈仍可見</option>
+            <option value="2">Grade 2（moderate）：肝明顯亮於腎，血管壁/橫膈模糊</option>
+            <option value="3">Grade 3（severe）：肝很亮，深部/橫膈顯影差、後方衰減</option>
+          </select>
+          <button class="go" onclick="fattyUS()">判讀 US</button>
+          <div class="res" id="fusRes"></div>
+          <small class="note">定性分級（Hamaguchi 概念）。US 對 mild steatosis 敏感度有限；定量請用 CAP/ATI 等。</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODULE E : US LI-RADS 2024 ============ -->
+  <div class="module" id="mE">
+    <h2>⑤ US LI-RADS Surveillance 2024 — 超音波看到 lesion 後下一步</h2>
+    <p class="zh" style="font-size:.9rem;">給超音波室同仁：高風險族群（cirrhosis 等）HCC surveillance 以 US 為第一線。每次掃完給兩個分數 —— <b>US category（看到什麼）</b> 與 <b>VIS（這次看得清不清楚）</b>。</p>
+    <div class="card">
+      <h3>US category — 看到什麼 → 怎麼處置</h3>
+      <table>
+        <tr><th>US category</th><th>定義</th><th>建議處置</th></tr>
+        <tr><td><b>US-1 Negative</b></td><td>無可疑 observation</td><td>routine <b>6-month</b> US surveillance</td></tr>
+        <tr><td><b>US-2 Subthreshold</b></td><td>&lt;10 mm、非明確良性 observation</td><td><b>3–6 個月短期追蹤，共兩次</b>；若仍 &lt;1 cm 或消失 → 回到 6 個月 surveillance</td></tr>
+        <tr><td><b>US-3 Positive</b></td><td>≥10 mm observation、≥10 mm parenchymal distortion、或 new portal/hepatic vein thrombus</td><td><b>multiphase CECT / MRI / CEUS</b>（CT/MRI 用 <b>CT/MRI LI-RADS</b>；CEUS 用 <b>CEUS LI-RADS</b>）</td></tr>
+      </table>
+      <small class="note">v2024：US-2 的追蹤由舊版 2 年改為「兩次 3–6 個月短期追蹤」。</small>
+    </div>
+    <div class="card">
+      <h3>VIS visualization score — 這次看得清不清楚</h3>
+      <table>
+        <tr><th>VIS</th><th>意義</th><th>教學重點</th></tr>
+        <tr><td><b>VIS-A</b></td><td>no / minimal limitation</td><td>影像品質可接受</td></tr>
+        <tr><td><b>VIS-B</b></td><td>moderate limitation</td><td>可能遮住 &lt;10 mm 小病灶，但通常仍依 US category 處理</td></tr>
+        <tr><td><b>VIS-C</b></td><td>severe limitation</td><td>若 category 為 <b>US-1/US-2</b>：3 個月內 repeat US；repeat 仍 VIS-C 或高風險再發 → 改 alternative surveillance（abbreviated MRI、contrast MRI、multiphase CT）。若已是 <b>US-3</b>：<b>直接進 diagnostic multiphase CT/MRI/CEUS</b>（不是 repeat US）。</td></tr>
+      </table>
+      <div style="background:#ecfdf5;border:1px solid var(--gl);border-radius:8px;padding:11px 14px;margin-top:10px;font-size:.85rem;line-height:1.6;">
+        <b style="color:#064e3b;">如何判定 VIS</b>：依<b>肝實質被遮蔽 / 病灶偵測受限的程度</b>。判讀時看 — beam 穿透（脂肪肝深部衰減、體型）、肝實質被遮蔽的範圍、肋骨/腸氣陰影、肝臟涵蓋是否完整。
+        <ul style="margin:6px 0 0;padding-left:20px;">
+          <li><b>VIS-A</b>：無/極少限制 — 肝實質大致都看得清楚、penetration 足夠，預期<b>不影響</b>小病灶偵測。</li>
+          <li><b>VIS-B</b>：中度限制 — <b>部分</b>肝實質被遮蔽（中度衰減、局部陰影），可能<b>遮住 &lt;10 mm</b> 病灶，但通常仍依 US category 處理。</li>
+          <li><b>VIS-C</b>：嚴重限制 — <b>大部分</b>肝實質無法可靠評估（嚴重脂肪肝深部衰減、明顯結節化、體型過大、大範圍陰影），<b>明顯降低</b>偵測敏感度。</li>
+        </ul>
+      </div>
+      <small class="note">Source: LI-RADS US Surveillance v2024（Radiology 2024;313:e240169），與 AASLD 2023 guidance 一致。對象為高風險 surveillance 族群，非一般門診。</small>
+    </div>
+    <div class="card">
+      <h3>AFP abnormal — 有沒有 sonographic correlate？</h3>
+      <table>
+        <tr><th>情境</th><th>建議</th></tr>
+        <tr><td>AFP ≥20 ng/mL 或連續上升 / doubling</td><td>需要 diagnostic evaluation</td></tr>
+        <tr><td>AFP abnormal + US <b>有</b>對應 lesion</td><td>multiphase MRI / CT / CEUS</td></tr>
+        <tr><td>AFP abnormal 但 US <b>無</b>對應 lesion</td><td>multiphase MRI 或 CT；<b>CEUS 不適合</b>（沒有可 target 的 finding）</td></tr>
+        <tr><td>AFP ≥200 ng/mL 但 CT/MRI 找不到</td><td>換另一種 modality，並考慮 chest/pelvis imaging ± FDG PET/CT</td></tr>
+      </table>
+      <small class="note">v2024 將 AFP 管理納入：AFP ≥20 ng/mL 或 concerning longitudinal change 需進一步診斷。</small>
+    </div>
+    <div class="card">
+      <h3>US surveillance protocol 品質要點</h3>
+      <ul style="margin:6px 0 0;padding-left:20px;line-height:1.7;font-size:.9rem;">
+        <li>要掃到 <b>right & left liver edges</b> 與 <b>subdiaphragmatic hepatic dome</b>，避免漏掉 hepatic dome HCC。</li>
+        <li><b>Wide field-of-view</b> 幫助與 CT/MRI 比對，也可看 cirrhosis morphology。</li>
+        <li>建議 <b>main portal vein color Doppler</b>；spectral Doppler 視情況加做。</li>
+        <li>建議留 <b>cine clips</b>：幫助小型/等回音 HCC、tumor thrombus、infiltrative HCC，也幫助 Couinaud segment assignment 與比對 prior studies。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="module" id="refs" style="margin-bottom:12px;">
+    <h2>References 出處（可點擊跳轉）</h2>
+    <div class="card">
+      <ol style="margin:0;padding-left:22px;line-height:1.95;font-size:.9rem;">
+        <li><b>Sonographic Tendencies (@henry_stax)</b> — Couinaud's Liver Segments：縱切肝段 US、角落 segment 定位圖之出處。 <a href="https://sonographictendencies.com/2020/02/10/couinauds-liver-segments/" target="_blank" rel="noopener">sonographictendencies.com ↗</a></li>
+        <li><b>Radiopaedia</b> — Liver segments (annotated CT)，case courtesy J. Hocking，CC BY-NC-SA：可 scroll 的標註 CT。 <a href="https://radiopaedia.org/cases/liver-segments-annotated-ct-1" target="_blank" rel="noopener">radiopaedia.org ↗</a></li>
+        <li><b>The Radiology Assistant</b> — CT contrast injection and protocols：CT phase。 <a href="https://radiologyassistant.nl/more/ct-protocols/ct-contrast-injection-and-protocols" target="_blank" rel="noopener">radiologyassistant.nl ↗</a></li>
+        <li><b>The Radiology Assistant</b> — Characterisation of liver masses：liver lesion 鑑別。 <a href="https://radiologyassistant.nl/abdomen/liver/characterisation-of-liver-masses" target="_blank" rel="noopener">radiologyassistant.nl ↗</a></li>
+        <li><b>LITFL (Life in the Fast Lane)</b> — Abdominal CT attenuation：HU 數值、脂肪肝/true-enhancement 門檻。 <a href="https://litfl.com/abdominal-ct-attenuation/" target="_blank" rel="noopener">litfl.com ↗</a></li>
+        <li><b>ACR LI-RADS®（官方）</b> — CT/MRI v2018 core + diagnostic table（HCC 分級、major/targetoid features）。 <a href="https://www.acr.org/Clinical-Resources/Clinical-Tools-and-Reference/Reporting-and-Data-Systems/LI-RADS" target="_blank" rel="noopener">acr.org/LI-RADS ↗</a></li>
+        <li><b>LI-RADS US Surveillance v2024</b>（Radiology 2024;313(3):e240169）— US-1/2/3 + VIS-A/B/C surveillance 演算法。 <a href="https://pubs.rsna.org/doi/10.1148/radiol.240169" target="_blank" rel="noopener">pubs.rsna.org ↗</a></li>
+        <li><b>The Radiology Assistant</b> — LI-RADS（教學整理）。 <a href="https://radiologyassistant.nl/abdomen/liver/li-rads" target="_blank" rel="noopener">radiologyassistant.nl ↗</a></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="disc">
+    ⚕️ <b>教學用途，非診斷依據；本工具不能取代正式 radiology report。</b>所有門檻與鑑別為簡化教學版；個案請以正式影像判讀、臨床整合與必要時 MDT/biopsy 為準。第三方圖片版權屬原作者，保留原浮水印/圖說作為出處標註。
+  </div>
+</div>
+
+<script>
+/* ---------- Module A: segments ---------- */
+const SEG = {
+  'I':{n:'Segment I — Caudate lobe 尾葉', body:'位於 IVC 與 ligamentum venosum 之間，<b>獨立引流入 IVC</b>。Budd-Chiari 時常代償性肥大且 spared。超音波在 IVC 與 portal vein 之間、尾側朝 IVC 找。'},
+  'II':{n:'Segment II — Left lateral superior', body:'左葉外側、<b>falciform 左側</b>、<b>LPV 之上</b>（superior）。'},
+  'III':{n:'Segment III — Left lateral inferior', body:'左葉外側、falciform 左側、<b>LPV 之下</b>（inferior）。左葉下緣淺層常見。'},
+  'IVa':{n:'Segment IVa — Left medial superior', body:'左葉內側、falciform 與 MHV 之間、<b>LPV 之上</b>。'},
+  'IVb':{n:'Segment IVb — Left medial inferior', body:'左葉內側、<b>緊鄰 gallbladder fossa</b>、LPV 之下。報告可寫「segment 4B adjacent to GB fossa」。'},
+  'V':{n:'Segment V — Right anterior inferior', body:'右葉前段下方、<b>GB fossa 外側</b>、RHV 與 MHV 之間、RPV 之下。'},
+  'VI':{n:'Segment VI — Right posterior inferior', body:'右葉後段下方、RHV 之後、<b>RPV 之下</b>。右葉 subcapsular 病灶常落此區。'},
+  'VII':{n:'Segment VII — Right posterior superior', body:'右葉後段上方、RHV 之後、<b>RPV 之上</b>，近 hepatic dome 後方。'},
+  'VIII':{n:'Segment VIII — Right anterior superior', body:'右葉前段上方、<b>近 middle hepatic vein / hepatic dome</b>、RPV 之上。報告可寫「segment 8 near MHV」。'}
+};
+document.querySelectorAll('.seg').forEach(g=>{
+  g.addEventListener('click',()=>{
+    document.querySelectorAll('.seg').forEach(x=>x.classList.remove('active'));
+    g.classList.add('active');
+    const s=SEG[g.dataset.s];
+    document.getElementById('segName').innerHTML=s.n;
+    document.getElementById('segBody').innerHTML=s.body;
+  });
+});
+
+/* axial scroller */
+const AX = [
+  {t:'① 肝頂 / hepatic vein 匯入 IVC 層 (superior)',
+   segs:[['VII',70,90],['VIII',150,80],['IVa',235,85],['II',310,95]],
+   info:'最高層：三條 hepatic vein 在此匯入 IVC（"Playboy bunny"）。看到的是各段的 <b>superior</b> 部分：VII · VIII · IVa · II。此層常用來分 right ant/post 與 left medial/lateral。'},
+  {t:'② 門脈分叉 PV bifurcation 層 (mid)',
+   segs:[['VII',70,80],['VIII',150,70],['IVa',235,78],['II',300,92],['V',150,170],['VI',70,175],['IVb',240,170],['III',305,178]],
+   info:'門脈分叉層：main PV 分成 right / left（超音波的 T 字分叉）。此層是 <b>上下段的分界</b> — 之上是 7/8、2/4A，之下是 5/6、3/4B。最關鍵的定位層。'},
+  {t:'③ 門脈下方 / 肝下緣 (inferior)',
+   segs:[['VI',75,150],['V',155,145],['IVb',240,150],['III',310,158]],
+   info:'門脈以下層：看到的是各段 <b>inferior</b> 部分：V · VI · IVb · III。<b>Gallbladder fossa</b> 出現在此層，是 4B / 5 與 Cantlie line 的 landmark。'}
+];
+function drawAx(){
+  const i=+document.getElementById('lvl').value, lv=AX[i];
+  const svg=document.getElementById('axSvg');
+  let h='<ellipse cx="180" cy="120" rx="150" ry="92" fill="#1e293b" stroke="#475569" stroke-width="2"/>';
+  h+='<text x="180" y="248" fill="#94a3b8" font-size="12" text-anchor="middle">axial schematic (自繪示意)</text>';
+  // IVC + aorta hint
+  h+='<circle cx="225" cy="200" r="9" fill="#1d4ed8"/><text x="225" y="204" fill="#fff" font-size="8" text-anchor="middle">IVC</text>';
+  h+='<circle cx="200" cy="208" r="6" fill="#b91c1c"/><text x="200" y="226" fill="#fca5a5" font-size="8" text-anchor="middle">Ao</text>';
+  lv.segs.forEach(([s,x,y])=>{
+    h+=`<circle cx="${x+20}" cy="${y}" r="19" fill="#10b981" stroke="#fff" stroke-width="2"/>`;
+    h+=`<text x="${x+20}" y="${y+5}" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">${s}</text>`;
+  });
+  svg.innerHTML=h;
+  document.getElementById('axInfo').innerHTML='<b>'+lv.t+'</b><br>'+lv.info;
+}
+document.getElementById('lvl').addEventListener('input',drawAx);
+drawAx();
+
+/* Radiopaedia annotated-CT stack viewer (slices 02.jpg..25.jpg) */
+const RP_N=24;
+for(let i=2;i<=25;i++){ const im=new Image(); im.src='assets/rp/'+String(i).padStart(2,'0')+'.jpg'; } // preload
+function rpShow(i){
+  i=Math.max(0,Math.min(RP_N-1,i));
+  document.getElementById('rpRange').value=i;
+  document.getElementById('rpImg').src='assets/rp/'+String(i+2).padStart(2,'0')+'.jpg';
+  document.getElementById('rpLabel').textContent='Slice '+(i+1)+' / '+RP_N;
+}
+function rpStep(d){ rpShow((+document.getElementById('rpRange').value)+d); }
+document.getElementById('rpRange').addEventListener('input',e=>rpShow(+e.target.value));
+document.getElementById('rpImg').addEventListener('wheel',e=>{ e.preventDefault(); rpStep(e.deltaY>0?1:-1); },{passive:false});
+
+/* Longitudinal segment tour (Sonographic Tendencies) */
+const LO=[
+ ['long_1','① 正中矢狀 — Seg 2/3 壓在 aorta 上方（左外葉）'],
+ ['long_2','② Seg II / III 輪廓 + CT 對照'],
+ ['long_3','③ 經 IVC — 前面觀 / 臟面觀 3D 對照'],
+ ['long_4','④ 探頭往右 tilt — Seg II/III + caudate I（藍）壓在 IVC 上'],
+ ['long_5','⑤ 右前葉 — Seg 5 / 8'],
+ ['long_6','⑥ 右後葉 — Seg 6 / 7']
+];
+LO.forEach(([f])=>{ const im=new Image(); im.src='assets/seg/'+f+'.jpg'; });
+function loShow(i){ i=Math.max(0,Math.min(LO.length-1,i)); document.getElementById('loRange').value=i;
+  document.getElementById('loImg').src='assets/seg/'+LO[i][0]+'.jpg'; document.getElementById('loCap').textContent=LO[i][1]; }
+function loStep(d){ loShow((+document.getElementById('loRange').value)+d); }
+document.getElementById('loRange').addEventListener('input',e=>loShow(+e.target.value));
+document.getElementById('loImg').addEventListener('wheel',e=>{ e.preventDefault(); loStep(e.deltaY>0?1:-1); },{passive:false});
+loShow(0);
+
+/* ---------- Module B: phase ---------- */
+const PHASES={
+  nect:{n:'Non-enhanced (NECT)', t:'計算 enhancement 的 baseline；看鈣化/脂肪/出血/高密度結節', best:'高密度結節在此最該先確認（避免誤判 enhancement）；脂肪肝定量'},
+  early:{n:'Early arterial 15–20s', t:'動脈最亮、器官尚未 enhance', best:'血管評估（CTA），非肝腫瘤最佳期'},
+  late:{n:'Late arterial 35–40s', t:'動脈供血病灶最明顯', best:'<b>HCC · FNH · hepatic adenoma · hypervascular metastasis</b>（RCC/NET/melanoma）、小 hemangioma flash-fill 在此最亮'},
+  pv:{n:'Portal venous / hepatic 70–80s', t:'肝實質 enhance 最強，與低血流病灶反差最大', best:'<b>Hypovascular metastasis · cyst · abscess</b> 最清楚；HCC <b>可</b>在此出現 washout（非必然，且需符合 nonperipheral washout）'},
+  delay:{n:'Delayed / equilibrium 6–10min', t:'纖維/緩慢分布的對比劑顯現', best:'<b>Cholangiocarcinoma · fibrotic met · capsule · central scar (FNH)</b>、hemangioma 完整 fill-in'}
+};
+const pc=document.getElementById('phaseChips');
+Object.keys(PHASES).forEach((k,idx)=>{
+  const c=document.createElement('span'); c.className='chip'+(k==='late'?' on':''); c.textContent=PHASES[k].n;
+  c.onclick=()=>{ document.querySelectorAll('#phaseChips .chip').forEach(x=>x.classList.remove('on')); c.classList.add('on'); showPhase(k); };
+  pc.appendChild(c);
+});
+function showPhase(k){ const p=PHASES[k];
+  document.getElementById('phaseRes').innerHTML='<b>'+p.n+'</b><br><span class="zh">用途：</span>'+p.t+'<br><span class="zh">此期最該看 / 最亮：</span>'+p.best; }
+showPhase('late');
+
+/* ---------- Module C: lesion scoring ---------- */
+const FEAT=['scar','capsule','retraction','fatin','hemorrhage','multiple','target','cirrhosis','biliary','primary'];
+const LES=[
+ {k:'cyst',n:'Simple hepatic cyst 單純肝囊腫',
+  nect:{water:3,hypo:1}, art:{hypo:1}, pv:{none:3}, delay:{none:3}, feat:{},
+  disc:'Water density + 完全不 enhance + 邊界清楚。US anechoic、薄壁、posterior enhancement。'},
+ {k:'hem',n:'Hemangioma',
+  nect:{hypo:1}, art:{nodular:3,hyper:1}, pv:{centri:3}, delay:{centri:3,persist:1}, feat:{},
+  sig:(s)=>(s.art==='nodular'&&(s.pv==='centri'||s.delay==='centri'))?4:0,
+  disc:'Peripheral nodular discontinuous → centripetal fill-in，enhancement 跟著 blood pool 走、T2 very bright。小顆可 flash-fill 似 HCC，重點看後續是否慢慢填滿。'},
+ {k:'hcc',n:'HCC 肝細胞癌',
+  nect:{iso:1,hypo:1}, art:{hyper:3}, pv:{washout:3}, delay:{washout:3}, feat:{capsule:2,cirrhosis:2},
+  sig:(s,f)=>(s.art==='hyper'&&(s.pv==='washout'||s.delay==='washout')&&(f.includes('capsule')||f.includes('cirrhosis')))?4:0,
+  disc:'早亮晚暗：APHE → portal/delayed washout ± enhancing capsule，高風險族群（cirrhosis / chronic HBV）。LI-RADS 主要特徵。'},
+ {k:'fnh',n:'FNH 局部結節增生',
+  nect:{iso:1}, art:{hyper:2}, pv:{iso:3}, delay:{iso:2}, feat:{scar:3},
+  sig:(s,f)=>(s.art==='hyper'&&s.pv==='iso'&&f.includes('scar'))?4:0,
+  disc:'均質 arterial hyperenhancement → 退成 isoattenuation、典型 central scar（delayed 才 enhance）。年輕女性、不該明顯 washout。'},
+ {k:'ade',n:'Hepatic adenoma 肝腺瘤',
+  nect:{iso:1,fat:2}, art:{hyper:2}, pv:{iso:2,washout:1}, delay:{iso:2}, feat:{fatin:3,hemorrhage:3},
+  disc:'年輕女性 + OCP/anabolic steroid。late arterial homogeneous enhancement → 後續轉 iso，可含 fat/hemorrhage/capsule。重點：出血與少數惡性轉化風險。'},
+ {k:'ccc',n:'Cholangiocarcinoma (iCCA) 膽管癌',
+  nect:{hypo:1}, art:{rim:3,hypo:1}, pv:{persist:2,centri:1}, delay:{persist:3}, feat:{retraction:3,biliary:2},
+  sig:(s,f)=>((s.art==='rim'||s.art==='hypo')&&s.delay==='persist')?3:0,
+  disc:'纖維腫瘤：arterial 周邊 rim/低密度 → <b>delayed persistent (central) enhancement</b>、capsular retraction、膽管擴張/satellite nodule。關鍵在延遲期。'},
+ {k:'mhypo',n:'Hypovascular metastasis 低血流轉移',
+  nect:{hypo:1}, art:{hypo:2,rim:1}, pv:{hypo:3}, delay:{hypo:1}, feat:{multiple:2,target:2,primary:3},
+  disc:'最常見的轉移型態，portal venous 期最清楚（dark）。常多發、雙葉、已知 GI/lung/breast/pancreas 原發。target sign 不專一。'},
+ {k:'mhyper',n:'Hypervascular metastasis 高血流轉移',
+  nect:{hypo:1,iso:1}, art:{hyper:2}, pv:{washout:1,iso:1}, delay:{iso:1}, feat:{multiple:2,primary:3},
+  sig:(s,f)=>(s.art==='hyper'&&f.includes('multiple')&&f.includes('primary'))?3:0,
+  disc:'RCC · neuroendocrine · melanoma · thyroid · sarcoma。late arterial 明顯、常多發、已知原發。可與 HCC/FNH 混淆，靠病史與分布。'}
+];
+/* readable labels for each input — only KEY PRESENCE in a lesion profile counts (transparent match, NOT weights) */
+const LABELS={
+ 'nect:water':'NECT water density 水樣','nect:hypo':'NECT hypodense 低密度','nect:iso':'NECT isodense 等密度','nect:hyper':'NECT hyperdense 高密度','nect:fat':'NECT 含 fat','nect:calc':'NECT 含 calcification',
+ 'art:hyper':'Arterial hyperenhancement (APHE)','art:nodular':'Peripheral nodular discontinuous 周邊結節不連續','art:rim':'Arterial rim 周邊環狀','art:hypo':'Arterial hypovascular 動脈期低血流',
+ 'pv:washout':'Portal venous washout 沖刷','pv:iso':'Portal 退成 isodense','pv:persist':'Portal persistent 持續增強','pv:centri':'Centripetal fill-in 向心填充','pv:hypo':'Portal hypodense（最清楚）','pv:none':'No enhancement 不增強',
+ 'delay:washout':'Delayed washout','delay:iso':'Delayed isodense','delay:persist':'Delayed persistent central 延遲中央持續','delay:centri':'Complete fill-in 完整填充','delay:none':'No enhancement',
+ 'feat:scar':'Central scar 中央疤痕','feat:capsule':'Enhancing capsule 強化包膜','feat:retraction':'Capsular retraction 包膜回縮','feat:fatin':'病灶內 fat','feat:hemorrhage':'Hemorrhage 出血','feat:multiple':'Multiple / bilobar 多發','feat:target':'Target / bull-eye 標靶','feat:cirrhosis':'Cirrhosis / chronic HBV 背景','feat:biliary':'Biliary dilatation 膽管擴張','feat:primary':'已知 extrahepatic 原發癌'
+};
+const SHORT={cyst:'Cyst',hem:'Heman',hcc:'HCC',fnh:'FNH',ade:'Adenoma',ccc:'iCCA',mhypo:'Hypo-met',mhyper:'Hyper-met'};
+function classify(){
+  const s={ nect:val('cNect'), art:val('cArt'), pv:val('cPv'), delay:val('cDelay') };
+  const f=FEAT.filter(k=>document.getElementById('f_'+k).checked);
+  const primaryType=(f.includes('primary')&&val('cPrimary'))?val('cPrimary'):'';
+  const box=document.getElementById('cRes'); box.style.display='block';
+  if(!s.nect&&!s.art&&!s.pv&&!s.delay&&!f.length){ box.innerHTML='⚠️ 至少選一個 phase 或勾一個特徵。'; return; }
+  const pats=[];
+  ['nect','art','pv','delay'].forEach(d=>{ if(s[d]) pats.push({k:d+':'+s[d], label:LABELS[d+':'+s[d]], test:L=>L[d]&&L[d][s[d]]!=null}); });
+  f.forEach(x=>{ pats.push({k:'feat:'+x, label:LABELS['feat:'+x], test:L=>L.feat[x]!=null}); });
+  const N=pats.length;
+  let res=LES.map(L=>{
+    const matched=pats.filter(p=>p.test(L));
+    let derived='';
+    if(primaryType){ const pt=primaryType.split('|')[0];
+      if(L.k==='mhyper'&&pt==='hyper') derived='＋原發癌屬 hypervascular 型';
+      if(L.k==='mhypo' &&pt==='hypo')  derived='＋原發癌屬 hypovascular 型'; }
+    const sig=(L.sig&&L.sig(s,f)>0)?1:0;
+    return {L,matched,derived,sig,c:matched.length};
+  }).filter(o=>o.c>0);
+  if(!res.length){ box.innerHTML='此組合不在教學病灶庫中 — 請對照 T2/DWI 與臨床。'; return; }
+  res.sort((a,b)=> (b.sig-a.sig) || (b.c-a.c));
+  const cols=res.slice(0,6), maxC=Math.max.apply(null,cols.map(o=>o.c));
+  let mtx='<div style="overflow-x:auto;"><table style="font-size:.78rem;min-width:340px;"><tr><th style="text-align:left;">你選的 pattern</th>';
+  cols.forEach(o=>{ mtx+='<th>'+(o.sig?'★':'')+SHORT[o.L.k]+'</th>'; });
+  mtx+='</tr>';
+  pats.forEach(p=>{ mtx+='<tr><td style="text-align:left;">'+p.label+'</td>';
+    cols.forEach(o=>{ const hit=o.matched.some(m=>m.k===p.k); mtx+='<td style="text-align:center;color:'+(hit?'#059669':'#cbd5e1')+';font-weight:'+(hit?'700':'400')+';">'+(hit?'✔':'·')+'</td>'; });
+    mtx+='</tr>'; });
+  mtx+='<tr style="background:#d1fae5;font-weight:700;"><td style="text-align:left;">符合數</td>';
+  cols.forEach(o=>{ mtx+='<td style="text-align:center;color:'+(o.c===maxC?'#065f46':'#475569')+';">'+o.c+'/'+N+'</td>'; });
+  mtx+='</tr></table></div>';
+  let cards='';
+  res.slice(0,5).forEach(o=>{
+    cards+='<div style="margin:10px 0;padding:10px 12px;border:1px solid var(--gl);border-radius:8px;background:'+(o.sig?'#ecfdf5':'#fff')+';">'
+      +'<b style="color:#065f46;">'+(o.sig?'★ ':'')+o.L.n+'</b> <span style="font-size:.78rem;color:#64748b;">— '+o.c+'/'+N+' 個典型特徵'+(o.derived?' '+o.derived:'')+'</span>'
+      +'<ul style="margin:5px 0 4px;padding-left:18px;font-size:.83rem;color:#047857;">'+o.matched.map(m=>'<li>✔ '+m.label+'</li>').join('')+'</ul>'
+      +'<div style="font-size:.83rem;color:#475569;">'+o.L.disc+(o.L.k==='hcc'?' <b style="color:#b91c1c;">→ 正式分級見下方 LI-RADS。</b>':'')+'</div></div>';
+  });
+  if(res.length>5) cards+='<small class="note">其餘符合較少：'+res.slice(5).map(o=>o.L.n).join('、')+'</small>';
+  const cap='<div style="font-size:.8rem;color:#64748b;margin:9px 0;">矩陣＝你選的每個 pattern 各病灶有沒有（✔/·），最底列自動算<b>符合數</b>（透明計數，<u>非權重、非機率</u>）。★ ＝高度典型組合。</div>';
+  box.innerHTML=primaryBanner(primaryType)+cap+mtx+'<div style="font-weight:700;color:#064e3b;margin:12px 0 2px;">各病灶鑑別重點</div>'+cards;
+}
+function lirads(){
+  const risk=document.getElementById('lrrisk').value;
+  const size=parseFloat(document.getElementById('lrsize').value);
+  const aphe=document.getElementById('lraphe').value;
+  const n=['lrwash','lrcap','lrgrow'].filter(id=>document.getElementById(id).checked).length;
+  const box=document.getElementById('lrres'); box.style.display='block';
+  if(risk==='no'){ box.innerHTML='<b>LI-RADS 不適用。</b>只用於高風險族群（cirrhosis / chronic HBV）；一般風險肝臟請用上方特徵比對 + 臨床。'; return; }
+  const lrm=Array.prototype.slice.call(document.querySelectorAll('.lrm:checked')).map(c=>c.value);
+  if(lrm.length){ box.style.borderLeftColor='#7c3aed';
+    box.innerHTML='<b style="font-size:1.1rem;color:#7c3aed;">LR-M</b><br>有 targetoid 特徵：<b>'+lrm.join('、')+'</b><br><b>惡性可能性高，但不具 HCC-specific pattern</b>。常見鑑別：iCCA、metastasis、combined HCC-CCA，<b>也可能是 atypical HCC</b>。需由正式影像報告、臨床背景與必要時 biopsy／MDT 整合。<br><span style="font-size:.78rem;color:#64748b;">LI-RADS v2018：任一 targetoid 特徵即歸 LR-M，不論 size/APHE；前提是已排除明顯良性與 LR-TIV。LR-M ≠「一定不是 HCC」。</span>'; return; }
+  if(isNaN(size)){ box.innerHTML='⚠️ 輸入 observation size (mm)。'; return; }
+  if(aphe==='no'){
+    let cat, msg;
+    if(size<20){
+      if(n>=2){ cat='LR-4'; msg='&lt;20 mm + no APHE + ≥2 additional major features → LR-4。'; }
+      else { cat='LR-3'; msg='&lt;20 mm + no APHE + 0–1 additional major feature → LR-3。'; }
+    } else {
+      if(n>=1){ cat='LR-4'; msg='≥20 mm + no APHE + ≥1 additional major feature → LR-4。'; }
+      else { cat='LR-3'; msg='≥20 mm + no APHE + 0 additional → LR-3。'; }
+    }
+    const color=cat==='LR-4'?'#ea580c':'#64748b';
+    box.style.borderLeftColor=color;
+    box.innerHTML='<b style="font-size:1.1rem;color:'+color+';">'+cat+'</b><br>'+msg+'<br><span style="font-size:.78rem;color:#64748b;">無 nonrim APHE 不會到 LR-5；若有 targetoid features，先考慮 LR-M（請勾上方 targetoid 勾選框）。</span>';
+    return;
+  }
+  let cat,msg;
+  const wash=document.getElementById('lrwash').checked, cap=document.getElementById('lrcap').checked, grow=document.getElementById('lrgrow').checked;
+  if(size<10){
+    if(n>=1){ cat='LR-4'; msg='&lt;10 mm + nonrim APHE + ≥1 additional major feature → LR-4。'; }
+    else { cat='LR-3'; msg='&lt;10 mm + nonrim APHE + 0 additional → LR-3。太小不到 LR-5。'; }
+  }
+  else if(size<=19){
+    if(wash||grow){ cat='LR-5';
+      let note='';
+      if(wash&&!cap&&!grow) note='<br><span style="font-size:.76rem;color:#64748b;">注意：10–19 mm + APHE + washout alone 是 LR-5，但不等同 OPTN 5A。</span>';
+      else if(grow) note='<br><span style="font-size:.76rem;color:#64748b;">Threshold growth 定義：≥50% size increase in ≤6 months。</span>';
+      msg='10–19 mm + nonrim APHE + <b>nonperipheral washout 或 threshold growth</b> → 確定 HCC。'+note; }
+    else if(cap){ cat='LR-4'; msg='10–19 mm + nonrim APHE + <b>只有 enhancing capsule</b> → LR-4（capsule 單獨不足以到 LR-5）。'; }
+    else { cat='LR-3'; msg='10–19 mm + nonrim APHE + 0 additional → LR-3。'; }
+  }
+  else {
+    if(n>=1){ cat='LR-5'; msg='≥20 mm + nonrim APHE + ≥1 additional major feature → 確定 HCC。'; }
+    else { cat='LR-4'; msg='≥20 mm + nonrim APHE + 0 additional → LR-4。'; }
+  }
+  const color=cat==='LR-5'?'#b91c1c':(cat==='LR-4'?'#ea580c':'#64748b');
+  box.style.borderLeftColor=color;
+  box.innerHTML=`<b style="font-size:1.1rem;color:${color};">${cat}</b><br>${msg}<br><span style="font-size:.78rem;color:#64748b;">僅高風險族群適用（cirrhosis / chronic HBV）。</span>`;
+}
+function primaryBanner(pv){
+  if(!pv) return '';
+  const [pt,nm]=pv.split('|');
+  if(pt==='hyper') return `<div style="background:#fef2f2;border:1px solid #fca5a5;border-left:5px solid #dc2626;padding:11px 14px;border-radius:8px;margin-bottom:13px;">
+    <b style="color:#b91c1c;">⚠️ ${nm} 屬 HYPERvascular 原發 → 重點看 Hypervascular liver metastasis</b><br>
+    <span class="zh" style="font-size:.88rem;">• <b>Late arterial</b> 期最明顯（強 hyperenhancement，最亮、最該抓的一期）<br>
+    • <b>Portal venous</b> 期可能 washout 或退成 iso → 容易在 portal 期「消失/變不明顯」而漏看<br>
+    • 常多發；<b>務必看 arterial 期</b>，別只靠 portal venous。</span></div>`;
+  return `<div style="background:#eff6ff;border:1px solid #93c5fd;border-left:5px solid #2563eb;padding:11px 14px;border-radius:8px;margin-bottom:13px;">
+    <b style="color:#1d4ed8;">⚠️ ${nm} 屬 HYPOvascular 原發 → 重點看 Hypovascular liver metastasis</b><br>
+    <span class="zh" style="font-size:.88rem;">• <b>Portal venous</b> 期最清楚（肝實質最亮、病灶相對暗，反差最大）<br>
+    • <b>Arterial</b> 期常只見周邊 rim 或不明顯<br>
+    • 可有 target / halo；<b>以 portal venous 期為主</b>判讀。</span></div>`;
+}
+function togglePrimary(){ document.getElementById('primaryWrap').style.display=document.getElementById('f_primary').checked?'block':'none'; }
+function val(id){ return document.getElementById(id).value; }
+
+/* ---------- Module D ---------- */
+function enhance(){
+  const a=parseFloat(document.getElementById('ePre').value), c=parseFloat(document.getElementById('ePost').value), b=document.getElementById('eRes'); b.style.display='block';
+  if(isNaN(a)||isNaN(c)){ b.innerHTML='⚠️ 前後 HU 都要填。'; return; }
+  const d=c-a; let msg,col;
+  if(d>=20){ msg=`Δ = <b>${d} HU</b> → <b>True enhancement</b>（≥20）。代表病灶有血流/含血管成分，需當作 enhancing lesion 處理。`; col='#b91c1c'; }
+  else if(d>=10){ msg=`Δ = <b>${d} HU</b> → <b>灰色地帶</b>（10–20）。可能 pseudoenhancement（尤其腎/腎上腺）；建議 follow 或補做 dynamic。`; col='#d97706'; }
+  else { msg=`Δ = <b>${d} HU</b> → <b>無 true enhancement</b>（&lt;10）。支持 cyst / 不打藥的良性病灶。`; col='#059669'; }
+  b.style.borderLeftColor=col; b.innerHTML=msg;
+}
+function fattyCT(){
+  const L=parseFloat(document.getElementById('fLiver').value), S=parseFloat(document.getElementById('fSpleen').value), b=document.getElementById('fctRes'); b.style.display='block';
+  if(isNaN(L)){ b.innerHTML='⚠️ 至少填 liver HU。'; return; }
+  let crit=[], pos=false;
+  if(L<40){ crit.push(`liver ${L} &lt; 40 HU ✔`); pos=true; } else crit.push(`liver ${L} ≥ 40 HU`);
+  if(!isNaN(S)){ const diff=L-S; if(diff<=-10){ crit.push(`liver−spleen = ${diff} ≤ −10 ✔`); pos=true; } else crit.push(`liver−spleen = ${diff} (> −10)`); }
+  b.style.borderLeftColor=pos?'#b91c1c':'#059669';
+  b.innerHTML=(pos?'<b>符合 hepatic steatosis（CT）</b>':'<b>未達 CT 脂肪肝門檻</b>')+'<br><span class="zh">'+crit.join('；')+'</span><br><small class="note">僅適用 non-contrast CT；severe steatosis 時 liver 可低於 spleen 甚至接近血管反白。</small>';
+}
+function fattyUS(){
+  const g=document.getElementById('fUs').value, b=document.getElementById('fusRes'); b.style.display='block';
+  if(g===''){ b.innerHTML='⚠️ 選一個分級。'; return; }
+  const M={'0':['正常','#059669','肝與腎皮質等亮、橫膈與血管壁清楚 — 無脂肪肝徵象。'],
+           '1':['Mild steatosis','#d97706','肝略亮於腎皮質，血管壁/橫膈仍可見。'],
+           '2':['Moderate steatosis','#ea580c','肝明顯亮於腎，血管壁與橫膈開始模糊（posterior beam 衰減）。'],
+           '3':['Severe steatosis','#b91c1c','肝很亮、深部與橫膈顯影差、明顯後方衰減。']};
+  const m=M[g]; b.style.borderLeftColor=m[1];
+  b.innerHTML=`<b style="color:${m[1]};">Grade ${g} — ${m[0]}</b><br><span class="zh">${m[2]}</span><br><small class="note">US 為定性，mild 敏感度有限；量化建議 CAP / ATI。注意 focal fatty sparing/deposition 假象（常在 GB fossa、portal vein 旁、segment IV）。</small>`;
+}
+</script>
+</body>
+</html>
