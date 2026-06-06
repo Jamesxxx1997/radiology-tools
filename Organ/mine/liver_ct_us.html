@@ -240,6 +240,19 @@
       <div class="res" id="phaseRes" style="display:block;background:#fff;border-left-color:var(--g);"></div>
     </div>
 
+    <div class="card">
+      <h3>各 phase 影像示意 — 滑動看哪些會亮</h3>
+      <p class="zh" style="font-size:.86rem;margin-top:0;">拖滑桿 / ◀ ▶ / <b>圖上滾輪</b>，看同一套器官在不同 phase 哪些結構/病灶變亮。</p>
+      <div style="text-align:center;"><img id="ctpImg" src="assets/ctphase/p1.jpg" alt="CT phase illustration" style="max-width:100%;width:470px;border-radius:8px;border:1px solid #334155;background:#000;cursor:ns-resize;"></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+        <button class="go" style="width:auto;margin:0;padding:7px 14px;" onclick="ctpStep(-1)">◀</button>
+        <input type="range" id="ctpRange" min="0" max="5" value="0" step="1" style="flex:1;accent-color:var(--g);">
+        <button class="go" style="width:auto;margin:0;padding:7px 14px;" onclick="ctpStep(1)">▶</button>
+      </div>
+      <div id="ctpCap" class="zh" style="font-size:.92rem;margin-top:6px;text-align:center;color:#047857;font-weight:600;"></div>
+      <div class="credit">Phase illustrations courtesy of <a href="https://radiologyassistant.nl/more/ct-protocols/ct-contrast-injection-and-protocols" target="_blank" rel="noopener">The Radiology Assistant</a>（CT contrast injection and protocols）。</div>
+    </div>
+
     <table>
       <tr><th>Phase</th><th>約略時間</th><th>主要用途</th><th>肝臟病灶重點</th></tr>
       <tr><td><b>Non-enhanced (NECT)</b></td><td>顯影前</td><td>鈣化、脂肪、出血、高密度結節</td><td>避免把原本高密度結節誤判成 enhancement；脂肪肝定量</td></tr>
@@ -248,7 +261,6 @@
       <tr><td><b>Portal venous / hepatic</b></td><td>70–80 s</td><td>肝實質 enhance 最強</td><td><b>Hypovascular met · cyst · abscess</b> 最易被看見；HCC <b>可</b>出現 washout（不是必然，且需符合 nonperipheral washout 定義）</td></tr>
       <tr><td><b>Delayed / equilibrium</b></td><td>6–10 min</td><td>delayed enhancement、纖維組織</td><td><b>Cholangiocarcinoma · 纖維化 · capsule · scar</b></td></tr>
     </table>
-    <div class="disc">教學句：「看到一顆 liver lesion，不要只問它亮不亮。要問：它在 non-contrast、arterial、portal venous、delayed 分別怎麼變化？」</div>
 
     <h3 style="margin-top:18px;">MRI 最小必要概念 MRI quick map <span class="zh" style="font-weight:400;font-size:.82rem;">（讓 US 也能跟 MRI 對照）</span></h3>
     <table>
@@ -685,6 +697,23 @@ function loStep(d){ loShow((+document.getElementById('loRange').value)+d); }
 document.getElementById('loRange').addEventListener('input',e=>loShow(+e.target.value));
 document.getElementById('loImg').addEventListener('wheel',e=>{ e.preventDefault(); loStep(e.deltaY>0?1:-1); },{passive:false});
 loShow(0);
+
+/* CT phase illustrations (Radiology Assistant) */
+const CTP=[
+ ['p1','① Non-enhanced (NECT)：看鈣化 / 脂肪 / 出血'],
+ ['p2','② Early arterial 15–20s：動脈 / 血管最亮'],
+ ['p3','③ Late arterial 35–40s：hypervascular lesion（HCC/FNH/adenoma）變亮'],
+ ['p4','④ Hepatic / portal venous 70–80s：肝實質最亮、hypovascular lesion 最清楚'],
+ ['p5','⑤ Nephrogenic ~100s：腎髓質也 enhance（RCC）'],
+ ['p6','⑥ Delayed ~6min：纖維 / cholangiocarcinoma delayed enhancement']
+];
+CTP.forEach(([f])=>{ const im=new Image(); im.src='assets/ctphase/'+f+'.jpg'; });
+function ctpShow(i){ i=Math.max(0,Math.min(CTP.length-1,i)); document.getElementById('ctpRange').value=i;
+  document.getElementById('ctpImg').src='assets/ctphase/'+CTP[i][0]+'.jpg'; document.getElementById('ctpCap').textContent=CTP[i][1]; }
+function ctpStep(d){ ctpShow((+document.getElementById('ctpRange').value)+d); }
+document.getElementById('ctpRange').addEventListener('input',e=>ctpShow(+e.target.value));
+document.getElementById('ctpImg').addEventListener('wheel',e=>{ e.preventDefault(); ctpStep(e.deltaY>0?1:-1); },{passive:false});
+ctpShow(0);
 
 /* ---------- Module B: phase ---------- */
 const PHASES={

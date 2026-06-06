@@ -11,16 +11,25 @@
   .src-banner a { color:inherit; font-weight:bold; }
   iframe { width:100%; border:none; display:block; background:#f8fafc; }
   .divider { max-width:1300px; margin:34px auto; border-top:2px dashed #cbd5e1; }
+  .jump-nav { position:sticky; top:0; z-index:50; background:#1e293b; display:flex; gap:10px; justify-content:center; padding:9px 8px; flex-wrap:wrap; }
+  .jump-nav a { color:#e2e8f0; text-decoration:none; font-size:0.85rem; font-weight:600; background:#334155; padding:6px 13px; border-radius:6px; transition:0.15s; }
+  .jump-nav a:hover { background:#0ea5e9; color:#fff; }
+  .src-banner { scroll-margin-top:52px; }
 </style>
 </head>
 <body>
-  <div class="src-banner src-senior">📘 <b>Section 1 — Dr. Irene Lee (學姊)</b> · adapted from her <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank">original meta-site</a>.</div>
+  <div class="jump-nav">
+    <a href="#sec1">📘 Section 1 學姊</a>
+    <a href="#sec2">📗 Section 2 MRI</a>
+    <a href="#sec3">📗 Section 3 CT·US</a>
+  </div>
+  <div id="sec1" class="src-banner src-senior">📘 <b>Section 1 — Dr. Irene Lee (學姊)</b> · adapted from her <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank">original meta-site</a>.</div>
   <iframe id="seniorFrame" src="senior/liver.html" scrolling="no"></iframe>
   <div class="divider"></div>
-  <div class="src-banner src-mine">📗 <b>Section 2 — jamesxxx1997</b> · built &amp; distilled from my own imaging notes.</div>
+  <div id="sec2" class="src-banner src-mine">📗 <b>Section 2 — jamesxxx1997</b> · built &amp; distilled from my own imaging notes.</div>
   <iframe id="mineFrame" src="mine/liver.html" scrolling="no"></iframe>
   <div class="divider"></div>
-  <div class="src-banner src-mine">📗 <b>Section 3 — jamesxxx1997</b> · CT/US correlation — liver segments, contrast phase &amp; HU attenuation (給超音波室同仁).</div>
+  <div id="sec3" class="src-banner src-mine">📗 <b>Section 3 — jamesxxx1997</b> · CT/US correlation — liver segments, contrast phase &amp; HU attenuation (給超音波室同仁).</div>
   <iframe id="ctusFrame" src="mine/liver_ct_us.html" scrolling="no"></iframe>
   <script>
     function fit(f){ try { var d=f.contentDocument||f.contentWindow.document; if(d&&d.body){ f.style.height=(d.body.scrollHeight+40)+'px'; } } catch(e){} }
