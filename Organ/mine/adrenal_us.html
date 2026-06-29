@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adrenal Glands — US Notes — jamesxxx1997</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-top: 6px solid #10b981; }
+        h1 { color: #064e3b; text-align: center; }
+        h1 .tag { font-size: 0.95rem; color: #10b981; font-weight: 600; }
+        h3 { color: #047857; margin: 0 0 10px; font-size: 1rem; }
+        .card { border: 1px solid #d1fae5; padding: 20px 24px; border-radius: 8px; margin-bottom: 22px; background: #f8fefb; }
+        .section-title { font-size: 1.25rem; font-weight: 700; color: #064e3b; margin: 28px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #a7f3d0; }
+        ul { margin: 6px 0 0 0; padding-left: 20px; line-height: 1.75; color: #1e293b; }
+        li { margin-bottom: 4px; }
+        .highlight-box { background: #ecfdf5; border-left: 4px solid #10b981; padding: 10px 14px; border-radius: 4px; margin-top: 12px; font-size: 0.9rem; color: #064e3b; line-height: 1.65; }
+        .warn-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 14px; border-radius: 4px; margin-top: 10px; font-size: 0.9rem; color: #78350f; line-height: 1.65; }
+        .img-wrap { text-align: center; margin: 12px 0 4px; }
+        .img-wrap img { max-width: 100%; max-height: 360px; border-radius: 8px; border: 1px solid #d1fae5; cursor: zoom-in; }
+        .img-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin: 12px 0 4px; }
+        .img-block { text-align: center; flex: 1 1 200px; max-width: 340px; }
+        .img-block img { max-width: 100%; border-radius: 8px; border: 1px solid #d1fae5; cursor: zoom-in; }
+        .img-caption { font-size: 0.8rem; color: #64748b; margin-top: 5px; line-height: 1.4; }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        @media (max-width: 780px) { .two-col { grid-template-columns: 1fr; } }
+        .step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+        .step-num { min-width: 26px; height: 26px; border-radius: 50%; background: #059669; color: white; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .step-body { line-height: 1.65; color: #1e293b; }
+        /* lesion cards */
+        .lesion-card { border: 1px solid #d1fae5; border-left: 4px solid #059669; padding: 18px 22px; border-radius: 8px; margin-bottom: 20px; background: #f8fefb; }
+        .lesion-title { font-size: 1.05rem; font-weight: 700; color: #047857; margin-bottom: 10px; }
+        .badge { display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+        .badge-green { background: #d1fae5; color: #047857; }
+        .badge-red { background: #ffe4e6; color: #9f1239; }
+        .badge-orange { background: #ffedd5; color: #9a3412; }
+        p.intro { text-align: center; color: #475569; max-width: 820px; margin: 0 auto 24px; font-size: 0.92rem; line-height: 1.6; }
+        /* lightbox */
+        #lb-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; }
+        #lb-overlay.open { display:flex; }
+        #lb-overlay img { max-width:92vw; max-height:92vh; border-radius:8px; }
+        #lb-overlay:after { content:'✕'; position:fixed; top:18px; right:26px; color:#fff; font-size:2rem; cursor:pointer; }
+    </style>
+</head>
+<body>
+<div id="lb-overlay" onclick="this.classList.remove('open')"><img id="lb-img" src="" alt=""></div>
+<div class="container">
+    <h1>Adrenal Glands — Ultrasound <span class="tag">· jamesxxx1997</span></h1>
+    <p class="intro">US role &amp; limitations, normal anatomy, scanning technique (right &amp; left), and lesion imaging features (US + CT/MRI). Distilled from imaging notes.</p>
+
+    <!-- =========================================================
+         SECTION 1 · US Role & Limitations
+    ========================================================= -->
+    <div class="section-title">US Role &amp; Limitations</div>
+    <div class="card">
+        <ul>
+            <li>US is <strong>not the primary tool</strong> for adrenal evaluation. Image quality depends heavily on operator experience and equipment. <strong>Right adrenal is generally easier to visualise than left.</strong></li>
+            <li><strong>Normal adrenal, adrenal hyperplasia, and small adenomas</strong> usually cannot be adequately assessed by US.</li>
+            <li>If labs confirm a <strong>hormonally active tumour</strong>, proceed directly to CT/MRI — do not rely on US for characterisation.</li>
+            <li>US greatest value: detecting (or excluding) <strong>non-functioning incidental adrenal masses</strong>. Knowing adrenal anatomy matters more than seeing the gland itself.</li>
+        </ul>
+        <div class="warn-box">
+            <strong>Hormone-producing tumours that US usually misses:</strong> Conn adenoma (aldosteronoma) and Cushing adrenal hyperplasia are typically too small (&lt; 1 cm) to detect on US.
+        </div>
+        <div class="highlight-box">
+            <strong>Exception — Pheochromocytoma:</strong> The only secreting tumour reliably found on US (≈ 90% detection rate). By the time symptoms are florid, the mass is usually several centimetres. Confirm with CT if suspected.
+        </div>
+        <div class="highlight-box">
+            <strong>Adrenal Metastases:</strong> Rich adrenal blood supply makes it a common target (bronchial, breast, RCC). US is helpful for detection; appears hypoechoic. Pitfall: do not confuse with renal cortical cysts.
+        </div>
+    </div>
+
+    <!-- =========================================================
+         SECTION 2 · Normal Anatomy
+    ========================================================= -->
+    <div class="section-title">Normal Anatomy &amp; Size</div>
+    <div class="card">
+        <ul>
+            <li>Normal adrenal: length <strong>3–7 cm</strong>, transverse diameter <strong>2–4 cm</strong>.</li>
+            <li>US appearance: <strong>hypoechoic</strong>.</li>
+        </ul>
+    </div>
+
+    <!-- =========================================================
+         SECTION 3 · Scanning Technique
+    ========================================================= -->
+    <div class="section-title">Scanning Technique</div>
+
+    <!-- Right adrenal -->
+    <div class="card">
+        <h3>Right Adrenal</h3>
+        <p style="color:#475569;font-size:0.9rem;margin:0 0 10px;">Sandwiched between the right kidney upper pole, liver, and IVC; extends slightly posterior to the IVC.</p>
+
+        <div class="two-col">
+            <div>
+                <strong style="color:#047857;">Longitudinal scan</strong>
+                <div class="step" style="margin-top:8px;">
+                    <div class="step-num">1</div>
+                    <div class="step-body">Probe at right mid-clavicular line, longitudinal, angled slightly toward midline to show IVC.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">Fine-angle toward kidney. Renal vein + artery are landmarks — right adrenal lies a few cm <em>superior</em> to these vessels.</div>
+                </div>
+                <div class="img-row" style="margin-top:10px;">
+                    <div class="img-block">
+                        <img src="assets/adrenal/rt_long_diagram.png" alt="Right adrenal longitudinal diagram" onclick="zoom(this)">
+                        <div class="img-caption">Anatomical diagram — right adrenal between liver, IVC, and right kidney upper pole</div>
+                    </div>
+                    <div class="img-block">
+                        <img src="assets/adrenal/rt_long_us.png" alt="Right adrenal longitudinal US" onclick="zoom(this)">
+                        <div class="img-caption">US: longitudinal — right adrenal (hypoechoic) above renal vessels</div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <strong style="color:#047857;">Transverse scan</strong>
+                <div class="step" style="margin-top:8px;">
+                    <div class="step-num">1</div>
+                    <div class="step-body">Transverse scan at right mid-clavicular line; identify liver and IVC.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">Angle probe caudally until the right kidney upper pole appears — adrenal lies between kidney upper pole and IVC.</div>
+                </div>
+                <div class="img-wrap" style="margin-top:10px;">
+                    <img src="assets/adrenal/rt_trans_us.png" alt="Right adrenal transverse US" onclick="zoom(this)">
+                    <div class="img-caption">US: transverse — right adrenal between right kidney upper pole and IVC</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Left adrenal -->
+    <div class="card">
+        <h3>Left Adrenal</h3>
+        <div class="img-wrap" style="margin-bottom:14px;">
+            <img src="assets/adrenal/lt_anatomy.png" alt="Left adrenal anatomy" onclick="zoom(this)" style="max-height:220px;">
+            <div class="img-caption">Left adrenal anatomy — tucked between left kidney medial border and aorta, extends inferiorly toward renal hilum (not superiorly like right)</div>
+        </div>
+        <div class="warn-box" style="margin-bottom:14px;">
+            <strong>Harder to scan:</strong> stomach and bowel gas block the anterior window. Use the <strong>spleen as acoustic window</strong> — probe on the left flank.
+        </div>
+        <div class="two-col">
+            <div>
+                <strong style="color:#047857;">A. Longitudinal flank scan</strong>
+                <div class="step" style="margin-top:8px;">
+                    <div class="step-num">1</div>
+                    <div class="step-body">Probe on left lateral flank, longitudinal; capture spleen + left kidney upper pole in view.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">Tilt probe <strong>anteriorly</strong> — kidney cross-section shrinks. Just before kidney disappears, the anterior-medial adrenal region comes into view.</div>
+                </div>
+                <div class="img-wrap" style="margin-top:10px;">
+                    <img src="assets/adrenal/lt_long_us.png" alt="Left adrenal longitudinal flank US" onclick="zoom(this)">
+                    <div class="img-caption">Longitudinal flank — left adrenal anterior to kidney upper pole, between kidney and aorta</div>
+                </div>
+            </div>
+            <div>
+                <strong style="color:#047857;">B. Transverse flank scan</strong>
+                <div class="step" style="margin-top:8px;">
+                    <div class="step-num">1</div>
+                    <div class="step-body">Once identified on longitudinal, rotate probe 90° in-place to transverse.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">Left adrenal appears on screen <em>left side of kidney, slightly inferior</em> — between kidney and aorta.</div>
+                </div>
+                <div class="img-wrap" style="margin-top:10px;">
+                    <img src="assets/adrenal/lt_trans_us.png" alt="Left adrenal transverse flank US" onclick="zoom(this)">
+                    <div class="img-caption">Transverse flank — left adrenal between kidney (right on screen) and aorta (left on screen)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         SECTION 4 · Lesion Imaging Features
+    ========================================================= -->
+    <div class="section-title">Lesion Imaging Features (US + CT/MRI)</div>
+
+    <!-- Adenoma -->
+    <div class="lesion-card">
+        <div class="lesion-title">Adrenal Adenoma <span class="badge badge-green">benign</span></div>
+        <ul>
+            <li><strong>US:</strong> Well-defined, homogeneous, hypo- to isoechoic mass.</li>
+            <li><strong>CT:</strong> ≤ 10 HU (lipid-rich). Rapid wash-in &amp; washout (APW ≥ 60%).</li>
+            <li><strong>MRI:</strong> Marked signal drop on out-of-phase vs in-phase (intracellular lipid).</li>
+        </ul>
+        <div class="img-wrap">
+            <img src="assets/adrenal/lesion_adenoma.png" alt="Adrenal adenoma US + CT/MRI" onclick="zoom(this)">
+            <div class="img-caption">Adrenal adenoma — US (left) and CT/MRI (right)</div>
+        </div>
+    </div>
+
+    <!-- Myelolipoma -->
+    <div class="lesion-card">
+        <div class="lesion-title">Adrenal Myelolipoma <span class="badge badge-green">benign</span></div>
+        <ul>
+            <li><strong>US:</strong> Hyperechoic mass (macroscopic fat content); well-defined.</li>
+            <li><strong>CT:</strong> Macroscopic fat density (&lt; −30 HU) — pathognomonic.</li>
+            <li><strong>MRI:</strong> Bright on T1 &amp; T2 (fat signal); India-ink artifact at fat/soft-tissue interface on OOP. <em>No whole-lesion signal drop</em> (unlike adenoma).</li>
+        </ul>
+        <div class="img-wrap">
+            <img src="assets/adrenal/lesion_myelolipoma.png" alt="Adrenal myelolipoma US + CT/MRI" onclick="zoom(this)">
+            <div class="img-caption">Adrenal myelolipoma — hyperechoic on US, macroscopic fat on CT</div>
+        </div>
+    </div>
+
+    <!-- Cyst -->
+    <div class="lesion-card">
+        <div class="lesion-title">Adrenal Cyst <span class="badge badge-green">benign</span></div>
+        <ul>
+            <li><strong>US:</strong> Anechoic, thin wall, posterior acoustic enhancement — classic simple cyst criteria.</li>
+            <li><strong>CT:</strong> Water density (&lt; 20 HU), no enhancement.</li>
+            <li><strong>MRI:</strong> T1 dark / T2 very bright; no enhancement; no diffusion restriction.</li>
+        </ul>
+        <div class="img-wrap">
+            <img src="assets/adrenal/lesion_cyst.png" alt="Adrenal cyst US + CT/MRI" onclick="zoom(this)">
+            <div class="img-caption">Adrenal cyst — anechoic on US, water density on CT, T2-bright on MRI</div>
+        </div>
+    </div>
+
+    <!-- Pheochromocytoma -->
+    <div class="lesion-card">
+        <div class="lesion-title">Pheochromocytoma <span class="badge badge-orange">functional / potentially malignant</span></div>
+        <ul>
+            <li><strong>US:</strong> Usually large (&gt; 3 cm) when symptomatic; heterogeneous, mixed echogenicity (necrosis/haemorrhage). <em>≈ 90% detectable by US.</em></li>
+            <li><strong>CT:</strong> &gt; 40 HU (can exceed 150 HU); heterogeneous; no reliable washout.</li>
+            <li><strong>MRI:</strong> T1 isointense; <strong>T2 "lightbulb bright"</strong>; strong heterogeneous enhancement; no OOP signal drop.</li>
+        </ul>
+        <div class="img-row">
+            <div class="img-block">
+                <img src="assets/adrenal/lesion_pheo_1.png" alt="Pheochromocytoma image 1" onclick="zoom(this)">
+                <div class="img-caption">Pheochromocytoma — US or CT appearance</div>
+            </div>
+            <div class="img-block">
+                <img src="assets/adrenal/lesion_pheo_2.png" alt="Pheochromocytoma image 2" onclick="zoom(this)">
+                <div class="img-caption">Pheochromocytoma — CT/MRI appearance (heterogeneous, T2-bright)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metastasis -->
+    <div class="lesion-card">
+        <div class="lesion-title">Adrenal Metastasis <span class="badge badge-red">malignant</span></div>
+        <ul>
+            <li><strong>US:</strong> Hypoechoic mass, often bilateral; irregular margin. Pitfall: distinguish from renal cortical cyst.</li>
+            <li><strong>CT:</strong> &gt; 10 HU, irregular margin; peripheral/irregular enhancement; <em>slow washout</em> (APW &lt; 60%).</li>
+            <li><strong>MRI:</strong> T1 low / T2 intermediate-high; no OOP signal drop; diffusion restriction in aggressive lesions.</li>
+            <li><strong>Common primaries:</strong> Lung, breast, RCC, melanoma, colon.</li>
+            <li><strong>Note:</strong> Echogenicity alone cannot distinguish malignant from benign on US.</li>
+        </ul>
+        <div class="img-row">
+            <div class="img-block">
+                <img src="assets/adrenal/lesion_mets_1.png" alt="Adrenal metastasis image 1" onclick="zoom(this)">
+                <div class="img-caption">Adrenal metastasis — hypoechoic US or CT appearance</div>
+            </div>
+            <div class="img-block">
+                <img src="assets/adrenal/lesion_mets_2.png" alt="Adrenal metastasis image 2" onclick="zoom(this)">
+                <div class="img-caption">Adrenal metastasis — CT/MRI: irregular margin, slow washout</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+function zoom(el){ document.getElementById('lb-img').src=el.src; document.getElementById('lb-overlay').classList.add('open'); }
+</script>
+</body>
+</html>

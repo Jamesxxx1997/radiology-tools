@@ -11,21 +11,39 @@
   .src-banner a { color:inherit; font-weight:bold; }
   iframe { width:100%; border:none; display:block; background:#f8fafc; }
   .divider { max-width:1300px; margin:34px auto; border-top:2px dashed #cbd5e1; }
+  .jump-nav { position:sticky; top:0; z-index:50; background:#1e293b; display:flex; gap:10px; justify-content:center; padding:9px 8px; flex-wrap:wrap; }
+  .jump-nav a { color:#e2e8f0; text-decoration:none; font-size:0.85rem; font-weight:600; background:#334155; padding:6px 13px; border-radius:6px; transition:0.15s; }
+  .jump-nav a:hover { background:#0ea5e9; color:#fff; }
+  .src-banner { scroll-margin-top:52px; }
 </style>
 </head>
 <body>
-  <div class="src-banner src-senior">📘 <b>Section 1 — Dr. Irene Lee (學姊)</b> · adapted from her <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank">original meta-site</a>.</div>
+  <div class="jump-nav">
+    <a href="#sec1">📘 學姊 DDx Tree</a>
+    <a href="#sec2">📗 MRI Chemical-Shift</a>
+    <a href="#sec3">📗 US Technique &amp; Lesions</a>
+  </div>
+
+  <div id="sec1" class="src-banner src-senior">📘 <b>Section 1 — Dr. Irene Lee (學姊)</b> · adapted from her <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank">original meta-site</a>.</div>
   <iframe id="seniorFrame" src="senior/adrenal_glands.html" scrolling="no"></iframe>
+
   <div class="divider"></div>
-  <div class="src-banner src-mine">📗 <b>Section 2 — jamesxxx1997</b> · built &amp; distilled from my own imaging notes.</div>
+
+  <div id="sec2" class="src-banner src-mine">📗 <b>Section 2 — jamesxxx1997</b> · MRI chemical-shift first approach, signal-drop calculator, quick reference table.</div>
   <iframe id="mineFrame" src="mine/adrenal_glands.html" scrolling="no"></iframe>
+
+  <div class="divider"></div>
+
+  <div id="sec3" class="src-banner src-mine">📗 <b>Section 3 — jamesxxx1997</b> · US role &amp; limitations, scanning technique (R &amp; L), lesion imaging features with US + CT/MRI images.</div>
+  <iframe id="usFrame" src="mine/adrenal_us.html" scrolling="no"></iframe>
+
   <script>
     function fit(f){ try { var d=f.contentDocument||f.contentWindow.document; if(d&&d.body){ f.style.height=(d.body.scrollHeight+40)+'px'; } } catch(e){} }
-    ['seniorFrame','mineFrame'].forEach(function(id){
+    ['seniorFrame','mineFrame','usFrame'].forEach(function(id){
       var f=document.getElementById(id);
       f.addEventListener('load', function(){ fit(f); [400,1200,2500,4000].forEach(function(t){ setTimeout(function(){ fit(f); }, t); }); });
     });
-    window.addEventListener('resize', function(){ ['seniorFrame','mineFrame'].forEach(function(id){ fit(document.getElementById(id)); }); });
+    window.addEventListener('resize', function(){ ['seniorFrame','mineFrame','usFrame'].forEach(function(id){ fit(document.getElementById(id)); }); });
   </script>
 </body>
 </html>
