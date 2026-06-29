@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bile Duct Ultrasound — jamesxxx1997 notes</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-top: 6px solid #10b981; }
+        h1, h2 { color: #064e3b; text-align: center; }
+        h1 .tag { font-size: 0.95rem; color: #10b981; font-weight: 600; }
+        h3 { color: #047857; margin: 0 0 10px; font-size: 1rem; }
+        .card { border: 1px solid #d1fae5; padding: 20px 24px; border-radius: 8px; margin-bottom: 22px; background: #f8fefb; }
+        .section-title { font-size: 1.25rem; font-weight: 700; color: #064e3b; margin: 28px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #a7f3d0; }
+        ul { margin: 6px 0 0 0; padding-left: 20px; line-height: 1.75; color: #1e293b; }
+        li { margin-bottom: 4px; }
+        .sub-label { font-weight: 700; color: #059669; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 10px; }
+        th, td { border: 1px solid #d1fae5; padding: 8px 11px; text-align: left; vertical-align: top; }
+        th { background: #d1fae5; color: #064e3b; font-weight: 700; }
+        tr:nth-child(even) { background: #f0fdf4; }
+        .step-block { counter-reset: step-counter; }
+        .step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+        .step-num { min-width: 26px; height: 26px; border-radius: 50%; background: #059669; color: white; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .step-body { line-height: 1.65; color: #1e293b; }
+        .highlight-box { background: #ecfdf5; border-left: 4px solid #10b981; padding: 10px 14px; border-radius: 4px; margin-top: 12px; font-size: 0.9rem; color: #064e3b; line-height: 1.65; }
+        .warn-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 14px; border-radius: 4px; margin-top: 12px; font-size: 0.9rem; color: #78350f; line-height: 1.65; }
+        .badge { display: inline-block; background: #d1fae5; color: #047857; font-size: 0.78rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; margin-left: 6px; vertical-align: middle; }
+        .badge-gray { background: #f1f5f9; color: #475569; }
+        .img-wrap { text-align: center; margin: 14px 0 4px; }
+        .img-wrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #d1fae5; }
+        .img-caption { text-align: center; font-size: 0.8rem; color: #64748b; margin-top: 5px; }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        @media (max-width: 780px) { .two-col { grid-template-columns: 1fr; } }
+        p.intro { text-align: center; color: #475569; max-width: 820px; margin: 0 auto 24px; font-size: 0.92rem; line-height: 1.6; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Bile Duct Ultrasound <span class="tag">· jamesxxx1997</span></h1>
+    <p class="intro">Practical US guide to intrahepatic (IHD) and extrahepatic (EHD/CBD) bile ducts — measurement references, dilatation signs, and scanning technique. Distilled from imaging notes.</p>
+
+    <!-- =========================================================
+         SECTION 1 · IHD
+    ========================================================= -->
+    <div class="section-title">Intrahepatic Duct (IHD)</div>
+
+    <!-- Measurement -->
+    <div class="card">
+        <h3>Measurement</h3>
+        <ul>
+            <li>Measure at the <strong>portal bifurcation</strong> — max anterior-posterior diameter, <strong>inner wall to inner wall</strong>.</li>
+            <li>ACR–AIUM–SPR–SRU practice parameter: standard measurement point is the <strong>common hepatic duct (CHD) at the porta hepatis</strong>.</li>
+            <li>Do <em>not</em> compare IHD to adjacent portal vein diameter to judge size (not validated by literature).</li>
+        </ul>
+    </div>
+
+    <!-- IHD vs PV orientation -->
+    <div class="card">
+        <h3>IHD position relative to Portal Vein — teaching mnemonic vs reality</h3>
+        <div class="warn-box">
+            <strong>Mnemonic (screen-based):</strong> Left IHD lies <em>inferior</em> to left PV; Right IHD lies <em>superior</em> to right PV.<br>
+            This is a useful scan-room memory aid for a specific probe orientation — <strong>not a fixed anatomical rule</strong>.
+        </div>
+        <div class="highlight-box">
+            <strong>Anatomically stable relationship:</strong> IHD branches run parallel to PV branches and are generally located on the <strong>ventral / anterior</strong> side of the PV — regardless of screen up/down, which changes with probe angulation and patient position.
+        </div>
+    </div>
+
+    <!-- IHD dilatation signs -->
+    <div class="card">
+        <h3>US Signs of IHD Dilatation</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sign</th>
+                    <th>Prevalence</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Double-barrel shotgun sign</strong></td>
+                    <td><span class="badge">96%</span></td>
+                    <td>Dilated bile duct runs parallel alongside portal vein, forming a double-lumen / twin-tube appearance. <em>Most reliable sign of IHD dilatation.</em></td>
+                </tr>
+                <tr>
+                    <td><strong>Stellate confluence</strong></td>
+                    <td><span class="badge badge-gray">66%</span></td>
+                    <td>At major duct junctions, multiple dilated ducts converge in a spoke-of-wheel / star-burst pattern. Highly specific but less sensitive.</td>
+                </tr>
+                <tr>
+                    <td><strong>Irregular wall</strong></td>
+                    <td><span class="badge badge-gray">62%</span></td>
+                    <td>Wall irregularity along dilated ducts (see image below).</td>
+                </tr>
+                <tr>
+                    <td><strong>Peripheral duct dilatation</strong></td>
+                    <td><span class="badge badge-gray">28%</span></td>
+                    <td>Ducts extend to within 3 cm of liver edge. (Normal PV branches rarely reach the liver periphery.)</td>
+                </tr>
+                <tr>
+                    <td><strong>IHD &gt; 40% of adjacent PV</strong></td>
+                    <td>—</td>
+                    <td>Rule-of-thumb threshold when IHD diameter exceeds 40% of the adjacent PV branch diameter.</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="img-wrap">
+            <img src="assets/bile_duct/ihd_irregular_wall.png" alt="IHD irregular wall sign">
+            <div class="img-caption">Irregular wall of dilated intrahepatic bile duct</div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         SECTION 2 · EHD / CBD
+    ========================================================= -->
+    <div class="section-title">Extrahepatic Duct (EHD / CBD)</div>
+
+    <!-- Anatomy -->
+    <div class="card">
+        <h3>Anatomy &amp; Orientation</h3>
+        <ul>
+            <li>CBD runs <strong>parallel to the IVC</strong> in the same sagittal plane for most of its course.</li>
+            <li>Just before entering the duodenum it curves <strong>rightward and slightly anteriorly</strong>.</li>
+            <li>Clinically: think of the CBD as a vertical tube sitting just anterior to the IVC until it dips into the pancreatic head.</li>
+        </ul>
+    </div>
+
+    <!-- Scanning techniques -->
+    <div class="two-col">
+        <div class="card">
+            <h3>Finding CBD — Transverse Approach</h3>
+            <div class="step-block">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">Identify the <strong>pancreatic head</strong> on transverse scan.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">Fine-tune until a single slice shows <strong>gallbladder + duodenum + pancreas head + IVC</strong> simultaneously — the CBD cross-section is always within this view.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">Slide the probe <strong>cephalad</strong> (toward liver). Pancreas fades away; CBD cross-section persists as you trace it up to the porta hepatis.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Finding CBD — Longitudinal Approach</h3>
+            <div class="step-block">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">Start same as transverse — confirm CBD position on transverse first.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-body"><strong>Rotate probe in-place to longitudinal</strong> — the CBD cross-section unfolds into a long-axis view.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-body"><strong>Alternative:</strong> Place probe directly over the IVC sagittal plane — you will see pancreatic head, CBD long axis, and a portal vein cross-section simultaneously.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Measurement -->
+    <div class="card">
+        <h3>Measurement</h3>
+        <ul>
+            <li><strong>Avoid cystic duct junction:</strong> The cystic duct inserts into the CBD and locally widens it. Stay at least <strong>10 mm away from the junction on both sides</strong> to avoid overestimation.</li>
+            <li><strong>Report the maximum AP diameter</strong> (widest diameter along the longitudinal scan), measured <strong>inner wall to inner wall</strong>.</li>
+            <li><strong>Primary reporting site:</strong> CBD near the <strong>porta hepatis</strong>.</li>
+            <li>Also evaluate the <strong>distal CBD at the pancreatic head</strong> — do not skip this segment.</li>
+        </ul>
+        <div class="highlight-box">
+            ACR–AIUM–SPR–SRU standard measurement: <em>common hepatic duct at the porta hepatis</em> (anteroposterior inner-wall-to-inner-wall diameter).
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

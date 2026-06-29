@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gallbladder &amp; Bile Duct — jamesxxx1997</title>
+<style>
+  body { font-family:'Segoe UI',sans-serif; background:#f8fafc; margin:0; }
+  .src-banner { max-width:1400px; margin:18px auto 0; padding:12px 20px; border-radius:8px; font-size:0.97rem; line-height:1.5; }
+  .src-mine { background:#dcfce7; border-left:6px solid #10b981; color:#047857; }
+  .src-banner a { color:inherit; font-weight:bold; }
+  iframe { width:100%; border:none; display:block; background:#f8fafc; }
+  .divider { max-width:1300px; margin:34px auto; border-top:2px dashed #cbd5e1; }
+  .jump-nav { position:sticky; top:0; z-index:50; background:#1e293b; display:flex; gap:10px; justify-content:center; padding:9px 8px; flex-wrap:wrap; }
+  .jump-nav a { color:#e2e8f0; text-decoration:none; font-size:0.85rem; font-weight:600; background:#334155; padding:6px 13px; border-radius:6px; transition:0.15s; }
+  .jump-nav a:hover { background:#10b981; color:#fff; }
+  .src-banner { scroll-margin-top:52px; }
+</style>
+</head>
+<body>
+  <div class="jump-nav">
+    <a href="#sec-bile-duct">📗 Bile Duct US</a>
+  </div>
+  <div id="sec-bile-duct" class="src-banner src-mine">📗 <b>Bile Duct</b> — jamesxxx1997 · IHD/EHD measurement, dilatation signs, scanning technique.</div>
+  <iframe id="bileDuctFrame" src="mine/bile_duct.html" scrolling="no"></iframe>
+  <script>
+    function fit(f){ try { var d=f.contentDocument||f.contentWindow.document; if(d&&d.body){ f.style.height=(d.body.scrollHeight+40)+'px'; } } catch(e){} }
+    var f=document.getElementById('bileDuctFrame');
+    f.addEventListener('load', function(){ fit(f); [400,1200,2500,4000].forEach(function(t){ setTimeout(function(){ fit(f); }, t); }); });
+    window.addEventListener('resize', function(){ fit(f); });
+  </script>
+</body>
+</html>
