@@ -13,28 +13,36 @@
         .section-title { font-size: 1.25rem; font-weight: 700; color: #064e3b; margin: 28px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #a7f3d0; }
         ul { margin: 6px 0 0 0; padding-left: 20px; line-height: 1.75; color: #1e293b; }
         li { margin-bottom: 4px; }
-        .sub-label { font-weight: 700; color: #059669; }
         table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 10px; }
         th, td { border: 1px solid #d1fae5; padding: 8px 11px; text-align: left; vertical-align: top; }
         th { background: #d1fae5; color: #064e3b; font-weight: 700; }
         tr:nth-child(even) { background: #f0fdf4; }
-        .step-block { counter-reset: step-counter; }
-        .step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
-        .step-num { min-width: 26px; height: 26px; border-radius: 50%; background: #059669; color: white; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-        .step-body { line-height: 1.65; color: #1e293b; }
         .highlight-box { background: #ecfdf5; border-left: 4px solid #10b981; padding: 10px 14px; border-radius: 4px; margin-top: 12px; font-size: 0.9rem; color: #064e3b; line-height: 1.65; }
         .warn-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 14px; border-radius: 4px; margin-top: 12px; font-size: 0.9rem; color: #78350f; line-height: 1.65; }
         .badge { display: inline-block; background: #d1fae5; color: #047857; font-size: 0.78rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; margin-left: 6px; vertical-align: middle; }
         .badge-gray { background: #f1f5f9; color: #475569; }
         .img-wrap { text-align: center; margin: 14px 0 4px; }
-        .img-wrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #d1fae5; }
-        .img-caption { text-align: center; font-size: 0.8rem; color: #64748b; margin-top: 5px; }
+        .img-wrap img { max-width: 100%; max-height: 360px; border-radius: 8px; border: 1px solid #d1fae5; cursor: zoom-in; }
+        .img-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin: 14px 0 4px; }
+        .img-block { text-align: center; flex: 1 1 200px; max-width: 320px; }
+        .img-block img { max-width: 100%; border-radius: 8px; border: 1px solid #d1fae5; cursor: zoom-in; }
+        .img-caption { font-size: 0.8rem; color: #64748b; margin-top: 5px; }
+        .step-block { }
+        .step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+        .step-num { min-width: 26px; height: 26px; border-radius: 50%; background: #059669; color: white; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .step-body { line-height: 1.65; color: #1e293b; }
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         @media (max-width: 780px) { .two-col { grid-template-columns: 1fr; } }
         p.intro { text-align: center; color: #475569; max-width: 820px; margin: 0 auto 24px; font-size: 0.92rem; line-height: 1.6; }
+        /* lightbox */
+        #lb-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; }
+        #lb-overlay.open { display:flex; }
+        #lb-overlay img { max-width:92vw; max-height:92vh; border-radius:8px; }
+        #lb-overlay:after { content:'✕'; position:fixed; top:18px; right:26px; color:#fff; font-size:2rem; cursor:pointer; }
     </style>
 </head>
 <body>
+<div id="lb-overlay" onclick="this.classList.remove('open')"><img id="lb-img" src="" alt=""></div>
 <div class="container">
     <h1>Bile Duct Ultrasound <span class="tag">· jamesxxx1997</span></h1>
     <p class="intro">Practical US guide to intrahepatic (IHD) and extrahepatic (EHD/CBD) bile ducts — measurement references, dilatation signs, and scanning technique. Distilled from imaging notes.</p>
@@ -91,7 +99,7 @@
                 <tr>
                     <td><strong>Irregular wall</strong></td>
                     <td><span class="badge badge-gray">62%</span></td>
-                    <td>Wall irregularity along dilated ducts (see image below).</td>
+                    <td>Wall irregularity along dilated ducts.</td>
                 </tr>
                 <tr>
                     <td><strong>Peripheral duct dilatation</strong></td>
@@ -105,8 +113,31 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- Double-barrel shotgun images -->
+        <h3 style="margin-top:20px;">Double-barrel shotgun sign</h3>
+        <div class="img-row">
+            <div class="img-block">
+                <img src="assets/bile_duct/ihd_shotgun_left.png" alt="Double-barrel shotgun sign — left liver" onclick="zoom(this)">
+                <div class="img-caption">Left liver — dilated IHD (arrow) running parallel to PV branch; 0.4 cm</div>
+            </div>
+            <div class="img-block">
+                <img src="assets/bile_duct/ihd_shotgun_right.png" alt="Double-barrel shotgun sign — right liver" onclick="zoom(this)">
+                <div class="img-caption">Right liver — multiple dilated IHD segments (arrows) alongside PV branches</div>
+            </div>
+        </div>
+
+        <!-- Stellate confluence image -->
+        <h3 style="margin-top:20px;">Stellate confluence &amp; other imaging modalities</h3>
         <div class="img-wrap">
-            <img src="assets/bile_duct/ihd_irregular_wall.png" alt="IHD irregular wall sign">
+            <img src="assets/bile_duct/ihd_stellate.png" alt="Stellate confluence" onclick="zoom(this)">
+            <div class="img-caption">(A) US: double-barrel sign; (B) US: stellate confluence — circles mark spoke-of-wheel convergence; (C) CT: dilated IHD; (D) Cholangiogram: biliary tree</div>
+        </div>
+
+        <!-- Irregular wall image -->
+        <h3 style="margin-top:20px;">Irregular wall</h3>
+        <div class="img-wrap">
+            <img src="assets/bile_duct/ihd_irregular_wall.png" alt="IHD irregular wall sign" onclick="zoom(this)">
             <div class="img-caption">Irregular wall of dilated intrahepatic bile duct</div>
         </div>
     </div>
@@ -137,12 +168,16 @@
                 </div>
                 <div class="step">
                     <div class="step-num">2</div>
-                    <div class="step-body">Fine-tune until a single slice shows <strong>gallbladder + duodenum + pancreas head + IVC</strong> simultaneously — the CBD cross-section is always within this view.</div>
+                    <div class="step-body">Fine-tune until a single slice shows <strong>GB + duodenum + pancreas head + IVC</strong> simultaneously — the CBD cross-section is always within this view.</div>
                 </div>
                 <div class="step">
                     <div class="step-num">3</div>
                     <div class="step-body">Slide the probe <strong>cephalad</strong> (toward liver). Pancreas fades away; CBD cross-section persists as you trace it up to the porta hepatis.</div>
                 </div>
+            </div>
+            <div class="img-wrap" style="margin-top:14px;">
+                <img src="assets/bile_duct/cbd_transverse.png" alt="CBD transverse approach Fig 7.40" onclick="zoom(this)">
+                <div class="img-caption">Fig 7.40 — (a) Transverse: pancreas head (Ph) between GB (Gb), IVC (Vc), SMV (Vms); CBD visible in cross-section (→). (b) Probe moved cephalad: pancreas disappears, CBD cross-section persists. (c) Higher level: CBD confluence (C) with IVC.</div>
             </div>
         </div>
 
@@ -162,6 +197,10 @@
                     <div class="step-body"><strong>Alternative:</strong> Place probe directly over the IVC sagittal plane — you will see pancreatic head, CBD long axis, and a portal vein cross-section simultaneously.</div>
                 </div>
             </div>
+            <div class="img-wrap" style="margin-top:14px;">
+                <img src="assets/bile_duct/cbd_longitudinal.png" alt="CBD longitudinal approach Fig 7.42" onclick="zoom(this)">
+                <div class="img-caption">Fig 7.42 — (a) Transverse start: pancreas head (Ph), CBD (→), IVC (Vc). (b) Probe rotated intermediate: CBD (→) in long-axis with IVC. (c) Sagittal over IVC: pancreas head (Ph), CBD (↓), portal vein (Vp) all in one view.</div>
+            </div>
         </div>
     </div>
 
@@ -174,11 +213,18 @@
             <li><strong>Primary reporting site:</strong> CBD near the <strong>porta hepatis</strong>.</li>
             <li>Also evaluate the <strong>distal CBD at the pancreatic head</strong> — do not skip this segment.</li>
         </ul>
-        <div class="highlight-box">
+        <div class="img-wrap">
+            <img src="assets/bile_duct/cbd_cystic_junction.png" alt="Cystic duct junction measurement" onclick="zoom(this)">
+            <div class="img-caption">Avoid the cystic duct insertion (B = junction; A = CBD measured 10 mm proximal; C = CBD measured 10 mm distal). Measuring at B would overestimate CBD diameter.</div>
+        </div>
+        <div class="highlight-box" style="margin-top:14px;">
             ACR–AIUM–SPR–SRU standard measurement: <em>common hepatic duct at the porta hepatis</em> (anteroposterior inner-wall-to-inner-wall diameter).
         </div>
     </div>
 
 </div>
+<script>
+function zoom(el){ document.getElementById('lb-img').src=el.src; document.getElementById('lb-overlay').classList.add('open'); }
+</script>
 </body>
 </html>
