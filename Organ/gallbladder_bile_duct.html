@@ -18,15 +18,25 @@
 </head>
 <body>
   <div class="jump-nav">
+    <a href="#sec-gallbladder">📗 Gallbladder US</a>
     <a href="#sec-bile-duct">📗 Bile Duct US</a>
   </div>
+
+  <div id="sec-gallbladder" class="src-banner src-mine">📗 <b>Gallbladder</b> — jamesxxx1997 · preparation, technique, normal values, variants, wall thickening DDx.</div>
+  <iframe id="gbFrame" src="mine/gallbladder.html" scrolling="no"></iframe>
+
+  <div class="divider"></div>
+
   <div id="sec-bile-duct" class="src-banner src-mine">📗 <b>Bile Duct</b> — jamesxxx1997 · IHD/EHD measurement, dilatation signs, scanning technique.</div>
   <iframe id="bileDuctFrame" src="mine/bile_duct.html" scrolling="no"></iframe>
+
   <script>
     function fit(f){ try { var d=f.contentDocument||f.contentWindow.document; if(d&&d.body){ f.style.height=(d.body.scrollHeight+40)+'px'; } } catch(e){} }
-    var f=document.getElementById('bileDuctFrame');
-    f.addEventListener('load', function(){ fit(f); [400,1200,2500,4000].forEach(function(t){ setTimeout(function(){ fit(f); }, t); }); });
-    window.addEventListener('resize', function(){ fit(f); });
+    ['gbFrame','bileDuctFrame'].forEach(function(id){
+      var f=document.getElementById(id);
+      f.addEventListener('load', function(){ fit(f); [400,1200,2500,4000].forEach(function(t){ setTimeout(function(){ fit(f); }, t); }); });
+    });
+    window.addEventListener('resize', function(){ ['gbFrame','bileDuctFrame'].forEach(function(id){ fit(document.getElementById(id)); }); });
   </script>
 </body>
 </html>
