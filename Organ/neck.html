@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>頸部淋巴結超音波評估 · Cervical LN Level Map</title>
+<style>
+  :root{
+    --bg:#0f1720; --panel:#16212e; --panel2:#1d2b3a; --ink:#e8eef5; --muted:#9fb0c3;
+    --line:#2b3d52; --accent:#4ea1ff; --warn:#ff8a5c; --danger:#ff5d6c; --good:#46c98b;
+    --green:#5cc85c; --blue:#4a86e8; --red:#e8607a; --orange:#f0a860; --magenta:#d15fd1;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"PingFang TC","Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased}
+  header{padding:26px 20px 16px;text-align:center;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#16212e,#0f1720)}
+  header h1{margin:0 0 4px;font-size:1.5rem;letter-spacing:.5px}
+  header p{margin:0;color:var(--muted);font-size:.9rem}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px 16px 60px}
+  section{margin-top:34px}
+  h2{font-size:1.2rem;border-left:4px solid var(--accent);padding-left:10px;margin:0 0 14px}
+  h3{font-size:1rem;color:var(--accent);margin:22px 0 8px}
+  .lead{color:var(--muted);font-size:.9rem;margin:-6px 0 14px}
+
+  /* ---- interactive map ---- */
+  .maprow{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+  @media(max-width:820px){.maprow{grid-template-columns:1fr}}
+  .mapbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;position:relative}
+  .mapbox svg{width:100%;height:auto;display:block;border-radius:8px}
+  .zone{fill:transparent;stroke:transparent;stroke-width:2;cursor:pointer;transition:.15s}
+  .zone:hover{fill:rgba(78,161,255,.28);stroke:#fff}
+  .zone.active{fill:rgba(78,161,255,.42);stroke:#fff;stroke-width:2.5}
+  .bord{fill:none;stroke:transparent;stroke-width:12;cursor:pointer}
+  .bord-vis{fill:none;stroke:#ff3b5c;stroke-width:2.2;stroke-dasharray:5 4;pointer-events:none;opacity:.0;transition:.15s}
+  .bord:hover + .bord-vis,.bord.active + .bord-vis{opacity:1}
+  .hint{font-size:.82rem;color:var(--muted);margin:8px 2px 0;text-align:center}
+
+  .info{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;min-height:260px;position:sticky;top:14px}
+  .info .badge{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.4px}
+  .b-level{background:rgba(70,201,139,.18);color:var(--good)}
+  .b-border{background:rgba(255,138,92,.18);color:var(--warn)}
+  .info h3{margin:12px 0 6px;color:var(--ink);font-size:1.18rem}
+  .info .sub{color:var(--accent);font-size:.86rem;margin:0 0 10px}
+  .info p{margin:8px 0;font-size:.94rem}
+  .info .warn{background:rgba(255,93,108,.1);border-left:3px solid var(--danger);padding:8px 11px;border-radius:0 8px 8px 0;font-size:.9rem}
+  .info .empty{color:var(--muted);font-size:.9rem;padding-top:30px;text-align:center}
+
+  /* ---- cards / tables ---- */
+  table{width:100%;border-collapse:collapse;font-size:.88rem;overflow:hidden;border-radius:10px}
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+  th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--panel2);font-weight:600;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;font-size:.74rem;padding:1px 7px;border-radius:12px;margin:1px 0}
+  .p-spec{background:rgba(70,201,139,.16);color:var(--good)}
+  .p-sens{background:rgba(78,161,255,.16);color:var(--accent)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .card h4{margin:0 0 6px;font-size:.98rem}
+  .card.hi{border-color:rgba(70,201,139,.5)}
+  .card.warn{border-color:rgba(255,93,108,.45)}
+  .card p{margin:4px 0;font-size:.88rem;color:var(--ink)}
+  .card small{color:var(--muted)}
+
+  /* ---- feature images ---- */
+  .gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+  figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  figure img{width:100%;height:170px;object-fit:cover;display:block;cursor:zoom-in;background:#000}
+  figcaption{padding:9px 12px;font-size:.84rem;color:var(--muted)}
+  figcaption b{color:var(--ink)}
+
+  /* ---- bar chart ---- */
+  .bars{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+  .bar{display:grid;grid-template-columns:120px 1fr 44px;align-items:center;gap:10px;font-size:.86rem}
+  .bar .track{background:var(--panel2);border-radius:6px;height:16px;overflow:hidden}
+  .bar .fill{height:100%;background:linear-gradient(90deg,#4a86e8,#4ea1ff);border-radius:6px}
+
+  /* ---- lightbox ---- */
+  .lb{position:fixed;inset:0;background:rgba(4,8,14,.92);display:none;align-items:center;justify-content:center;z-index:99;padding:24px;cursor:zoom-out}
+  .lb.open{display:flex}
+  .lb img{max-width:96%;max-height:88%;border-radius:8px}
+  .lb .cap{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:#cdd8e4;font-size:.9rem;padding:0 20px}
+
+  footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.78rem}
+  footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <h1>頸部淋巴結超音波評估</h1>
+  <p>互動 Level Map · 惡性特徵辨識 · 甲狀腺癌淋巴評估 · 流行病學</p>
+</header>
+
+<div class="wrap">
+
+  <div style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.45);border-left:4px solid #10b981;border-radius:8px;padding:9px 14px;font-size:.85rem;color:#8fe6bf">
+    📗 <b>jamesxxx1997</b> — 由本人影像筆記整理製作。
+  </div>
+
+  <!-- ============ 1. INTERACTIVE MAP ============ -->
+  <section id="map">
+    <h2>一、互動 Level Map</h2>
+    <p class="lead">點<b>色塊內部</b>看該區的原發腫瘤引流來源；點<b>邊界線</b>看該界標與它分隔的 level。</p>
+    <div class="maprow">
+      <div>
+        <div class="mapbox">
+          <svg viewBox="0 0 630 630" id="svgmap" aria-label="cervical lymph node level map">
+            <image href="assets/neck/base_map.jpeg" x="0" y="0" width="630" height="630"/>
+            <!-- borders (wide invisible hit + thin dashed visual) -->
+            <g id="borders"></g>
+            <!-- level zones -->
+            <g id="zones"></g>
+          </svg>
+        </div>
+        <p class="hint">滑鼠移過會highlight；手機直接點。</p>
+      </div>
+      <div class="info" id="info">
+        <div class="empty">← 點地圖上的任一 level 或邊界</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. MALIGNANT FEATURES ============ -->
+  <section id="features">
+    <h2>二、惡性淋巴結特徵辨識</h2>
+    <p class="lead">超音波特徵的敏感度 / 特異性（整理自 ATA 2015 指引與 Chung 等人歐韓比較研究）。</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>超音波特徵</th><th>ATA 2015</th><th>Chung 等人</th><th>臨床意義</th></tr></thead>
+        <tbody>
+          <tr><td><b>囊性變</b><br>Cystic change</td>
+            <td><span class="pill p-spec">Spec 91–100%</span></td>
+            <td><span class="pill p-sens">Sens 25.8%</span> <span class="pill p-spec">Spec 99.6%</span></td>
+            <td>特異性極高，出現時<b>高度懷疑</b>惡性（仍須鑑別感染、壞死性 SCC、branchial cleft cyst）；敏感度低。</td></tr>
+          <tr><td><b>微鈣化 / 點狀高回音</b><br>Microcalc / PEF</td>
+            <td><span class="pill p-spec">Spec 93–100%</span></td>
+            <td><span class="pill p-sens">Sens 51.9%</span> <span class="pill p-spec">Spec 86.8%</span></td>
+            <td>甲狀腺癌淋巴轉移典型徵象，一旦出現強烈提示惡性。</td></tr>
+          <tr><td><b>周邊 / 異常血流</b><br>Peripheral vascularity</td>
+            <td><span class="pill p-sens">Sens 40–86%</span> <span class="pill p-spec">Spec 57–93%</span></td>
+            <td><span class="pill p-sens">Sens 67.7%</span> <span class="pill p-spec">Spec 94%</span></td>
+            <td>最佳的敏感度／特異性折衷指標。</td></tr>
+          <tr><td><b>皮質高回音</b><br>Hyperechoic cortex</td>
+            <td><span class="pill p-sens">Sens 30–87%</span> <span class="pill p-spec">Spec 43–95%</span></td>
+            <td><span class="pill p-sens">Sens 83.8%</span> <span class="pill p-spec">Spec 86.8%</span></td>
+            <td>某些研究為獨立預測因子（整體準確率 84.7%）；診斷效能依研究族群而異。</td></tr>
+          <tr><td><b>肺門消失</b><br>Loss of fatty hilum</td>
+            <td><span class="pill p-sens">Sens 100%</span> <span class="pill p-spec">Spec 29%</span></td>
+            <td><span class="pill p-sens">Sens 85.5%</span> <span class="pill p-spec">Spec 66.4%</span></td>
+            <td>敏感度高、特異性低。脂肪肺門存在<b>支持良性但非單一排除條件</b>；年輕人或 Level V 正常結也常無肺門。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid" style="margin-top:16px">
+      <div class="card hi"><h4>特異性 ~100%（高度懷疑惡性）</h4>
+        <p>看到 <b>微鈣化</b> 或 <b>囊性變</b> → <b>高度懷疑</b>惡性轉移，需 FNA／細胞學／Tg washout 或臨床脈絡確認（囊性病灶仍須排除感染、壞死性 SCC、branchial cleft cyst）。敏感度低。</p></div>
+      <div class="card hi"><h4>脂肪肺門存在 → 偏良性</h4>
+        <p>完整的 <b>高回音脂肪肺門</b> 支持良性，但<b>不能作為單一排除條件</b>——肺門消失敏感、特異性低，須合併囊性變、微鈣化、周邊血流、皮質變化與大小綜合判讀。</p></div>
+      <div class="card warn"><h4>微鈣化 → 鑑別診斷</h4>
+        <p>甲狀腺<b>乳突癌 (PTC) 50–69%</b>、<b>髓質癌 (MTC) 69–75%</b> 會出現微鈣化；少數 p16 陽性口咽鱗癌亦可鈣化。超音波偵測微鈣化比 CT 更敏感。</p></div>
+      <div class="card warn"><h4>囊性 → 兩大來源</h4>
+        <p>HPV(p16+) 口咽癌（35% 囊性）、甲狀腺乳突癌（20–50% 囊性，常合併微鈣化）。</p></div>
+      <div class="card warn"><h4>強烈高血流 → 想</h4>
+        <p>甲狀腺癌、神經內分泌腫瘤，甚至腎細胞癌 (RCC) 轉移。</p></div>
+    </div>
+
+    <h3>典型影像對照</h3>
+    <div class="gal" id="gallery"></div>
+  </section>
+
+  <!-- ============ 3. THYROID CANCER EVAL ============ -->
+  <section id="thyroid">
+    <h2>三、甲狀腺癌的頸部淋巴評估</h2>
+    <p class="lead">尺寸的角色已從「判斷良惡性」轉向「決定是否介入」。</p>
+    <div class="grid">
+      <div class="card"><h4>短軸 (Short axis)</h4>
+        <p>短軸 > 5 mm：在 DTC 術後研究（Leboulleux）中較特異（96%），<b>非 ATA 介入門檻</b>。</p>
+        <p>更小的可疑結可追蹤，增大或威脅重要結構再介入。</p>
+        <p><small>ETA：Level II 短軸 ≥ 8 mm、Level III/IV ≥ 5 mm 視為增大。</small></p></div>
+      <div class="card"><h4>手術／再手術門檻（ATA 2015）</h4>
+        <p>中央頸區 (Central)：<b>≥ 8 mm</b></p>
+        <p>側頸區 (Lateral)：<b>≥ 10 mm</b></p>
+        <p><small>此為已定位、多為證實的 persistent／recurrent 頸部轉移，行治療性 compartment dissection 的手術門檻，<b>非初次評估 FNA 門檻</b>。小於此、未危及重要結構者可積極監測，待結構性生長再處置。</small></p></div>
+      <div class="card"><h4>尺寸／形狀的定位</h4>
+        <p>多變量分析中，尺寸與 L/S ratio 皆<b>非獨立預測因子</b>。</p>
+        <p><small>主要用於決定是否介入，而非單獨判斷良惡性。</small></p></div>
+    </div>
+  </section>
+
+  <!-- ============ 4. EPIDEMIOLOGY ============ -->
+  <section id="epi">
+    <h2>四、頸部惡性淋巴結流行病學</h2>
+    <div class="grid">
+      <div class="card"><h4>整體轉移率</h4>
+        <p>頭頸部惡性腫瘤中 <b>37–49%</b> 會發生淋巴轉移。</p>
+        <p>僅約 <b>1%</b> 頸部轉移來自非頭頸部遠端原發。</p></div>
+      <div class="card"><h4>原發不明 (SCCUP)</h4>
+        <p>SCC 佔 <b>65–76%</b>。p16／HPV 陽性強烈指向隱匿的口咽原發（常在腭扁桃腺或舌根／舌扁桃）。</p>
+        <p><small>實際比例依 PET/CT、扁桃腺切除、TORS 流程而異（某些 series ~90%、腭扁桃腺 ~45%、舌根 ~44%）。</small></p></div>
+      <div class="card warn"><h4>p16 陷阱</h4>
+        <p>肺鱗癌可有 p16 陽性（Doxtader：7/20＝<b>35%</b>，但其 HPV 檢測陰性）→ p16 不能單獨證明口咽來源；下頸部 p16+ 結仍要當心肺等來源。</p></div>
+      <div class="card"><h4>特定引流傾向</h4>
+        <p>鼻咽癌常見咽後 (retropharyngeal) 淋巴結與 Level II，上後頸／Level V 亦可受累（retropharyngeal ≠ IIB/VA）。</p>
+        <p>舌根癌約 <b>29%</b> 呈雙側轉移。<small>（比例依 series 而異）</small></p></div>
+    </div>
+
+    <h3>鎖骨上淋巴結（非頭頸部原發）來源分布 <small style="font-weight:normal;color:var(--muted)">（依 series 而異）</small></h3>
+    <div class="bars" id="epibars"></div>
+  </section>
+
+  <footer>
+    <p>臨床教學輔助用途，非診斷依據。淋巴結分區邊界綜合自 Radiopaedia（F. Gaillard 2009, CC BY-NC-SA）。超音波特徵數據引自 ATA 2015 指引、Leboulleux 等人、Chung 等人歐韓比較研究，及頸部 CUP 影像評估文獻。示範超音波影像版權屬各原始著作。</p>
+  </footer>
+</div>
+
+<div class="lb" id="lightbox"><img id="lbimg" alt=""><div class="cap" id="lbcap"></div></div>
+
+<script>
+/* ---------- data ---------- */
+const LEVELS = {
+  Ia:{name:"Level Ia · 頦下 (Submental)",sub:"鑑別診斷 · 原發引流來源",body:"口腔前部（下唇、口底前部、舌尖）、下頷前牙齦。"},
+  Ib:{name:"Level Ib · 下頷下 (Submandibular)",sub:"鑑別診斷 · 原發引流來源",body:"下頷下腺本身、口腔前部、鼻腔、臉頰。",warn:"腮腺周圍淋巴結腫大時另想：頭皮、臉部皮膚、腮腺本身病變。"},
+  II:{name:"Level II · 上內頸靜脈鏈",sub:"鑑別診斷 · 原發引流來源",body:"口咽（腭扁桃腺、舌根）、鼻咽、下咽、口腔。含頸二腹肌淋巴結 (JD node)＝頸部常見最大結，可較大；部分病例肺門不明顯，勿只靠大小或單一形態過度診斷。",warn:"流病：鼻咽癌常轉移至 Level II 與咽後 (retropharyngeal) 淋巴結。"},
+  III:{name:"Level III · 中內頸靜脈鏈",sub:"鑑別診斷 · 原發引流來源",body:"口咽、下咽、喉；下咽癌特別易轉移到此。含頸肩胛舌骨肌淋巴結 (JOH node)，部分病例肺門不明顯。"},
+  IV:{name:"Level IV · 下內頸靜脈鏈",sub:"鑑別診斷 · 原發引流來源",body:"常見頭頸部來源：甲狀腺、下咽、喉、頸段食道。左側含 Virchow's node（胸管注入左靜脈角處）。",warn:"⚠ 孤立低頸／左鎖骨上結、尤其無明顯頭頸部原發時，需提高胸腔、乳房、腸胃道、婦科原發的警覺（非絕對）。"},
+  Va:{name:"Level Va · 後三角（上）",sub:"鑑別診斷 · 原發引流來源",body:"鼻咽、口咽（咽後側引流）、後枕部與頭皮（脊副神經鏈）。"},
+  Vb:{name:"Level Vb · 後三角（下）/ 鎖骨上",sub:"鑑別診斷 · 原發引流來源",body:"常見頭頸部來源：甲狀腺、下咽、喉、頸段食道；左側鎖骨上含 Virchow's node（胸管注入左靜脈角處）。",warn:"⚠ 孤立低頸／左鎖骨上結、尤其無明顯頭頸部原發時，需提高胸腔、乳房、腸胃道、婦科原發的警覺（非絕對）。"},
+  VI:{name:"Level VI · 中央區 (Central)",sub:"鑑別診斷 · 原發引流來源",body:"甲狀腺（含 Delphian / prelaryngeal node）、喉、下咽、頸段食道。"},
+  VII:{name:"Level VII · 上縱膈",sub:"範圍與鑑別診斷",body:"胸骨上切跡以下、至無名動脈／上縱膈範圍的 pretracheal／paratracheal／superior mediastinal nodes。引流來源：甲狀腺、頸段食道、氣管、下咽。"}
+};
+const BORDERS = {
+  hyoid:{name:"舌骨下緣 (Hyoid bone)",sub:"水平界標",body:"Level II / III 的上下分界；也是 Level VI 的上界；Level Ib 位於此線之上。"},
+  cricoid:{name:"環狀軟骨下緣 (Cricoid cartilage)",sub:"水平界標",body:"Level III / IV 分界；Level Va / Vb 分界。"},
+  scm_post:{name:"胸鎖乳突肌後緣 (SCM posterior border)",sub:"垂直界標",body:"分隔 深頸鏈（Level II / III / IV）與 後三角（Level V）。"},
+  scm_ant:{name:"胸鎖乳突肌前緣 (SCM anterior border)",sub:"垂直界標",body:"深頸鏈（II / III / IV）的前界。於舌骨以下，其內側的中央區 (Level VI) 以頸總動脈內緣為外側界。"},
+  trap:{name:"斜方肌前緣 (Trapezius anterior border)",sub:"垂直界標",body:"Level V（後三角）的後外側界。"},
+  smg:{name:"下頷下腺後緣 (Posterior border of submandibular gland)",sub:"斜行界標",body:"分隔 Level Ib 與 Level II。JD node 位於此線之後，因此屬 Level IIA 而非 Ib。"},
+  digastric:{name:"二腹肌前腹 (Anterior belly of digastric)",sub:"斜行界標",body:"分隔 Level Ia（頦下，位於兩側前腹之間）與 Level Ib（下頷下，位於前腹外後方）。"},
+  clavicle:{name:"鎖骨 (Clavicle)",sub:"下方界標",body:"主要為 Level IV 與 Level Vb 的下界。（Level VII 上縱膈結位於胸骨上切跡以下至上縱膈，非單純鎖骨下延伸。）"}
+};
+const ZONES = {
+  II:"295,150 338,145 378,162 382,278 290,278",
+  III:"300,278 386,278 388,400 302,400",
+  IV:"315,400 402,400 410,488 330,494",
+  Va:"215,172 300,175 300,400 192,400 188,290",
+  Vb:"192,400 300,400 322,492 215,512 185,462",
+  VI:"388,280 472,284 458,400 390,400",
+  VII:"376,468 432,468 426,528 380,528",
+  Ib:"392,268 400,214 452,236 462,252 450,266 410,272",
+  Ia:"452,268 466,246 496,258 492,280 470,282"
+};
+const BLINES = {
+  hyoid:"188,278 520,278",
+  cricoid:"188,400 520,400",
+  scm_post:"300,175 300,278 302,360 312,470",
+  scm_ant:"378,162 382,278 388,400 408,488",
+  trap:"215,172 190,290 185,400 185,462",
+  smg:"378,200 392,268",
+  digastric:"455,242 464,282",
+  clavicle:"210,508 330,494 410,490"
+};
+const GALLERY = [
+  {img:"01_jd-node-localisation.png",t:"JD node 定位 (Level IIA)",d:"探頭位置與橫切影像；JD node 在下頷下腺後方，屬 IIA。"},
+  {img:"02_jd-joh-evaluation.png",t:"JD node 良性陷阱",d:"回音降低、roundness index <2，切片證實為良性 — 位置特性造成的假警訊。"},
+  {img:"03_fig8a-cystic-peripheral.png",t:"囊性 + 周邊血流",d:"不均質實體＋彩色都卜勒周邊血流＋無回音囊性區。"},
+  {img:"05_fig8b-losshilum-microcalc.png",t:"失去肺門 + 微鈣化",d:"中間無亮線（肺門消失），內部不均、帶星點微鈣化。"},
+  {img:"06_fig8c-peripheral-losshilum.png",t:"周邊穿透血流",d:"血管由周邊穿透進入 (penetrating peripheral vessels)，同樣失去脂肪肺門。"},
+  {img:"04_fig8f-small-cystic.png",t:"小囊性區",d:"淋巴結內小型囊性區，外觀近似甲狀腺良性膠體囊腫。"}
+];
+const EPIBARS = [["肺癌",25],["乳癌",22],["子宮頸癌",12],["胃癌",8],["卵巢癌",7],["胰臟癌",6]];
+
+/* ---------- build map ---------- */
+const SVGNS="http://www.w3.org/2000/svg";
+const zonesG=document.getElementById("zones"), bordersG=document.getElementById("borders");
+Object.entries(BLINES).forEach(([k,pts])=>{
+  const hit=document.createElementNS(SVGNS,"polyline");
+  hit.setAttribute("points",pts);hit.setAttribute("class","bord");hit.dataset.b=k;
+  const vis=document.createElementNS(SVGNS,"polyline");
+  vis.setAttribute("points",pts);vis.setAttribute("class","bord-vis");
+  bordersG.append(hit,vis);
+  hit.addEventListener("click",e=>{e.stopPropagation();showBorder(k,hit);});
+});
+Object.entries(ZONES).forEach(([k,pts])=>{
+  const p=document.createElementNS(SVGNS,"polygon");
+  p.setAttribute("points",pts);p.setAttribute("class","zone");p.dataset.z=k;
+  p.addEventListener("click",e=>{e.stopPropagation();showLevel(k,p);});
+  zonesG.append(p);
+});
+function clearActive(){document.querySelectorAll(".zone.active,.bord.active").forEach(el=>el.classList.remove("active"));}
+const info=document.getElementById("info");
+function showLevel(k,el){clearActive();el.classList.add("active");const d=LEVELS[k];
+  info.innerHTML=`<span class="badge b-level">LEVEL</span><h3>${d.name}</h3><p class="sub">${d.sub}</p><p>${d.body}</p>${d.warn?`<p class="warn">${d.warn}</p>`:""}`;}
+function showBorder(k,el){clearActive();el.classList.add("active");const d=BORDERS[k];
+  info.innerHTML=`<span class="badge b-border">邊界</span><h3>${d.name}</h3><p class="sub">${d.sub}</p><p>${d.body}</p>`;}
+
+/* ---------- gallery + lightbox ---------- */
+const gal=document.getElementById("gallery");
+GALLERY.forEach(g=>{
+  const f=document.createElement("figure");
+  f.innerHTML=`<img src="assets/neck/${g.img}" alt="${g.t}" loading="lazy"><figcaption><b>${g.t}</b><br>${g.d}</figcaption>`;
+  f.querySelector("img").addEventListener("click",()=>openLB(`assets/neck/${g.img}`,`${g.t} — ${g.d}`));
+  gal.append(f);
+});
+const lb=document.getElementById("lightbox"),lbimg=document.getElementById("lbimg"),lbcap=document.getElementById("lbcap");
+function openLB(src,cap){lbimg.src=src;lbcap.textContent=cap;lb.classList.add("open");}
+lb.addEventListener("click",()=>lb.classList.remove("open"));
+
+/* ---------- epi bars ---------- */
+const eb=document.getElementById("epibars");
+EPIBARS.forEach(([n,v])=>{
+  const row=document.createElement("div");row.className="bar";
+  row.innerHTML=`<span>${n}</span><div class="track"><div class="fill" style="width:${v*4}%"></div></div><span>${v}%</span>`;
+  eb.append(row);
+});
+</script>
+</body>
+</html>
