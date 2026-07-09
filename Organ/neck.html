@@ -68,6 +68,8 @@
   .gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
   figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
   figure img{width:100%;height:170px;object-fit:cover;display:block;cursor:zoom-in;background:#000}
+  .gal.contain figure img{height:300px;object-fit:contain;background:#0b0f14}
+  #airway-cricoid-gal{grid-template-columns:minmax(0,600px)}
   figcaption{padding:9px 12px;font-size:.84rem;color:var(--muted)}
   figcaption b{color:var(--ink)}
 
@@ -228,10 +230,10 @@
         <p>真聲帶（肌肉／聲帶韌帶）＝<b>低回音</b>（紅箭）。</p>
         <p>甲狀軟骨＝兩側高回音線（白箭）。</p></div>
     </div>
-    <div class="gal" id="airway-tc-gal"></div>
+    <div class="gal contain" id="airway-tc-gal"></div>
 
     <h3>環狀軟骨層面</h3>
-    <div class="gal" id="airway-cricoid-gal"></div>
+    <div class="gal contain" id="airway-cricoid-gal"></div>
     <p class="lead">環狀軟骨（綠）、環甲肌與咽下縮肌（藍）、甲狀腺（紅）的關係；此層面是環甲膜與氣管定位的重要標記。</p>
   </section>
 
