@@ -70,6 +70,18 @@
   figure img{width:100%;height:170px;object-fit:cover;display:block;cursor:zoom-in;background:#000}
   .gal.contain figure img{height:300px;object-fit:contain;background:#0b0f14}
   #airway-cricoid-gal{grid-template-columns:minmax(0,600px)}
+
+  /* ---- slider ---- */
+  .slider{position:relative;display:flex;align-items:center;gap:8px;max-width:640px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px}
+  .sl-viewport{flex:1;min-width:0}
+  .sl-viewport img{width:100%;height:320px;object-fit:contain;display:block;cursor:zoom-in;background:#0b0f14;border-radius:8px}
+  .sl-btn{flex:0 0 auto;width:38px;height:38px;font-size:1.4rem;line-height:1;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;cursor:pointer}
+  .sl-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .sl-meta{max-width:640px;margin:8px 2px 0;font-size:.88rem;display:flex;align-items:center;gap:10px}
+  .sl-level{font-weight:700;color:var(--accent);background:rgba(78,161,255,.14);padding:2px 11px;border-radius:20px;font-size:.8rem;flex:0 0 auto}
+  .sl-dots{margin-left:auto;display:flex;gap:6px;flex:0 0 auto}
+  .sl-dot{width:9px;height:9px;border-radius:50%;background:var(--line);cursor:pointer}
+  .sl-dot.on{background:var(--accent)}
   figcaption{padding:9px 12px;font-size:.84rem;color:var(--muted)}
   figcaption b{color:var(--ink)}
 
@@ -213,9 +225,17 @@
   <!-- ============ 5. AIRWAY ULTRASOUND ============ -->
   <section id="airway">
     <h2>五、氣道超音波（聲帶／軟骨層面）</h2>
-    <p class="lead">辨識甲狀軟骨層面的真／假聲帶與環狀軟骨層面的解剖關係；點圖可放大。</p>
+    <p class="lead">先由甲狀軟骨橫切（由高到低）辨識喉部層面，再看聲帶與環狀軟骨層面；點圖可放大。</p>
 
-    <h3>甲狀軟骨層面：真／假聲帶</h3>
+    <h3>甲狀軟骨橫切（由高到低）</h3>
+    <div class="slider">
+      <button class="sl-btn" id="sl-prev" aria-label="上一張">‹</button>
+      <div class="sl-viewport"><img id="sl-img" alt=""></div>
+      <button class="sl-btn" id="sl-next" aria-label="下一張">›</button>
+    </div>
+    <div class="sl-meta"><span class="sl-level" id="sl-level"></span><span id="sl-cap"></span><span class="sl-dots" id="sl-dots"></span></div>
+
+    <h3>聲帶（真／假聲帶）</h3>
     <div class="grid">
       <div class="card"><h4>探頭與機器設定</h4>
         <p>探頭橫放於<b>甲狀軟骨</b>上方。</p>
@@ -335,7 +355,7 @@ function showBorder(k,el){clearActive();el.classList.add("active");const d=BORDE
 
 /* ---------- gallery + lightbox ---------- */
 const AIRWAY_TC=[
-  {img:"10_airway_tc_level_us.png",t:"甲狀軟骨層面橫切",d:"TC 甲狀軟骨、FC 假聲帶、AR 杓狀軟骨。"},
+  {img:"10_airway_tc_level_us.png",t:"聲帶層面橫切",d:"TC 甲狀軟骨、FC 假聲帶、AR 杓狀軟骨。"},
   {img:"11_airway_vocalcords_true_false.png",t:"真／假聲帶對照",d:"假聲帶含脂肪呈高回音（黃箭）、真聲帶呈低回音（紅箭）、甲狀軟骨（白箭）。"},
   {img:"12_airway_larynx_anatomy.png",t:"喉部解剖示意",d:"會厭、假聲帶、喉室、真聲帶的相對位置。"},
   {img:"13_airway_larynx_coronal_ct.png",t:"冠狀 CT 標註",d:"聲門上／聲門／聲門下、真假聲帶、喉室等對照。"}
@@ -352,6 +372,23 @@ function renderGallery(arr,el){arr.forEach(g=>{
 renderGallery(GALLERY,document.getElementById("gallery"));
 renderGallery(AIRWAY_TC,document.getElementById("airway-tc-gal"));
 renderGallery(AIRWAY_CRICOID,document.getElementById("airway-cricoid-gal"));
+
+/* ---------- thyroid-cartilage transverse slider ---------- */
+const TC_SLICES=[
+  {img:"15_tc_transverse_high.png",lv:"高",t:"甲狀軟骨最上部",d:"兩側甲狀軟骨板 (thyroid lamina，箭頭) 與甲狀上切跡；前方為帶狀肌。"},
+  {img:"16_tc_transverse_mid.png",lv:"中",t:"甲狀軟骨上部",d:"鈣化的兩側甲狀軟骨板呈「倒 V」形 (inverted V)。"},
+  {img:"17_tc_transverse_low.png",lv:"低",t:"甲狀軟骨下部",d:"鈣化甲狀軟骨呈「倒 U」形 (inverted U)。"}
+];
+let slIdx=0;
+const slImg=document.getElementById("sl-img"),slLevel=document.getElementById("sl-level"),slCap=document.getElementById("sl-cap"),slDots=document.getElementById("sl-dots");
+TC_SLICES.forEach((s,i)=>{const d=document.createElement("span");d.className="sl-dot"+(i===0?" on":"");d.addEventListener("click",()=>slGo(i));slDots.append(d);});
+function slGo(i){slIdx=(i+TC_SLICES.length)%TC_SLICES.length;const s=TC_SLICES[slIdx];
+  slImg.src=`assets/neck/${s.img}`;slImg.alt=s.t;slLevel.textContent=s.lv;slCap.textContent=`${s.t} — ${s.d}`;
+  [...slDots.children].forEach((d,j)=>d.classList.toggle("on",j===slIdx));}
+document.getElementById("sl-prev").addEventListener("click",()=>slGo(slIdx-1));
+document.getElementById("sl-next").addEventListener("click",()=>slGo(slIdx+1));
+slImg.addEventListener("click",()=>openLB(slImg.src,slCap.textContent));
+slGo(0);
 const lb=document.getElementById("lightbox"),lbimg=document.getElementById("lbimg"),lbcap=document.getElementById("lbcap");
 function openLB(src,cap){lbimg.src=src;lbcap.textContent=cap;lb.classList.add("open");}
 lb.addEventListener("click",()=>lb.classList.remove("open"));
