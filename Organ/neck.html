@@ -208,9 +208,36 @@
     <div class="bars" id="epibars"></div>
   </section>
 
-  <!-- ============ 5. REFERENCES ============ -->
+  <!-- ============ 5. AIRWAY ULTRASOUND ============ -->
+  <section id="airway">
+    <h2>五、氣道超音波（聲帶／軟骨層面）</h2>
+    <p class="lead">辨識甲狀軟骨層面的真／假聲帶與環狀軟骨層面的解剖關係；點圖可放大。</p>
+
+    <h3>甲狀軟骨層面：真／假聲帶</h3>
+    <div class="grid">
+      <div class="card"><h4>探頭與機器設定</h4>
+        <p>探頭橫放於<b>甲狀軟骨</b>上方。</p>
+        <p>頻率調低（10 → 8–9 MHz）。</p>
+        <p>增益調高，直到清楚看見<b>假聲帶 (false vocal folds)</b>。</p></div>
+      <div class="card"><h4>動態觀察（請患者配合）</h4>
+        <p><b>平靜呼吸</b>：兩側聲帶對稱移動。</p>
+        <p><b>憋氣用力 (bear down)</b>：聲帶內收 (adduction)，恢復呼吸再外展。</p>
+        <p><b>持續發「E」音</b>：聲帶向中線緊密靠攏，是觀察聲帶運動的好方式。</p></div>
+      <div class="card"><h4>回音判讀</h4>
+        <p>假聲帶（含脂肪）＝<b>高回音</b>（黃箭）。</p>
+        <p>真聲帶（肌肉／聲帶韌帶）＝<b>低回音</b>（紅箭）。</p>
+        <p>甲狀軟骨＝兩側高回音線（白箭）。</p></div>
+    </div>
+    <div class="gal" id="airway-tc-gal"></div>
+
+    <h3>環狀軟骨層面</h3>
+    <div class="gal" id="airway-cricoid-gal"></div>
+    <p class="lead">環狀軟骨（綠）、環甲肌與咽下縮肌（藍）、甲狀腺（紅）的關係；此層面是環甲膜與氣管定位的重要標記。</p>
+  </section>
+
+  <!-- ============ 6. REFERENCES ============ -->
   <section id="ref">
-    <h2>五、參考文獻</h2>
+    <h2>六、參考文獻</h2>
     <ol style="font-size:.86rem;line-height:1.65;padding-left:20px;color:var(--ink)">
       <li style="margin-bottom:7px">Masuoka S, Hiyama T, Kuno H, Sekiya K, Sakashita S, Kobayashi T. <b>Imaging Approach for Cervical Lymph Node Metastases from Unknown Primary Tumor.</b> <i>RadioGraphics</i>. 2023. (RSNA)</li>
       <li style="margin-bottom:7px">Haugen BR, Alexander EK, Bible KC, et al. <b>2015 American Thyroid Association Management Guidelines for Adult Patients with Thyroid Nodules and Differentiated Thyroid Cancer.</b> <i>Thyroid</i>. 2016;26(1):1–133. doi:10.1089/thy.2015.0020</li>
@@ -305,13 +332,24 @@ function showBorder(k,el){clearActive();el.classList.add("active");const d=BORDE
   info.innerHTML=`<span class="badge b-border">邊界</span><h3>${d.name}</h3><p class="sub">${d.sub}</p><p>${d.body}</p>`;}
 
 /* ---------- gallery + lightbox ---------- */
-const gal=document.getElementById("gallery");
-GALLERY.forEach(g=>{
+const AIRWAY_TC=[
+  {img:"10_airway_tc_level_us.png",t:"甲狀軟骨層面橫切",d:"TC 甲狀軟骨、FC 假聲帶、AR 杓狀軟骨。"},
+  {img:"11_airway_vocalcords_true_false.png",t:"真／假聲帶對照",d:"假聲帶含脂肪呈高回音（黃箭）、真聲帶呈低回音（紅箭）、甲狀軟骨（白箭）。"},
+  {img:"12_airway_larynx_anatomy.png",t:"喉部解剖示意",d:"會厭、假聲帶、喉室、真聲帶的相對位置。"},
+  {img:"13_airway_larynx_coronal_ct.png",t:"冠狀 CT 標註",d:"聲門上／聲門／聲門下、真假聲帶、喉室等對照。"}
+];
+const AIRWAY_CRICOID=[
+  {img:"14_airway_cricoid_level_us.png",t:"環狀軟骨層面",d:"環狀軟骨（綠）、環甲肌與咽下縮肌（藍）、甲狀腺（紅）。"}
+];
+function renderGallery(arr,el){arr.forEach(g=>{
   const f=document.createElement("figure");
   f.innerHTML=`<img src="assets/neck/${g.img}" alt="${g.t}" loading="lazy"><figcaption><b>${g.t}</b><br>${g.d}</figcaption>`;
   f.querySelector("img").addEventListener("click",()=>openLB(`assets/neck/${g.img}`,`${g.t} — ${g.d}`));
-  gal.append(f);
-});
+  el.append(f);
+});}
+renderGallery(GALLERY,document.getElementById("gallery"));
+renderGallery(AIRWAY_TC,document.getElementById("airway-tc-gal"));
+renderGallery(AIRWAY_CRICOID,document.getElementById("airway-cricoid-gal"));
 const lb=document.getElementById("lightbox"),lbimg=document.getElementById("lbimg"),lbcap=document.getElementById("lbcap");
 function openLB(src,cap){lbimg.src=src;lbcap.textContent=cap;lb.classList.add("open");}
 lb.addEventListener("click",()=>lb.classList.remove("open"));
