@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiology Diagnostic Suite - Kidney</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/themes/light-border.css">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; margin: 20px; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; text-align: center; }
+        .card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; margin-bottom: 25px; background: #ffffff; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; width: 100%; box-sizing: border-box; background: #fff; }
+        .result-box { background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 5px solid #0f172a; margin-top: 15px; white-space: pre-line; line-height: 1.5; display: none; }
+        .mermaid { display: flex; justify-content: center; overflow-x: auto; padding: 10px; min-height: 850px; }
+
+        /* Strictly enforced light-border styling */
+        .tippy-box[data-theme~='light-border'] {
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Kidney Diagnostic Suite</h1>
+
+    <div class="card">
+        <h2>Clinical Decision Support</h2>
+        <div class="calc-grid">
+            <div>
+                <label>Primary Imaging Feature</label>
+                <select id="primaryFeature" onchange="updateSecondaryOptions()">
+                    <option value="none">Select primary feature...</option>
+                    <option value="cystic">Branch 1: CYSTIC Lesions</option>
+                    <option value="solid">Branch 2: SOLID Masses</option>
+                    <option value="multifocal">Branch 3: MULTIFOCAL/BILATERAL Disease</option>
+                    <option value="collecting">Branch 4: COLLECTING SYSTEM Abnormalities</option>
+                    <option value="vascular">Branch 5: VASCULAR Abnormalities</option>
+                    <option value="inflammatory">Branch 6: INFLAMMATORY/INFECTIOUS Disease</option>
+                </select>
+            </div>
+            <div>
+                <label>Morphology / Sub-branch</label>
+                <select id="secondaryFeature">
+                    <option value="none">Please select primary first...</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="analyzeKidney()" style="width: 100%; background: #0f172a; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Analyze Renal Findings</button>
+        <div class="result-box" id="result"></div>
+    </div>
+
+    <div class="card">
+        <h2>Diagnostic Mind Map (Hover for Details)</h2>
+        <div class="mermaid">
+        graph LR
+            Root((Renal Lesion)) --- B1[Branch 1: Cystic]
+            Root --- B2[Branch 2: Solid]
+            Root --- B3[Branch 3: Multifocal/Bilateral]
+            Root --- B4[Branch 4: Collecting System]
+            Root --- B5[Branch 5: Vascular]
+            Root --- B6[Branch 6: Inflammatory]
+
+            B1 --- B1A(1A: Simple Cysts)
+            B1A --- SC[Simple Renal Cyst]
+            B1A --- PC[Parapelvic Cyst]
+            B1 --- B1B(1B: Complex Cysts)
+            B1B --- MC[Minimally Complex Cyst]
+            B1B --- HC[Hemorrhagic Cyst]
+            B1B --- IC[Infected Cyst]
+            B1B --- CRCC[Cystic RCC]
+            B1B --- MCN[Multilocular Cystic Nephroma]
+            B1B --- MEST[Mixed Epithelial and Stromal Tumor]
+            B1 --- B1C(1C: Multifocal Cystic)
+            B1C --- ADPKD[ADPKD]
+            B1C --- ACKD[Acquired Cystic Disease]
+            B1C --- VHL[Von Hippel-Lindau]
+            B1C --- TS[Tuberous Sclerosis]
+            B1C --- MSK[Medullary Sponge Kidney]
+            B1C --- MCD[Medullary Cystic Disease]
+
+            B2 --- B2A(2A: Homogeneous)
+            B2A --- AML[Angiomyolipoma]
+            B2A --- LRCC[Lipid-rich RCC]
+            B2A --- CCRCC[Clear Cell RCC]
+            B2A --- PRCC[Papillary RCC]
+            B2A --- ONCO[Oncocytoma]
+            B2 --- B2B(2B: Heterogeneous/Infiltrative)
+            B2B --- NRCC[RCC with Necrosis]
+            B2B --- TCC[Urothelial Carcinoma]
+            B2B --- RLYM[Renal Lymphoma]
+            B2B --- RMET[Renal Metastases]
+
+            B3 --- B3A(3A: Multiple Solid Lesions)
+            B3A --- MSL1[Renal Lymphoma]
+            B3A --- MSL2[Metastases]
+            B3A --- MSL3[Multiple RCC]
+            B3A --- MSL4[Multifocal Pyelonephritis]
+            B3 --- B3B(3B: Diffuse Parenchymal)
+            B3B --- CKD[Chronic Kidney Disease]
+            B3B --- APN[Acute Pyelonephritis]
+            B3B --- GN[Glomerulonephritis]
+            B3B --- INFP[Infiltrative Process]
+
+            B4 --- B4A(4A: Obstruction/Hydronephrosis)
+            B4A --- URO[Urolithiasis]
+            B4A --- UROC1[Urothelial Carcinoma]
+            B4A --- UPJ[UPJ Obstruction]
+            B4A --- EXTR[Extrinsic Compression]
+            B4 --- B4B(4B: Filling Defects)
+            B4B --- UROC2[Urothelial Carcinoma]
+            B4B --- BCLOT[Blood Clot]
+            B4B --- FUNG[Fungus Ball]
+
+            B5 --- RAS[Renal Artery Stenosis]
+            B5 --- RVT[Renal Vein Thrombosis]
+            B5 --- RINF[Renal Infarction]
+            B5 --- AVM[Arteriovenous Malformation]
+
+            B6 --- APN2[Acute Pyelonephritis]
+            B6 --- RABS[Renal Abscess]
+            B6 --- XGP[Xanthogranulomatous Pyelonephritis]
+            B6 --- RTB[Renal Tuberculosis]
+
+            class SC sc_s; class PC pc_s; class MC mc_s; class HC hc_s; class IC ic_s;
+            class CRCC crcc_s; class MCN mcn_s; class MEST mest_s; class ADPKD adpkd_s;
+            class ACKD ackd_s; class VHL vhl_s; class TS ts_s; class MSK msk_s; class MCD mcd_s;
+            class AML aml_s; class LRCC lrcc_s; class CCRCC ccrcc_s; class PRCC prcc_s;
+            class ONCO onco_s; class NRCC nrcc_s; class TCC tcc_s; class RLYM rlym_s;
+            class RMET rmet_s; class MSL1 msl1_s; class MSL2 msl2_s; class MSL3 msl3_s;
+            class MSL4 msl4_s; class CKD ckd_s; class APN apn_s; class GN gn_s; class INFP infp_s;
+            class URO uro_s; class UROC1 uroc_s; class UPJ upj_s; class EXTR extr_s;
+            class UROC2 uroc_s; class BCLOT bclot_s; class FUNG fung_s; class RAS ras_s;
+            class RVT rvt_s; class RINF rinf_s; class AVM avm_s; class APN2 apn_s;
+            class RABS rabs_s; class XGP xgp_s; class RTB rtb_s;
+        </div>
+    </div>
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose' });
+
+    const optionsMap = {
+        "none": ["Please select primary first..."],
+        "cystic": ["1A: Simple Cysts", "1B: Complex Cysts (Bosniak II-IIF)", "1B: Complex Cysts (Bosniak III-IV)", "1C: Multifocal (Bilateral)", "1C: Multifocal (Medullary)"],
+        "solid": ["2A: Homogeneous (Fat-containing)", "2A: Homogeneous (Hypervascular)", "2B: Heterogeneous / Infiltrative"],
+        "multifocal": ["3A: Multiple Solid Lesions", "3B: Diffuse Parenchymal Abnormality"],
+        "collecting": ["4A: Obstruction / Hydronephrosis", "4B: Filling Defects"],
+        "vascular": ["N/A"],
+        "inflammatory": ["N/A"]
+    };
+
+    function updateSecondaryOptions() {
+        const prim = document.getElementById('primaryFeature').value;
+        const secSelect = document.getElementById('secondaryFeature');
+        secSelect.innerHTML = "";
+        
+        optionsMap[prim].forEach(opt => {
+            let el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt.toLowerCase().replace(/[\/\s-]/g, "_");
+            secSelect.appendChild(el);
+        });
+    }
+
+    const descriptions = {
+        ".sc_s": "<b>Simple Renal Cyst</b>: Most common renal lesion. Water attenuation, no enhancement, thin imperceptible wall.",
+        ".pc_s": "<b>Parapelvic Cyst</b>: Located in the renal sinus; may mimic hydronephrosis.",
+        ".mc_s": "<b>Minimally Complex Cyst</b>: Thin septations, fine calcifications; generally benign (Bosniak II-IIF).",
+        ".hc_s": "<b>Hemorrhagic Cyst</b>: High attenuation on non-contrast Computed Tomography.",
+        ".ic_s": "<b>Infected Cyst</b>: Features thick walls and perilesional inflammation.",
+        ".crcc_s": "<b>Cystic Renal Cell Carcinoma</b>: Enhancing solid components with thick irregular walls (Bosniak III-IV).",
+        ".mcn_s": "<b>Multilocular Cystic Nephroma</b>: Well-defined with multiple non-communicating locules.",
+        ".mest_s": "<b>Mixed Epithelial and Stromal Tumor</b>: Predominantly seen in perimenopausal women.",
+        ".adpkd_s": "<b>ADPKD</b>: Most common genetic kidney disorder; bilateral enlarged kidneys with innumerable cysts.",
+        ".ackd_s": "<b>Acquired Cystic Kidney Disease</b>: Develops in end-stage renal disease; kidneys are typically smaller.",
+        ".vhl_s": "<b>Von Hippel-Lindau Disease</b>: Bilateral cysts associated with solid enhancing components (Renal Cell Carcinoma).",
+        ".ts_s": "<b>Tuberous Sclerosis</b>: Renal cysts associated with angiomyolipomas.",
+        ".msk_s": "<b>Medullary Sponge Kidney</b>: Dilated collecting ducts with a 'paintbrush' appearance on excretory phase.",
+        ".mcd_s": "<b>Medullary Cystic Disease</b>: Small cysts at the corticomedullary junction with small kidneys.",
+        ".aml_s": "<b>Angiomyolipoma</b>: Contains macroscopic fat (<-10 HU) with a classic triphasic appearance.",
+        ".lrcc_s": "<b>Lipid-rich Renal Cell Carcinoma</b>: Rare variant with minimal fat.",
+        ".ccrcc_s": "<b>Clear Cell Renal Cell Carcinoma</b>: Most common subtype (70-80%); shows avid, heterogeneous enhancement.",
+        ".prcc_s": "<b>Papillary Renal Cell Carcinoma</b>: Hypovascular compared to clear cell; typically homogeneous.",
+        ".onco_s": "<b>Oncocytoma</b>: Benign tumor featuring a central scar and spoke-wheel enhancement pattern.",
+        ".nrcc_s": "<b>RCC with Necrosis</b>: Large size with heterogeneous enhancement and necrotic areas.",
+        ".tcc_s": "<b>Urothelial Carcinoma (Transitional Cell Carcinoma)</b>: Infiltrative mass that involves the collecting system.",
+        ".rlym_s": "<b>Renal Lymphoma</b>: Multiple bilateral masses with homogeneous low attenuation and minimal enhancement.",
+        ".rmet_s": "<b>Renal Metastases</b>: Multiple bilateral lesions in a patient with a known primary malignancy.",
+        ".msl1_s": "<b>Renal Lymphoma</b>: Multiple bilateral hypoattenuating masses.",
+        ".msl2_s": "<b>Metastases</b>: Known primary malignancy (lung, breast, melanoma).",
+        ".msl3_s": "<b>Multiple Renal Cell Carcinomas</b>: Seen in VHL or hereditary RCC syndromes.",
+        ".msl4_s": "<b>Multifocal Pyelonephritis</b>: Wedge-shaped areas of decreased enhancement.",
+        ".ckd_s": "<b>Chronic Kidney Disease</b>: Small echogenic kidneys with cortical thinning and loss of differentiation.",
+        ".apn_s": "<b>Acute Pyelonephritis</b>: Striated nephrogram with wedge-shaped hypoenhancement.",
+        ".gn_s": "<b>Glomerulonephritis</b>: Normal to enlarged kidneys with increased echogenicity.",
+        ".infp_s": "<b>Infiltrative Processes</b>: Such as amyloidosis or sarcoidosis; presents as bilateral enlarged kidneys.",
+        ".uro_s": "<b>Urolithiasis</b>: Most common cause of obstruction; high attenuation calculi.",
+        ".uroc_s": "<b>Urothelial Carcinoma</b>: Soft tissue mass causing a filling defect or obstruction.",
+        ".upj_s": "<b>Ureteropelvic Junction Obstruction</b>: Can be congenital or acquired.",
+        ".extr_s": "<b>Extrinsic Compression</b>: From retroperitoneal fibrosis or mass effect.",
+        ".bclot_s": "<b>Blood Clot</b>: High attenuation on non-contrast imaging with no enhancement.",
+        ".fb_s": "<b>Fungus Ball</b>: Seen in immunocompromised patients.",
+        ".ras_s": "<b>Renal Artery Stenosis</b>: Delayed nephrogram with kidney size asymmetry >1.5 cm.",
+        ".rvt_s": "<b>Renal Vein Thrombosis</b>: Enlarged kidney with delayed enhancement and a filling defect in the renal vein.",
+        ".rinf_s": "<b>Renal Infarction</b>: Wedge-shaped peripheral area of non-enhancement with a cortical rim sign.",
+        ".avm_s": "<b>Arteriovenous Malformation</b>: Early venous filling with enlarged feeding arteries.",
+        ".rabs_s": "<b>Renal Abscess</b>: Rim-enhancing fluid collection; gas present if emphysematous.",
+        ".xgp_s": "<b>Xanthogranulomatous Pyelonephritis</b>: Staghorn calculus, enlarged kidney, and multiple hypoattenuating masses.",
+        ".rtb_s": "<b>Renal Tuberculosis</b>: Calcifications, hydronephrosis, or 'putty kidney'."
+    };
+
+    function analyzeKidney() {
+        const prim = document.getElementById('primaryFeature').value;
+        const sec = document.getElementById('secondaryFeature').value;
+        const resBox = document.getElementById('result');
+        
+        let res = "";
+        let color = "#0f172a";
+
+        if (prim === 'cystic') {
+            if (sec.includes('1a')) {
+                res = "<b>Branch 1A: Simple Cysts</b>\n• Simple renal cyst\n• Parapelvic cyst";
+                color = "#10b981";
+            } else if (sec.includes('bosniak_ii')) {
+                res = "<b>Branch 1B: Bosniak II-IIF Cysts</b>\n• Minimally complex cyst\n• Hemorrhagic cyst\n• Infected cyst";
+                color = "#f59e0b";
+            } else if (sec.includes('bosniak_iii')) {
+                res = "<b>Branch 1B: Bosniak III-IV Cysts</b>\n• Cystic renal cell carcinoma\n• Multilocular cystic nephroma\n• Mixed epithelial and stromal tumor";
+                color = "#ef4444";
+            } else if (sec.includes('bilateral')) {
+                res = "<b>Branch 1C: Bilateral Multifocal Cystic</b>\n• ADPKD\n• Acquired cystic kidney disease\n• Von Hippel-Lindau or Tuberous sclerosis";
+                color = "#8b5cf6";
+            } else {
+                res = "<b>Branch 1C: Medullary Cystic Disease</b>\n• Medullary sponge kidney\n• Medullary cystic disease";
+                color = "#3b82f6";
+            }
+        } else if (prim === 'solid') {
+            if (sec.includes('fat')) {
+                res = "<b>Branch 2A: Fat-containing Solid Mass</b>\n• Angiomyolipoma (most common)\n• Lipid-rich renal cell carcinoma";
+                color = "#10b981";
+            } else if (sec.includes('hypervascular')) {
+                res = "<b>Branch 2A: Hypervascular Solid Mass</b>\n• Clear cell RCC\n• Papillary RCC\n• Oncocytoma";
+                color = "#f59e0b";
+            } else {
+                res = "<b>Branch 2B: Heterogeneous / Infiltrative</b>\n• RCC with necrosis\n• Urothelial carcinoma\n• Renal lymphoma or metastases";
+                color = "#ef4444";
+            }
+        } else if (prim === 'multifocal') {
+            if (sec.includes('3a')) {
+                res = "<b>Branch 3A: Multiple Solid Lesions</b>\n• Renal lymphoma\n• Metastases\n• Multiple RCC or Multifocal pyelonephritis";
+                color = "#8b5cf6";
+            } else {
+                res = "<b>Branch 3B: Diffuse Parenchymal Abnormality</b>\n• Chronic kidney disease\n• Acute pyelonephritis\n• Glomerulonephritis or Infiltrative processes";
+                color = "#f59e0b";
+            }
+        } else if (prim === 'collecting') {
+            res = (sec.includes('4a')) ? "<b>Branch 4A: Obstruction / Hydronephrosis</b>\n• Urolithiasis\n• Urothelial carcinoma\n• UPJ obstruction or Extrinsic compression" :
+                                        "<b>Branch 4B: Filling Defects</b>\n• Urothelial carcinoma\n• Blood clot\n• Fungus ball";
+            color = "#3b82f6";
+        } else if (prim === 'vascular') {
+            res = "<b>Branch 5: Vascular Abnormalities</b>\n• Renal artery stenosis\n• Renal vein thrombosis\n• Renal infarction\n• Arteriovenous malformation";
+            color = "#8b5cf6";
+        } else if (prim === 'inflammatory') {
+            res = "<b>Branch 6: Inflammatory / Infectious</b>\n• Acute pyelonephritis\n• Renal abscess\n• Xanthogranulomatous pyelonephritis\n• Renal tuberculosis";
+            color = "#f43f5e";
+        }
+
+        resBox.style.display = "block";
+        resBox.style.borderLeftColor = color;
+        resBox.innerHTML = res.replace(/\n/g, "<br>");
+    }
+
+    setTimeout(() => {
+        Object.keys(descriptions).forEach(className => {
+            tippy(className, {
+                allowHTML: true,
+                theme: 'light-border',
+                content: descriptions[className],
+                placement: 'top',
+                animation: 'fade'
+            });
+        });
+    }, 1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kidney — Ultrasound notes · jamesxxx1997</title>
+<style>
+  :root{ --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --green:#10b981; --greenDk:#047857;
+         --amber:#f59e0b; --red:#ef4444; --blue:#0ea5e9; --panel:#ffffff; --soft:#f1f5f9; }
+  *{box-sizing:border-box}
+  body{ font-family:'Segoe UI',Tahoma,"PingFang TC",sans-serif; background:#f8fafc; color:var(--ink);
+        margin:0; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:18px 16px 60px; }
+  h1{ font-size:1.5rem; margin:6px 0 2px; }
+  h1 .tag{ font-size:.9rem; color:var(--greenDk); font-weight:600; }
+  .subtitle{ color:var(--muted); font-size:.9rem; margin:0 0 6px; }
+  section{ margin-top:40px; scroll-margin-top:58px; }
+  h2{ font-size:1.22rem; border-left:4px solid var(--green); padding-left:11px; margin:0 0 6px; }
+  h3{ font-size:1.02rem; color:var(--greenDk); margin:22px 0 8px; }
+  .lead{ color:var(--muted); font-size:.9rem; margin:2px 0 16px; }
+
+  /* sub-nav */
+  .subnav{ position:sticky; top:0; z-index:40; background:#0f172a; display:flex; gap:8px;
+           justify-content:center; flex-wrap:wrap; padding:8px; border-radius:0 0 10px 10px; }
+  .subnav a{ color:#e2e8f0; text-decoration:none; font-size:.83rem; font-weight:600; background:#1e293b;
+             padding:6px 13px; border-radius:20px; transition:.15s; }
+  .subnav a:hover{ background:var(--green); color:#fff; }
+
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:18px; }
+
+  /* interactive picker */
+  .pick-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media(max-width:760px){ .pick-grid{ grid-template-columns:1fr; } }
+  label{ display:block; font-size:.82rem; font-weight:700; color:#475569; margin-bottom:5px; }
+  select{ padding:10px; border:1px solid #cbd5e1; border-radius:6px; width:100%; background:#fff; font-size:.92rem; }
+  .analyze{ margin-top:14px; width:100%; background:var(--greenDk); color:#fff; border:none; padding:12px;
+            border-radius:6px; font-weight:700; cursor:pointer; font-size:.95rem; }
+  .analyze:hover{ background:#065f46; }
+  .result-box{ margin-top:15px; padding:16px 18px; background:var(--soft); border-left:5px solid var(--green);
+               border-radius:0 8px 8px 0; line-height:1.6; display:none; }
+  .result-box .tier{ display:inline-block; font-size:.74rem; font-weight:700; padding:2px 10px; border-radius:20px; margin-bottom:8px; }
+  .t-green{ background:rgba(16,185,129,.15); color:var(--greenDk); }
+  .t-amber{ background:rgba(245,158,11,.16); color:#b45309; }
+  .t-red{ background:rgba(239,68,68,.14); color:#b91c1c; }
+
+  /* tables */
+  .tblwrap{ overflow-x:auto; border:1px solid var(--line); border-radius:10px; }
+  table{ width:100%; border-collapse:collapse; font-size:.88rem; }
+  th,td{ padding:10px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ background:var(--soft); font-weight:700; white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+  td.aml{ color:var(--greenDk); font-weight:600; }
+  td.rcc{ color:#b91c1c; font-weight:600; }
+  .pill{ display:inline-block; font-size:.72rem; font-weight:700; padding:1px 8px; border-radius:12px; }
+  .p-aml{ background:rgba(16,185,129,.15); color:var(--greenDk); }
+  .p-rcc{ background:rgba(239,68,68,.13); color:#b91c1c; }
+
+  /* callouts */
+  .callout{ border-radius:0 8px 8px 0; padding:12px 16px; margin:14px 0; font-size:.9rem; }
+  .c-key{ background:#fff7ed; border-left:4px solid var(--amber); }
+  .c-warn{ background:#fef2f2; border-left:4px solid var(--red); }
+  .c-info{ background:#eff6ff; border-left:4px solid var(--blue); }
+
+  /* two-col principle box */
+  .cols2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:680px){ .cols2{ grid-template-columns:1fr; } }
+  .mini{ border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:.86rem; background:#fff; }
+  .mini h4{ margin:0 0 6px; font-size:.92rem; }
+
+  /* entity cards */
+  .ent{ border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:16px; background:#fff; }
+  .ent h3{ margin:0 0 4px; color:var(--ink); }
+  .ent .kicker{ font-size:.78rem; color:var(--muted); margin:0 0 10px; }
+  .ent ul{ margin:8px 0; padding-left:20px; }
+  .ent li{ margin:4px 0; font-size:.9rem; }
+
+  /* figures / gallery */
+  .gal{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-top:12px; }
+  figure{ margin:0; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  figure img{ width:100%; height:230px; object-fit:contain; display:block; cursor:zoom-in; background:#0b0f14; }
+  figcaption{ padding:9px 12px; font-size:.82rem; color:var(--muted); }
+  figcaption b{ color:var(--ink); }
+  .gal.wide{ grid-template-columns:minmax(0,720px); }
+
+  /* lightbox */
+  .lb{ position:fixed; inset:0; background:rgba(4,8,14,.92); display:none; align-items:center; justify-content:center;
+       z-index:99; padding:24px; cursor:zoom-out; }
+  .lb.open{ display:flex; }
+  .lb img{ max-width:96%; max-height:88%; border-radius:8px; }
+  .lb .cap{ position:absolute; bottom:18px; left:0; right:0; text-align:center; color:#cdd8e4; font-size:.9rem; padding:0 20px; }
+
+  /* references */
+  sup.cite{ font-size:.62rem; font-weight:700; vertical-align:super; margin-left:1px; }
+  sup.cite a{ color:var(--greenDk); text-decoration:none; }
+  sup.cite a:hover{ text-decoration:underline; }
+  .refs{ margin:6px 0 0; padding-left:24px; }
+  .refs li{ margin:11px 0; font-size:.86rem; color:#334155; line-height:1.55; }
+  .refs li .maps{ display:block; color:var(--muted); font-size:.8rem; margin-top:2px; }
+  .refs a{ color:var(--greenDk); word-break:break-word; }
+
+  footer{ margin-top:46px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; }
+</style>
+</head>
+<body>
+
+<div class="subnav">
+  <a href="#flow">① 偶發病灶處置流程</a>
+  <a href="#hyper">② 高回音：AML vs RCC</a>
+  <a href="#atlas">③ 實質腫塊 US 圖鑑</a>
+  <a href="#ref">參考文獻</a>
+</div>
+
+<div class="wrap">
+
+  <h1>腎臟超音波 <span class="tag">· jamesxxx1997 影像筆記</span></h1>
+  <p class="subtitle">偶然發現腎腫塊的超音波處置流程 · 高回音病灶 AML vs RCC 鑑別 · 實質腫塊 US 圖鑑</p>
+
+  <!-- ============ ① INCIDENTAL LESION WORKFLOW ============ -->
+  <section id="flow">
+    <h2>① 偶然發現的腎腫塊 · 超音波處置流程<sup class="cite"><a href="#ref">[2]</a></sup></h2>
+    <p class="lead">依 CAR 針對「第一線由超音波發現病灶」的專屬流程（Flowchart 3）：先分實質 / 囊性，再依回音特徵與大小（1.0 cm 為分界）決定追蹤或進階影像。</p>
+
+    <div class="card">
+      <div class="pick-grid">
+        <div>
+          <label>1 · 病灶性質</label>
+          <select id="lesionType" onchange="updateFeature()">
+            <option value="">選擇…</option>
+            <option value="solid">實質 Solid appearing</option>
+            <option value="cystic">囊性 Cystic</option>
+          </select>
+        </div>
+        <div>
+          <label>2 · 回音 / 複雜度</label>
+          <select id="feature">
+            <option value="">請先選病灶性質…</option>
+          </select>
+        </div>
+        <div>
+          <label>3 · 大小</label>
+          <select id="size">
+            <option value="">選擇…</option>
+            <option value="le1">≤ 1.0 cm</option>
+            <option value="gt1">&gt; 1.0 cm</option>
+          </select>
+        </div>
+      </div>
+      <button class="analyze" onclick="analyzeFlow()">產生處置建議</button>
+      <div class="result-box" id="flowResult"></div>
+    </div>
+
+    <h3>Renal cyst 超音波區分原則</h3>
+    <div class="cols2">
+      <div class="mini">
+        <h4 style="color:var(--greenDk)">Minimally complex（偏良性）</h4>
+        Thin、smooth；few / multiple fine septa 或 fine calcification；no wall thickening；no nodule；no solid component；no flow。
+      </div>
+      <div class="mini">
+        <h4 style="color:#b91c1c">Complex / atypical（需進階）</h4>
+        Thick / irregular wall or septa；mural nodule / solid component；vascularity / enhancement；或 internal debris 合併 thick irregular wall。
+      </div>
+    </div>
+
+    <h3>超音波在其他流程中的「降階 / 替代 / 追蹤」角色</h3>
+    <p class="lead">此 CAR 指引與原版 ACR 最大分歧：開放讓超音波替代部分原本依賴 CT/MRI 的評估與追蹤，以節省資源。</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>情境</th><th>超音波的角色</th></tr></thead>
+        <tbody>
+          <tr><td><b>Flowchart 1</b><br>無顯影 CT 上 21–69 HU 均質腫塊</td>
+              <td>建議「優先考慮超音波」做初步調查，而非直接 MRI / 顯影 CT。</td></tr>
+          <tr><td><b>Flowchart 2</b><br>顯影 CT 上 &gt; 20 HU、疑複雜囊腫的均質腫塊</td>
+              <td>超音波列為首選進階評估工具之一。</td></tr>
+          <tr><td><b>Flowchart 4</b><br>Bosniak IIF 複雜囊腫的 5 年長線追蹤</td>
+              <td>超音波為追蹤「首選模式」（精準評估大小、中隔厚度與結節變化）；僅在發現壁增厚 / 變不規則 / 產生血流，或看不清時才切回 CT / MRI。</td></tr>
+          <tr><td><b>Flowchart 5</b><br>CT/MRI 上「小到無法定性 (TSTC)」的腫塊</td>
+              <td>可用超音波做監視追蹤 (surveillance)，更具成本效益。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="gal wide">
+      <figure>
+        <img src="assets/kidney/flowchart3_incidental_us.png" alt="CAR Flowchart 3">
+        <figcaption><b>CAR Flowchart 3</b> — 超音波意外發現腎腫塊的專屬處置流程。</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ ② HYPERECHOIC: AML vs RCC ============ -->
+  <section id="hyper">
+    <h2>② 高回音病灶 · 超音波鑑別 AML vs RCC</h2>
+    <p class="lead">核心痛點：超音波的高回音並非 AML 專利。</p>
+    <div class="callout c-warn">
+      <b>高達 55% 的「無鈣化高回音」腎腫塊其實是 RCC。</b><sup class="cite"><a href="#ref">[4]</a></sup> RCC 呈高回音的原因在於內部微囊狀結構 (microcystic architecture)、壞死、出血、乳頭狀 / 管狀結構或微小鈣化，產生大量聲波反射介面。因此看到高回音絕不能直接當作 AML。
+    </div>
+
+    <h3>一、內部與邊界特徵（B-mode 灰階）<sup class="cite"><a href="#ref">[4]</a></sup></h3>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>超音波徵象</th><th>AML</th><th>RCC</th><th>臨床鑑別意義</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>無回音環</b><br>Anechoic rim / halo</td>
+            <td class="aml">0%</td>
+            <td class="rcc">高達 84%</td>
+            <td>極具鑑別力。RCC 生長時壓迫周圍組織形成「假包膜 (pseudocapsule)」而產生無回音環；AML 顯微鏡下常與周圍組織交錯浸潤、無明確包膜。</td>
+          </tr>
+          <tr>
+            <td><b>腫瘤內囊腫</b><br>Intratumoral cysts</td>
+            <td class="aml">0%</td>
+            <td class="rcc">常見（伴後方回音增強）</td>
+            <td>支持 RCC。RCC 內部易囊性退化 / 壞死；AML 極少出現囊性結構。</td>
+          </tr>
+          <tr>
+            <td><b>後方聲影</b><br>Posterior shadowing</td>
+            <td class="aml">約 21%</td>
+            <td class="rcc">0%</td>
+            <td>支持 AML。排除結石後，高回音伴後方聲影是 AML 特徵之一。</td>
+          </tr>
+          <tr>
+            <td><b>Color Doppler</b></td>
+            <td class="aml">脂肪成分內無血流；軟組織 / 血管成分可能有</td>
+            <td class="rcc">可見腫瘤內血流</td>
+            <td>脂肪區塊無血流支持 AML；但軟組織成分亦可有血流，需合併其他徵象。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="gal">
+      <figure><img src="assets/kidney/doppler_absent_flow.png" alt="Doppler absent flow"><figcaption><b>Color Doppler</b> — 脂肪成分內無血流。</figcaption></figure>
+      <figure><img src="assets/kidney/doppler_flow.png" alt="Doppler flow"><figcaption><b>Color Doppler</b> — 軟組織 / 血管成分可見血流。</figcaption></figure>
+    </div>
+
+    <h3>二、腫瘤幾何形狀與邊界介面（McGahan 等人）<sup class="cite"><a href="#ref">[3]</a></sup></h3>
+    <p class="lead">觀察腫瘤長大的「形狀」與「和腎臟邊界的夾角」，可大幅提升區分零星型 AML 與 RCC 的準確率。</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>超音波外觀形態</th><th>AML</th><th>RCC</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td><b>形狀 Shape</b></td><td class="aml">常為橢圓形 Oval</td><td class="rcc">幾乎為圓形 Round</td>
+              <td>RCC 細胞緻密、傾向球形膨脹；AML 含脂肪質地軟，順著周邊組織擠壓成橢圓形。</td></tr>
+          <tr><td><b>成角介面</b><br>Angular interface</td><td class="aml">常見（周邊型 AML）</td><td class="rcc">罕見</td>
+              <td>AML 質地軟，在腎緣生長時與正常皮質交界易形成銳角。</td></tr>
+          <tr><td><b>滿溢啤酒徵象</b><br>Overflowing beer sign</td><td class="aml">出現（周邊型 AML）</td><td class="rcc">幾乎從未出現</td>
+              <td>腫瘤長在腎緣時，AML 像滿出的啤酒泡沫般「溢出」腎輪廓，RCC 極少見。</td></tr>
+          <tr><td><b>高回音邊緣</b><br>Echogenic margin</td><td class="aml">常見（內生型 AML）</td><td class="rcc">可見</td>
+              <td>內生型 (endophytic) AML 相較 RCC 更常表現明顯的高回音邊緣。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="gal wide">
+      <figure><img src="assets/kidney/geometry_diagram.png" alt="Geometry diagram"><figcaption><b>幾何形狀與邊界介面示意</b> — shape / angular interface / overflowing beer。</figcaption></figure>
+    </div>
+
+    <h3>三、代表影像</h3>
+    <div class="gal">
+      <figure><img src="assets/kidney/fig1_aml_vs_rcc.png" alt="Fig1 AML vs RCC">
+        <figcaption><b>Figure 1</b> — (a)(b) AML：極高回音，亮度≈腎竇脂肪（★），伴後方聲影；(c) RCC：沒那麼亮，外圍低回音暈 + 內部囊腔黑洞。</figcaption></figure>
+      <figure><img src="assets/kidney/fig2_multiple_aml.png" alt="Fig2 multiple AML">
+        <figcaption><b>Figure 2</b> — 多發 AML：(1)(3) 橢圓形、(2) 邊緣銳角介面（脂肪柔軟被擠壓成形）。</figcaption></figure>
+      <figure><img src="assets/kidney/fig3_overflowing_beer.png" alt="Fig3 overflowing beer">
+        <figcaption><b>Figure 3</b> — 大型周邊型 AML：成角介面 + 整顆「溢出」腎輪廓的滿溢啤酒徵象。</figcaption></figure>
+      <figure><img src="assets/kidney/fig3_vhl_rcc_rim.png" alt="Fig3 VHL RCC rim">
+        <figcaption><b>Figure 3（VHL 病患）</b> — 極亮的 RCC，箭頭處可見黑色無回音環。</figcaption></figure>
+      <figure><img src="assets/kidney/fig4_necrotic_rcc.png" alt="Fig4 necrotic RCC">
+        <figcaption><b>Figure 4</b> — 微亮 RCC：黑色細環 + 內部廣泛壞死 / 囊腫形成的黑色小空洞。</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- ============ ③ SOLID MASS US ATLAS ============ -->
+  <section id="atlas">
+    <h2>③ 實質腫塊 · 超音波圖鑑</h2>
+    <p class="lead">各病種在無顯影超音波上的一般表現與陷阱。先記一條快速判讀原則：</p>
+    <div class="callout c-info">
+      <b>Renal parenchymal disease 快速判讀：</b>正常 renal cortex 比 liver parenchyma 還黑；<b>若 cortex 比 liver 還亮，就要懷疑 renal parenchymal disease。</b>
+    </div>
+
+    <div class="ent">
+      <h3>血管平滑肌脂肪瘤 AML（Angiomyolipoma）<sup class="cite"><a href="#ref">[3]</a></sup></h3>
+      <p class="kicker">血管 + 平滑肌 + 脂肪；起源於微血管周圍 pericytes；女性多見（雌激素促生長）</p>
+      <ul>
+        <li><b>致病關聯：</b>&gt; 80% 為散發性；少數與 <b>結節性硬化症 (TSC)</b> 或 <b>淋巴管平滑肌增生症 (LAM)</b> 相關。TSC 病患約半數有腎 AML，且較年輕、多發、雙側、體積大、持續生長。</li>
+        <li><b>病理分型：</b>典型變異型（絕大多數，良性）；<b>上皮樣變異型</b>含上皮樣細胞、可能完全無脂肪 ("fat-invisible")、<b>具潛在惡性風險（可能轉移）</b>，TSC 較常見。</li>
+        <li><b>出血風險（最可怕併發症，可致命的 Wunderlich 症候群）因子：</b>腫瘤 &gt; 6 cm、血管豐富、瘤內動脈瘤 &gt; 5 mm、外生性生長 (exophytic)。懷孕或含雌激素荷爾蒙療法會增加出血與生長風險。</li>
+      </ul>
+    </div>
+
+    <div class="ent">
+      <h3>腎細胞癌 RCC（Renal Cell Carcinoma）<sup class="cite"><a href="#ref">[1]</a></sup></h3>
+      <p class="kicker">灰階超音波表現非常多變</p>
+      <ul>
+        <li><b>實質型：</b>可均質或異質，有時可見壞死區或鈣化點。</li>
+        <li><b>囊性變異型：</b>單房或多房囊腫，內部可有「液體-碎屑沈積面 (fluid-debris levels)」（代表出血 / 壞死），伴厚而不規則的囊壁、中隔或實質結節。</li>
+        <li><b>陷阱：帶假性囊腫特徵的 RCC — </b>實質、微高回音、有不完整低回音邊緣 + 後方聲影增強，灰階上極易誤認單純囊腫；<b>打開 Color Doppler 見內部充滿血流即確診 RCC。</b></li>
+        <li><b>嫌色細胞型 (Chromophobe)：</b>均勻、低回音、向外突起 (exophytic)，可向內浸潤扭曲腎竇脂肪。</li>
+        <li><b>合併慢性腎病：</b>萎縮腎中長出向外突起的低回音實質腫塊，或帶囊性成分的低回音腫塊。</li>
+      </ul>
+    </div>
+
+    <div class="ent">
+      <h3>嗜酸細胞瘤 Oncocytoma</h3>
+      <p class="kicker">良性，但小腫瘤與 small RCC 難以區分</p>
+      <ul>
+        <li><b>基本外觀：</b>小型 Oncocytoma 常為均質 (homogeneous)、與正常腎實質等回音 (isoechoic)、邊界非常清晰 (well-demarcated)。</li>
+        <li><b>經典徵象的迷思：</b>星芒狀疤痕 (stellate scar) 與車輪狀血流 (spoke-wheel) 在<b>現代「早期發現、&lt; 4 cm」的小腫瘤幾乎看不到</b>——中央疤痕須腫瘤夠巨大（文獻曾在 12 cm 才觀察到）、大到中心缺血壞死機化才形成。</li>
+      </ul>
+      <div class="callout c-warn" style="margin-top:6px">
+        <b>致命傷：</b>小型 Oncocytoma 在 US 上只是「均質、等回音、邊界清楚」，與約 5–6% 的 <b>small RCC</b> 表現完全重疊。
+      </div>
+      <div class="gal">
+        <figure><img src="assets/kidney/onco_stellate_scar.png" alt="Stellate scar"><figcaption><b>星芒狀疤痕</b> Stellate scar（大腫瘤才有）。</figcaption></figure>
+        <figure><img src="assets/kidney/onco_spokewheel1.png" alt="Spoke-wheel 1"><figcaption><b>車輪狀血流</b> Spoke-wheel（Doppler）。</figcaption></figure>
+        <figure><img src="assets/kidney/onco_spokewheel2.png" alt="Spoke-wheel 2"><figcaption><b>車輪狀血流</b> Spoke-wheel（Doppler）。</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="ent">
+      <h3>腎臟轉移瘤 Renal Metastases<sup class="cite"><a href="#ref">[1]</a></sup></h3>
+      <p class="kicker">最常見原發癌：肺癌、乳癌、胃癌、黑色素瘤、淋巴瘤</p>
+      <ul>
+        <li><b>形態與位置：</b>通常體積小、圓形（有時楔形），多位於皮質區 (cortical)，很少破壞腎輪廓或包膜（除非大型外突）。</li>
+        <li><b>回音特徵：</b>非常多樣 — 低回音、高回音，甚至完全隱形 (sonographically occult)；偶有浸潤性表現。黑色素瘤轉移可見腫瘤延伸 / 出血導致的腎周浸潤。</li>
+        <li><b>陷阱：假扮 RCC 的黑色素瘤轉移 — </b>實質、均質、微高回音，US 上與 RCC 無法區分；唯一區別是 <b>Color Doppler 幾乎無血流（遠低於一般 RCC）。</b></li>
+      </ul>
+      <div class="gal wide">
+        <figure><img src="assets/kidney/met_melanoma.png" alt="Melanoma metastasis"><figcaption><b>黑色素瘤轉移</b> — 右腎中極實質微高回音腫塊，灰階上與 RCC 無法區分，Doppler 幾乎無血流。</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REFERENCES ============ -->
+  <section id="ref">
+    <h2>參考文獻 References</h2>
+    <ol class="refs">
+      <li><b>Kamaya A, Wong-You-Cheong J, Woodward PJ, et al.</b> <i>Diagnostic Ultrasound for Sonographers.</i> Elsevier; 2019. ISBN 978-0-323-62516-6.
+        <span class="maps">→ ③ RCC、腎臟轉移瘤的灰階超音波特徵。</span></li>
+      <li><b>Kirkpatrick IDC, Brahm GL, Mnatzakanian GN, Hurrell C, Herts BR, Bird JR.</b> Recommendations for the Management of the Incidental Renal Mass in Adults: Endorsement and Adaptation of the 2017 ACR Incidental Findings Committee White Paper by the Canadian Association of Radiologists Incidental Findings Working Group. <i>Can Assoc Radiol J.</i> 2019;70(2):125–133. <a href="https://doi.org/10.1016/j.carj.2019.03.002" target="_blank" rel="noopener">doi:10.1016/j.carj.2019.03.002</a>
+        <span class="maps">→ ① 偶發腎腫塊處置流程（Flowchart 1–5）與 renal cyst 區分原則。</span></li>
+      <li><b>McGahan JP, Vollmer CM.</b> New Trends in Diagnosis and Imaging Follow-Up of Renal Angiomyolipomas — Part I: Classic AMLs. <i>Applied Radiology.</i> 2025 Apr.
+        <span class="maps">→ ② 腫瘤幾何形狀與邊界介面（shape / angular interface / overflowing beer）；③ AML 病理與出血風險。</span></li>
+      <li><b>Yamashita Y, Ueno S, Makita O, Ogata I, Hatanaka Y, Watanabe O, Takahashi M.</b> Hyperechoic Renal Tumors: Anechoic Rim and Intratumoral Cysts in US Differentiation of Renal Cell Carcinoma from Angiomyolipoma. <i>Radiology.</i> 1993;188(1):179–182.
+        <span class="maps">→ ② 高回音病灶的 B-mode 徵象（anechoic rim 84%、intratumoral cysts；55% 高回音腫塊為 RCC）。</span></li>
+    </ol>
+    <p class="lead" style="margin-top:10px">Oncocytoma 段之經典徵象迷思（stellate scar / spoke-wheel 於小腫瘤罕見、與 small RCC 重疊）另引自筆記中的專篇論文，未含於上列 PDF。</p>
+  </section>
+
+  <footer>
+    📗 由本人影像筆記整理製作 · 參考文獻見上。臨床應用請以最新指引與個別病人情況為準。
+  </footer>
+</div>
+
+<div class="lb" id="lb" onclick="this.classList.remove('open')">
+  <img id="lbImg" src="" alt="">
+  <div class="cap" id="lbCap"></div>
+</div>
+
+<script>
+  // ---- ① interactive picker ----
+  var FEATURE_OPTS = {
+    solid: [
+      { v:'hyper_aml',  t:'均質高回音（疑 AML）Hyperechoic' },
+      { v:'hypo_indet', t:'低回音、無法確定是否單純囊腫 Hypoechoic' }
+    ],
+    cystic: [
+      { v:'simple',  t:'單純 / 極輕度複雜囊腫 Simple / minimally complex' },
+      { v:'complex', t:'複雜囊腫（疑 Bosniak IIF–IV）Complex' }
+    ]
+  };
+
+  function updateFeature(){
+    var lt = document.getElementById('lesionType').value;
+    var sel = document.getElementById('feature');
+    sel.innerHTML = '';
+    if(!lt){ sel.innerHTML = '<option value="">請先選病灶性質…</option>'; return; }
+    sel.innerHTML = '<option value="">選擇…</option>';
+    FEATURE_OPTS[lt].forEach(function(o){
+      var el = document.createElement('option'); el.value = o.v; el.textContent = o.t; sel.appendChild(el);
+    });
+  }
+
+  function analyzeFlow(){
+    var lt = document.getElementById('lesionType').value;
+    var f  = document.getElementById('feature').value;
+    var sz = document.getElementById('size').value;
+    var box = document.getElementById('flowResult');
+    if(!lt || !f){ box.style.display='block'; box.style.borderLeftColor='#94a3b8';
+      box.innerHTML = '請先選擇病灶性質與回音 / 複雜度。'; return; }
+
+    // simple cyst: size irrelevant
+    var needSize = !(f === 'simple');
+    if(needSize && !sz){ box.style.display='block'; box.style.borderLeftColor='#94a3b8';
+      box.innerHTML = '請選擇腫塊大小（1.0 cm 為分界）。'; return; }
+
+    var tier='', tierClass='', body='';
+
+    if(f === 'hyper_aml'){
+      if(sz === 'le1'){ tier='例行追蹤'; tierClass='t-green';
+        body='<b>均質高回音、≤ 1.0 cm（疑 AML）</b><br>轉移風險極低 → 6–12 個月後安排超音波追蹤，接著每年一次、持續 5 年。穩定則無需理會；若生長或形態改變，繼續超音波追蹤直到 &gt; 1 cm。'; }
+      else { tier='進階影像'; tierClass='t-amber';
+        body='<b>均質高回音、&gt; 1.0 cm（疑 AML）</b><br>安排 CT 或 MRI（含顯影）以確認是否有巨觀脂肪，用來鑑別 AML 與 RCC。'; }
+    }
+    else if(f === 'hypo_indet'){
+      if(sz === 'le1'){ tier='短期進階影像'; tierClass='t-amber';
+        body='<b>低回音、無法確定單純囊腫、≤ 1.0 cm</b><br>建議 6–12 個月後安排 CT 或 MRI（含顯影）。'; }
+      else { tier='立即進階影像'; tierClass='t-red';
+        body='<b>低回音、無法確定單純囊腫、&gt; 1.0 cm</b><br>應「立即」安排 CT 或 MRI（含顯影）進行後續評估。'; }
+    }
+    else if(f === 'simple'){
+      tier='無需處置'; tierClass='t-green';
+      body='<b>單純或極輕度複雜囊腫</b><br>僅有低程度內部回音或極薄中隔 → 無需進一步處置。<br><span style="color:#64748b;font-size:.85rem">（大小不影響此類處置。）</span>';
+    }
+    else if(f === 'complex'){
+      if(sz === 'le1'){ tier='短期進階影像'; tierClass='t-amber';
+        body='<b>複雜囊腫（疑 Bosniak IIF–IV）、≤ 1.0 cm</b><br>建議 6–12 個月後安排 CT 或 MRI（含顯影）。'; }
+      else { tier='立即進階影像'; tierClass='t-red';
+        body='<b>複雜囊腫（疑 Bosniak IIF–IV）、&gt; 1.0 cm</b><br>應「立即」安排 CT 或 MRI（含顯影）。'; }
+    }
+
+    var borderColor = tierClass==='t-green' ? '#10b981' : (tierClass==='t-amber' ? '#f59e0b' : '#ef4444');
+    box.style.display='block';
+    box.style.borderLeftColor = borderColor;
+    box.innerHTML = '<span class="tier '+tierClass+'">'+tier+'</span><br>'+body;
+  }
+
+  // ---- lightbox ----
+  document.querySelectorAll('.gal figure img').forEach(function(img){
+    img.addEventListener('click', function(){
+      var lb = document.getElementById('lb');
+      document.getElementById('lbImg').src = img.src;
+      var cap = img.closest('figure').querySelector('figcaption');
+      document.getElementById('lbCap').innerHTML = cap ? cap.innerHTML : '';
+      lb.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
