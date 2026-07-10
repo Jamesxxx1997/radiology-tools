@@ -10,6 +10,7 @@
   .src-mine { background:#dcfce7; border-left:6px solid #10b981; color:#047857; }
   .src-banner a { color:inherit; font-weight:bold; }
   iframe { width:100%; border:none; display:block; background:#f8fafc; }
+  #cirrhosisFrame { min-height:640px; }
   .divider { max-width:1300px; margin:34px auto; border-top:2px dashed #cbd5e1; }
   .jump-nav { position:sticky; top:0; z-index:50; background:#1e293b; display:flex; gap:10px; justify-content:center; padding:9px 8px; flex-wrap:wrap; }
   .jump-nav a { color:#e2e8f0; text-decoration:none; font-size:0.85rem; font-weight:600; background:#334155; padding:6px 13px; border-radius:6px; transition:0.15s; }
@@ -22,6 +23,7 @@
     <a href="#sec1">📘 Section 1 學姊</a>
     <a href="#sec2">📗 Section 2 MRI</a>
     <a href="#sec3">📗 Section 3 CT·US</a>
+    <a href="#sec4">📗 Section 4 肝硬化·門脈高壓</a>
   </div>
   <div id="sec1" class="src-banner src-senior">📘 <b>Section 1 — Dr. Irene Lee (學姊)</b> · adapted from her <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank">original meta-site</a>.</div>
   <iframe id="seniorFrame" src="senior/liver.html" scrolling="no"></iframe>
@@ -31,13 +33,25 @@
   <div class="divider"></div>
   <div id="sec3" class="src-banner src-mine">📗 <b>Section 3 — jamesxxx1997</b> · CT/US correlation — liver segments, contrast phase &amp; HU attenuation (給超音波室同仁).</div>
   <iframe id="ctusFrame" src="mine/liver_ct_us.html" scrolling="no"></iframe>
+  <div class="divider"></div>
+  <div id="sec4" class="src-banner src-mine">📗 <b>Section 4 — jamesxxx1997</b> · 肝硬化與門脈高壓影像參考（診斷 / 治療 / 預後含 Child-Pugh 計算器）· <a href="https://jamesxxx1997.github.io/cirrhosis-imaging/" target="_blank">open standalone ↗</a></div>
+  <iframe id="cirrhosisFrame" src="https://jamesxxx1997.github.io/cirrhosis-imaging/" scrolling="no"></iframe>
   <script>
+    var FRAMES=['seniorFrame','mineFrame','ctusFrame','cirrhosisFrame'];
     function fit(f){ try { var d=f.contentDocument||f.contentWindow.document; if(d&&d.body){ f.style.height=(d.body.scrollHeight+40)+'px'; } } catch(e){} }
-    ['seniorFrame','mineFrame','ctusFrame'].forEach(function(id){
+    FRAMES.forEach(function(id){
       var f=document.getElementById(id);
-      f.addEventListener('load', function(){ fit(f); [400,1200,2500,4000].forEach(function(t){ setTimeout(function(){ fit(f); }, t); }); });
+      f.addEventListener('load', function(){
+        fit(f); [400,1200,2500,4000].forEach(function(t){ setTimeout(function(){ fit(f); }, t); });
+        // cirrhosis is a tabbed SPA — its height changes when the user switches 診斷/治療/預後; keep refitting.
+        try {
+          var d=f.contentDocument||f.contentWindow.document;
+          if(d&&d.body&&window.ResizeObserver){ new ResizeObserver(function(){ fit(f); }).observe(d.body); }
+          if(f.contentWindow){ f.contentWindow.addEventListener('hashchange', function(){ [50,250,600].forEach(function(t){ setTimeout(function(){ fit(f); }, t); }); }); }
+        } catch(e){}
+      });
     });
-    window.addEventListener('resize', function(){ ['seniorFrame','mineFrame','ctusFrame'].forEach(function(id){ fit(document.getElementById(id)); }); });
+    window.addEventListener('resize', function(){ FRAMES.forEach(function(id){ fit(document.getElementById(id)); }); });
   </script>
 </body>
 </html>
