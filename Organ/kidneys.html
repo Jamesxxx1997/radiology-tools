@@ -8,6 +8,7 @@
   .src-banner { max-width:1400px; margin:18px auto 0; padding:12px 20px; border-radius:8px; font-size:0.97rem; line-height:1.5; }
   .src-senior { background:#e0f2fe; border-left:6px solid #0ea5e9; color:#0369a1; }
   .src-mine { background:#dcfce7; border-left:6px solid #10b981; color:#047857; }
+  .src-stone { background:#fff7ed; border-left:6px solid #f59e0b; color:#9a3412; }
   .src-banner a { color:inherit; font-weight:bold; }
   iframe { width:100%; border:none; display:block; background:#f8fafc; }
   .divider { max-width:1300px; margin:34px auto; border-top:2px dashed #cbd5e1; }
@@ -21,14 +22,18 @@
   <div class="jump-nav">
     <a href="#sec1">📘 Section 1 學姊 · CT/MRI 決策樹</a>
     <a href="#sec2">📗 Section 2 超音波 · US 鑑別與處置</a>
+    <a href="#sec3">📙 Section 3 腎結石 · 影像選擇與 US 陷阱</a>
   </div>
   <div id="sec1" class="src-banner src-senior">📘 <b>Section 1 — Dr. Irene Lee (學姊)</b> · CT/MRI 導向診斷樹，adapted from her <a href="https://drireneleemd.github.io/diagnostic-tools/" target="_blank">original meta-site</a>.</div>
   <iframe id="seniorFrame" src="senior/kidneys.html" scrolling="no"></iframe>
   <div class="divider"></div>
   <div id="sec2" class="src-banner src-mine">📗 <b>Section 2 — jamesxxx1997</b> · 超音波導向：偶發病灶處置流程、高回音 AML vs RCC 鑑別、實質腫塊 US 圖鑑（由本人影像筆記整理）。</div>
   <iframe id="mineFrame" src="mine/kidneys.html" scrolling="no"></iframe>
+  <div class="divider"></div>
+  <div id="sec3" class="src-banner src-stone">📙 <b>Section 3 — Renal stone imaging</b> · 急性側腹痛影像選擇、超音波診斷限制、hydronephrosis、hematuria 與 KUB（由本人筆記與 guideline 整理）。</div>
+  <iframe id="stoneFrame" src="mine/renal_stones.html" scrolling="no"></iframe>
   <script>
-    var FRAMES=['seniorFrame','mineFrame'];
+    var FRAMES=['seniorFrame','mineFrame','stoneFrame'];
     function fit(f){ try { var d=f.contentDocument||f.contentWindow.document; if(d&&d.body){ f.style.height=(d.body.scrollHeight+40)+'px'; } } catch(e){} }
     FRAMES.forEach(function(id){
       var f=document.getElementById(id);

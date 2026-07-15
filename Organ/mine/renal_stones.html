@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renal stone imaging · jamesxxx1997</title>
+<style>
+  :root{
+    --ink:#172033; --muted:#64748b; --line:#dbe3ee; --panel:#ffffff; --soft:#f8fafc;
+    --navy:#0f172a; --amber:#f59e0b; --amber-dk:#92400e; --amber-soft:#fff7ed;
+    --blue:#2563eb; --blue-soft:#eff6ff; --green:#047857; --green-soft:#ecfdf5;
+    --red:#b91c1c; --red-soft:#fef2f2; --shadow:0 12px 34px rgba(15,23,42,.07);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:#f8fafc; color:var(--ink); line-height:1.65;
+    font-family:"Segoe UI",Tahoma,"PingFang TC","Noto Sans TC",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  button,summary{font:inherit}
+  .subnav{
+    position:sticky; top:0; z-index:40; display:flex; justify-content:center; flex-wrap:wrap; gap:8px;
+    padding:8px 12px; background:var(--navy); border-radius:0 0 10px 10px;
+  }
+  .subnav a{
+    padding:6px 13px; border-radius:999px; background:#1e293b; color:#e2e8f0;
+    text-decoration:none; font-size:.82rem; font-weight:700; transition:.15s;
+  }
+  .subnav a:hover,.subnav a:focus-visible{background:var(--amber); color:#301b02; outline:none}
+  .wrap{max-width:1180px; margin:0 auto; padding:22px 16px 64px}
+  section{margin-top:44px; scroll-margin-top:62px}
+  .hero{
+    position:relative; overflow:hidden; padding:32px; border:1px solid #fed7aa; border-radius:18px;
+    background:linear-gradient(135deg,#fff 0%,#fff7ed 58%,#ffedd5 100%); box-shadow:var(--shadow);
+  }
+  .hero::after{
+    content:""; position:absolute; width:210px; height:210px; right:-85px; bottom:-110px;
+    border:34px solid rgba(245,158,11,.16); border-radius:50%; pointer-events:none;
+  }
+  .eyebrow{margin:0 0 6px; color:var(--amber-dk); font-size:.76rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase}
+  h1{margin:0; max-width:820px; font-size:clamp(1.72rem,4vw,2.6rem); line-height:1.2; letter-spacing:-.025em}
+  .subtitle{max-width:790px; margin:12px 0 18px; color:#475569; font-size:.98rem}
+  .source-row{display:flex; flex-wrap:wrap; gap:8px}
+  .source-chip,.scope{
+    display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border:1px solid #fed7aa;
+    border-radius:999px; background:rgba(255,255,255,.78); color:#7c2d12; font-size:.72rem; font-weight:800;
+  }
+  .take-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px}
+  .take-card{padding:18px; border:1px solid var(--line); border-radius:14px; background:#fff}
+  .take-card .num{color:var(--amber-dk); font-size:.73rem; font-weight:900; letter-spacing:.08em}
+  .take-card h2{margin:4px 0 6px; font-size:1.02rem; line-height:1.35}
+  .take-card p{margin:0; color:#526176; font-size:.86rem}
+  h2.section-title{margin:0 0 5px; padding-left:12px; border-left:5px solid var(--amber); font-size:1.3rem; line-height:1.35}
+  .lead{margin:0 0 16px; color:var(--muted); font-size:.9rem}
+  .card{padding:20px; border:1px solid var(--line); border-radius:15px; background:var(--panel); box-shadow:0 8px 24px rgba(15,23,42,.04)}
+
+  /* scenario decision support */
+  .scenario-tabs{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px}
+  .scenario-tab{
+    min-height:74px; padding:11px 12px; border:1px solid #cbd5e1; border-radius:11px; background:#fff;
+    color:#334155; text-align:left; cursor:pointer; font-weight:800; line-height:1.35; transition:.15s;
+  }
+  .scenario-tab small{display:block; margin-top:4px; color:var(--muted); font-size:.7rem; font-weight:600}
+  .scenario-tab:hover{border-color:#f59e0b; background:#fffbeb}
+  .scenario-tab:focus-visible{outline:3px solid rgba(245,158,11,.35); outline-offset:2px}
+  .scenario-tab[aria-selected="true"]{border-color:var(--amber); background:var(--amber-soft); color:#7c2d12; box-shadow:inset 0 0 0 1px var(--amber)}
+  .scenario-output{border:1px solid #fed7aa; border-radius:14px; overflow:hidden; background:#fff}
+  .output-head{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:17px 18px; background:var(--amber-soft); border-bottom:1px solid #fed7aa}
+  .output-head h3{margin:0; font-size:1.08rem}
+  .output-head p{margin:3px 0 0; color:#7c2d12; font-size:.82rem}
+  .output-body{display:grid; grid-template-columns:1.08fr .92fr; gap:18px; padding:18px}
+  .pathway{display:grid; gap:9px}
+  .path-step{display:grid; grid-template-columns:34px 1fr; gap:10px; align-items:start}
+  .step-num{display:grid; place-items:center; width:31px; height:31px; border-radius:50%; background:var(--navy); color:#fff; font-size:.78rem; font-weight:900}
+  .path-step b{display:block; margin-bottom:1px; font-size:.88rem}
+  .path-step span{display:block; color:#526176; font-size:.83rem}
+  .decision-notes{display:grid; gap:10px}
+  .note{padding:12px 13px; border-radius:10px; font-size:.82rem}
+  .note b{display:block; margin-bottom:2px}
+  .note.blue{background:var(--blue-soft); color:#1e40af}
+  .note.red{background:var(--red-soft); color:#991b1b}
+  .note.green{background:var(--green-soft); color:#065f46}
+
+  /* evidence cards */
+  .scope-note{padding:12px 15px; border-left:4px solid var(--blue); border-radius:0 9px 9px 0; background:var(--blue-soft); color:#1e3a8a; font-size:.85rem}
+  .metric-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:14px}
+  .metric{padding:16px; border:1px solid var(--line); border-radius:13px; background:#fff}
+  .metric .scope{border-color:#dbeafe; background:#eff6ff; color:#1d4ed8}
+  .metric strong{display:block; margin:10px 0 3px; font-size:1.62rem; line-height:1; letter-spacing:-.03em}
+  .metric h3{margin:0 0 4px; font-size:.9rem}
+  .metric p{margin:0; color:var(--muted); font-size:.78rem}
+  .metric .submetric{margin-top:10px; padding-top:9px; border-top:1px solid var(--line); color:#475569; font-size:.75rem}
+  .evidence-details{margin-top:14px; border:1px solid var(--line); border-radius:12px; background:#fff; overflow:hidden}
+  .evidence-details summary{padding:12px 15px; cursor:pointer; font-weight:800; font-size:.86rem; list-style:none}
+  .evidence-details summary::-webkit-details-marker{display:none}
+  .evidence-details summary::after{content:"＋"; float:right; color:var(--amber-dk)}
+  .evidence-details[open] summary::after{content:"−"}
+  .details-body{padding:0 15px 15px; color:#475569; font-size:.82rem}
+  .details-body ul{margin:6px 0 0; padding-left:20px}
+  .details-body li{margin:5px 0}
+
+  /* pitfalls */
+  .pit-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .pit{padding:18px; border:1px solid var(--line); border-radius:14px; background:#fff}
+  .pit.false-pos{border-top:4px solid var(--red)}
+  .pit.false-neg{border-top:4px solid var(--blue)}
+  .pit h3{margin:0 0 9px; font-size:1rem}
+  .pit ul{margin:0; padding-left:20px; color:#475569; font-size:.85rem}
+  .pit li{margin:7px 0}
+  .report-tip{margin-top:12px; padding:11px 12px; border-radius:9px; background:#f1f5f9; color:#334155; font-size:.8rem}
+  .size-alert{display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; margin-top:14px; padding:18px; border:1px solid #fed7aa; border-radius:14px; background:var(--amber-soft)}
+  .size-number{min-width:98px; color:#9a3412; font-size:2.1rem; font-weight:900; letter-spacing:-.04em; text-align:center}
+  .size-alert h3{margin:0 0 3px; font-size:1rem}
+  .size-alert p{margin:0; color:#7c2d12; font-size:.84rem}
+
+  /* comparison */
+  .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:13px; background:#fff}
+  table{width:100%; min-width:820px; border-collapse:collapse; font-size:.83rem}
+  th,td{padding:11px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top}
+  th{background:#f1f5f9; color:#334155; font-size:.78rem; white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  td:first-child{font-weight:900; color:var(--ink); white-space:nowrap}
+  .good{color:var(--green); font-weight:800}
+  .limit{color:#9a3412}
+  .bottom-line{display:block; margin-top:3px; color:var(--muted); font-size:.75rem}
+
+  /* references */
+  sup.cite{font-size:.65rem; font-weight:900; vertical-align:super; margin-left:2px}
+  sup.cite a{color:var(--amber-dk); text-decoration:none}
+  .refs{margin:4px 0 0; padding-left:24px}
+  .refs li{margin:11px 0; color:#334155; font-size:.82rem; line-height:1.55}
+  .refs a{color:#1d4ed8; word-break:break-word}
+  .ref-tag{display:inline-block; margin-right:5px; padding:1px 7px; border-radius:999px; background:#e2e8f0; color:#475569; font-size:.66rem; font-weight:900}
+  footer{margin-top:42px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:.75rem}
+
+  @media(max-width:920px){
+    .take-grid,.metric-grid{grid-template-columns:repeat(2,1fr)}
+    .scenario-tabs{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(max-width:700px){
+    .wrap{padding:16px 13px 54px}
+    .hero{padding:23px 19px}
+    .take-grid,.metric-grid,.pit-grid,.output-body{grid-template-columns:1fr}
+    .scenario-tabs{grid-template-columns:1fr 1fr}
+    .scenario-tab{min-height:68px}
+    .output-head{display:block}
+    .output-head .source-chip{margin-top:9px}
+    .size-alert{grid-template-columns:1fr}
+    .size-number{text-align:left}
+  }
+  @media(max-width:430px){
+    .scenario-tabs{grid-template-columns:1fr}
+    .subnav{justify-content:flex-start; flex-wrap:nowrap; overflow-x:auto}
+    .subnav a{white-space:nowrap}
+  }
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="subnav" aria-label="Renal stone sections">
+  <a href="#decision">① 影像選擇</a>
+  <a href="#us">② US 可以信多少</a>
+  <a href="#pitfalls">③ US 陷阱</a>
+  <a href="#tests">④ Hematuria / KUB</a>
+  <a href="#ref">參考文獻</a>
+</nav>
+
+<main class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Section 3 · Renal stone</p>
+    <h1>腎結石影像：怎麼選、US 可以信多少？</h1>
+    <p class="subtitle">從急性側腹痛到無症狀追蹤：先依臨床情境選影像，再判斷超音波的直接徵象、腎積水與尺寸是否足以改變處置。</p>
+    <div class="source-row" aria-label="主要指引來源">
+      <span class="source-chip">ACR 2023</span>
+      <span class="source-chip">EAU 2025</span>
+      <span class="source-chip">CT reference standard studies</span>
+    </div>
+  </header>
+
+  <div class="take-grid" aria-label="三個 take-home messages">
+    <article class="take-card">
+      <span class="num">01 · ACCURACY</span>
+      <h2>NCCT 最適合確認真實 stone burden</h2>
+      <p>定位、尺寸、阻塞與其他腹痛原因都比 US 完整；若尺寸會決定是否介入，應考慮 CT 確認。</p>
+    </article>
+    <article class="take-card">
+      <span class="num">02 · RADIATION</span>
+      <h2>US 適合先看 obstruction 與低輻射追蹤</h2>
+      <p>孕婦、兒童及反覆追蹤特別有價值，但陰性 US 不能排除小結石。</p>
+    </article>
+    <article class="take-card">
+      <span class="num">03 · AUXILIARY TESTS</span>
+      <h2>沒有血尿，不等於沒有 stone</h2>
+      <p>Hematuria 與 KUB 都是輔助資訊，不能單獨取代適當的斷層或超音波評估。</p>
+    </article>
+  </div>
+
+  <section id="decision">
+    <h2 class="section-title">① 先選臨床情境，再選影像</h2>
+    <p class="lead">ACR 與 EAU 的流程入口不同；下方並列呈現，不把兩份 guideline 壓成一個假共識。</p>
+    <div class="card">
+      <div class="scenario-tabs" role="tablist" aria-label="選擇 renal stone 臨床情境">
+        <button class="scenario-tab" type="button" role="tab" aria-selected="true" data-scenario="acute">
+          成人急性側腹痛<small>首次或久未發作</small>
+        </button>
+        <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="recurrent">
+          已知結石再發症狀<small>近期已有影像</small>
+        </button>
+        <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="surveillance">
+          無症狀 surveillance<small>stone burden 追蹤</small>
+        </button>
+        <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="special">
+          孕婦／兒童<small>優先避免輻射</small>
+        </button>
+      </div>
+      <div class="scenario-output" id="scenarioOutput" role="tabpanel" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="us">
+    <h2 class="section-title">② US 可以信多少？先看研究在測什麼</h2>
+    <p class="lead">「直接找 stone」、「用 hydronephrosis 推測 stone」與「追蹤已知 stone」是不同任務，不能共用同一個 sensitivity。</p>
+    <div class="scope-note"><b>讀數字前先問：</b>患者是成人或兒童？急診 POCUS 或正式 renal US？positive test 是 stone 本身或 hydronephrosis？reference standard 是否為 NCCT？</div>
+    <div class="metric-grid">
+      <article class="metric">
+        <span class="scope">成人 · 直接偵測</span>
+        <strong>45%</strong>
+        <h3>US sensitivity</h3>
+        <p>EAU 摘要的直接結石偵測表現。</p>
+        <div class="submetric">Specificity：ureter 94% · renal 88%<sup class="cite"><a href="#r1">[1]</a></sup><sup class="cite"><a href="#r3">[3]</a></sup></div>
+      </article>
+      <article class="metric">
+        <span class="scope">成人 ED · POCUS</span>
+        <strong>70.2%</strong>
+        <h3>Any hydronephrosis sensitivity</h3>
+        <p>以任何程度 hydronephrosis 作為陽性。</p>
+        <div class="submetric">Specificity 75.4%；moderate–severe specificity 94.4%<sup class="cite"><a href="#r8">[8]</a></sup></div>
+      </article>
+      <article class="metric">
+        <span class="scope">兒童 · CT 對照</span>
+        <strong>66.7%</strong>
+        <h3>Patient-level sensitivity</h3>
+        <p>Specificity 97.4%；false negative 多為微小結石。</p>
+        <div class="submetric">30 顆漏診 stone 中，27 顆 ≤3 mm<sup class="cite"><a href="#r6">[6]</a></sup></div>
+      </article>
+      <article class="metric">
+        <span class="scope">成人 · surveillance</span>
+        <strong>77%</strong>
+        <h3>US sensitivity</h3>
+        <p>PPV 75%，但 stone size 的 clinical threshold 較不可靠。</p>
+        <div class="submetric">平均配對高估 1.8 mm；誤差隨 BMI 上升<sup class="cite"><a href="#r5">[5]</a></sup></div>
+      </article>
+    </div>
+    <details class="evidence-details">
+      <summary>為什麼不同研究會得到 45%、54%、70% 或 77%？</summary>
+      <div class="details-body">
+        <ul>
+          <li><b>45%</b>：guideline 引用的 pooled direct-stone detection；不是 hydronephrosis 的敏感度。</li>
+          <li><b>54%</b>：552 組 US/CT 的 residual 或 asymptomatic renal calculi；US specificity 91%。<sup class="cite"><a href="#r4">[4]</a></sup></li>
+          <li><b>70%</b>：正式 US 對特定 renal stone 的偵測；左上腎盞最低 52.7%，0–3 mm stone 僅 44.5%。<sup class="cite"><a href="#r7">[7]</a></sup></li>
+          <li><b>77%</b>：單中心、已知 nephrolithiasis surveillance cohort，表現受 sonographer、BMI 與 stone size 影響。<sup class="cite"><a href="#r5">[5]</a></sup></li>
+        </ul>
+      </div>
+    </details>
+    <details class="evidence-details">
+      <summary>Hydronephrosis 能不能推測 stone size？</summary>
+      <div class="details-body">
+        Moderate–severe hydronephrosis 會提高 &gt;5 mm ureteral stone 的機率，但不能精確反推尺寸。急診研究中，none/mild 組有 12.4% 為 &gt;5 mm，moderate/severe 組則為 35.4%；none/mild 對排除 &gt;5 mm stone 的 NPV 為 87.6%。因此可用於風險分層，不能取代 CT size。<sup class="cite"><a href="#r9">[9]</a></sup>
+      </div>
+    </details>
+  </section>
+
+  <section id="pitfalls">
+    <h2 class="section-title">③ US 陷阱：看到亮點與量到尺寸之後</h2>
+    <p class="lead">把「看見 echogenic focus」和「有可處置的 stone」分開思考。</p>
+    <div class="pit-grid">
+      <article class="pit false-pos">
+        <h3>False positive · 其實不是同位置的 stone</h3>
+        <ul>
+          <li>Echogenic focus 與 twinkling artifact 都可能出現在非結石鈣化。</li>
+          <li>兒童研究的 16 顆 false-positive stone：12 顆有 echogenic focus、8 顆有 twinkling，但僅 1 顆有 posterior shadow。<sup class="cite"><a href="#r6">[6]</a></sup></li>
+          <li>成人的微小 vascular / parenchymal calcification 可能增加 twinkling false positive。<sup class="cite"><a href="#r6">[6]</a></sup></li>
+        </ul>
+        <div class="report-tip"><b>判讀提示：</b>只有 twinkling、沒有可重現的灰階亮點或 posterior shadow 時，避免直接下 definite stone。</div>
+      </article>
+      <article class="pit false-neg">
+        <h3>False negative · CT 有、US 沒看到</h3>
+        <ul>
+          <li>最重要因素是 stone 太小；≤3 mm 最常漏診。<sup class="cite"><a href="#r6">[6]</a></sup></li>
+          <li>左上腎盞可能受肋骨、肺與腸氣遮蔽；研究報告 sensitivity 52.7%。<sup class="cite"><a href="#r7">[7]</a></sup></li>
+          <li>高 BMI、掃描深度、gain、focus 與操作者經驗均會影響 detection 與 size。<sup class="cite"><a href="#r5">[5]</a></sup></li>
+        </ul>
+        <div class="report-tip"><b>判讀提示：</b>陰性 US 只能降低懷疑度；若症狀典型、需精確定位或需排除其他原因，考慮 NCCT。</div>
+      </article>
+    </div>
+    <div class="size-alert">
+      <div class="size-number">72%</div>
+      <div>
+        <h3>US 量到 5–7 mm，不一定真的跨過 5 mm 門檻</h3>
+        <p>2025 surveillance cohort 中，US 報告 5–7 mm 的 stone 只有 28% 在 CT 上仍 ≥5 mm；若只靠 US 決定介入，最多 72% 可能接受不必要的手術。可考慮以 acoustic shadow width 輔助量測，且在 management threshold 前用 low-dose NCCT 確認。<sup class="cite"><a href="#r5">[5]</a></sup></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tests">
+    <h2 class="section-title">④ Hematuria、KUB、US 與 NCCT：各自回答什麼？</h2>
+    <p class="lead">用「能不能改變處置」決定檢查，而不是只比較哪個比較方便。</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>檢查</th><th>最適合回答</th><th>代表數字</th><th>不能單獨做到</th><th>一句話結論</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hematuria</td>
+            <td>支持臨床懷疑、同時評估 infection / urine chemistry。</td>
+            <td>Sensitivity 84%<br>Specificity 48%<br>NPV 65%<sup class="cite"><a href="#r10">[10]</a></sup></td>
+            <td class="limit">排除 ureteral stone 或替代診斷。</td>
+            <td><span class="good">陰性不能 rule out。</span><span class="bottom-line">有無血尿都不能取代必要影像。</span></td>
+          </tr>
+          <tr>
+            <td>KUB</td>
+            <td>區分 radiopaque / radiolucent stone，追蹤已知 radiopaque stone。</td>
+            <td>EAU sensitivity 44–77%<sup class="cite"><a href="#r1">[1]</a></sup><span class="bottom-line">2024 single-center cohort：74.5% / 87.9%<sup class="cite"><a href="#r11">[11]</a></sup></span></td>
+            <td class="limit">可靠排除 stone；易受 phlebolith、骨骼、腸氣與 stone composition 影響。</td>
+            <td><span class="good">適合 selected follow-up。</span><span class="bottom-line">通常不是單獨確診工具。</span></td>
+          </tr>
+          <tr>
+            <td>Ultrasound</td>
+            <td>Hydronephrosis、renal stone、特殊族群與低輻射追蹤。</td>
+            <td>表現依任務而變：direct stone 45%；POCUS hydronephrosis 70.2%。</td>
+            <td class="limit">精準排除小 stone；可靠量測 management threshold。</td>
+            <td><span class="good">先看 obstruction 很有價值。</span><span class="bottom-line">負面結果需回到 pretest probability。</span></td>
+          </tr>
+          <tr>
+            <td>Low-dose NCCT</td>
+            <td>Stone location、burden、density、anatomy、obstruction 與 alternative diagnosis。</td>
+            <td>EAU：sensitivity 93.1%、specificity 96.6%<sup class="cite"><a href="#r1">[1]</a></sup></td>
+            <td class="limit">避免 ionizing radiation；孕婦與兒童需更審慎。</td>
+            <td><span class="good">需要精準答案時的 reference test。</span><span class="bottom-line">使用低劑量 protocol 並避免無效重複。</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="ref">
+    <h2 class="section-title">參考文獻 References</h2>
+    <ol class="refs">
+      <li id="r1"><span class="ref-tag">GUIDELINE</span>Skolarikos A, et al. European Association of Urology Guidelines on the Diagnosis and Treatment of Urolithiasis. <i>Eur Urol.</i> 2025;88:64-75.</li>
+      <li id="r2"><span class="ref-tag">GUIDELINE</span>Gupta RT, et al. ACR Appropriateness Criteria® Acute Onset Flank Pain-Suspicion of Stone Disease (Urolithiasis). <i>J Am Coll Radiol.</i> 2023;20:S315-S328. <a href="https://doi.org/10.1016/j.jacr.2023.08.020" target="_blank" rel="noopener">doi:10.1016/j.jacr.2023.08.020</a></li>
+      <li id="r3"><span class="ref-tag">DIAGNOSTIC</span>Ray AA, Ghiculete D, Pace KT, Honey RJD. Limitations to ultrasound in the detection and measurement of urinary tract calculi. <i>Urology.</i> 2010;76:295-300. <a href="https://doi.org/10.1016/j.urology.2009.12.015" target="_blank" rel="noopener">doi:10.1016/j.urology.2009.12.015</a></li>
+      <li id="r4"><span class="ref-tag">MANAGEMENT</span>Ganesan V, et al. Accuracy of ultrasonography for renal stone detection and size determination: is it good enough for management decisions? <i>BJU Int.</i> 2017;119:464-469. <a href="https://doi.org/10.1111/bju.13605" target="_blank" rel="noopener">doi:10.1111/bju.13605</a></li>
+      <li id="r5"><span class="ref-tag">SURVEILLANCE</span>Sun R, et al. Limitations of ultrasound compared with computed tomography for kidney stone surveillance. <i>Can Urol Assoc J.</i> 2025;19:E229-E237. <a href="https://doi.org/10.5489/cuaj.9043" target="_blank" rel="noopener">doi:10.5489/cuaj.9043</a></li>
+      <li id="r6"><span class="ref-tag">PEDIATRIC</span>Roberson NP, et al. Comparison of ultrasound versus computed tomography for the detection of kidney stones in the pediatric population: a clinical effectiveness study. <i>Pediatr Radiol.</i> 2018;48:962-972. <a href="https://doi.org/10.1007/s00247-018-4099-7" target="_blank" rel="noopener">doi:10.1007/s00247-018-4099-7</a></li>
+      <li id="r7"><span class="ref-tag">DIAGNOSTIC</span>Kanno T, et al. The efficacy of ultrasonography for the detection of renal stone. <i>Urology.</i> 2014;84:285-288. <a href="https://doi.org/10.1016/j.urology.2014.04.010" target="_blank" rel="noopener">doi:10.1016/j.urology.2014.04.010</a></li>
+      <li id="r8"><span class="ref-tag">META-ANALYSIS</span>Wong C, et al. The accuracy and prognostic value of point-of-care ultrasound for nephrolithiasis in the emergency department: a systematic review and meta-analysis. <i>Acad Emerg Med.</i> 2018;25:684-698. <a href="https://doi.org/10.1111/acem.13388" target="_blank" rel="noopener">doi:10.1111/acem.13388</a></li>
+      <li id="r9"><span class="ref-tag">HYDRONEPHROSIS</span>Goertz JK, Lotterman S. Can the degree of hydronephrosis on ultrasound predict kidney stone size? <i>Am J Emerg Med.</i> 2010;28:813-816. <a href="https://doi.org/10.1016/j.ajem.2009.06.028" target="_blank" rel="noopener">doi:10.1016/j.ajem.2009.06.028</a></li>
+      <li id="r10"><span class="ref-tag">URINALYSIS</span>Luchs JS, et al. Utility of hematuria testing in patients with suspected renal colic: correlation with unenhanced helical CT results. <i>Urology.</i> 2002;59:839-842. <a href="https://doi.org/10.1016/S0090-4295(02)01558-3" target="_blank" rel="noopener">doi:10.1016/S0090-4295(02)01558-3</a></li>
+      <li id="r11"><span class="ref-tag">KUB</span>Khan M, et al. Diagnostic accuracy of X-ray KUB in patients of ureteric colic secondary to ureteric calculi keeping CT KUB as gold standard. <i>KJMS.</i> 2024;17(4):232-237. <a href="https://doi.org/10.70520/kjms.v17i4.500" target="_blank" rel="noopener">doi:10.70520/kjms.v17i4.500</a></li>
+    </ol>
+  </section>
+
+  <footer>📙 由 jamesxxx1997 影像筆記與所附文獻整理。內容供影像判讀與教學使用；實際處置需結合症狀、感染風險、腎功能、單腎狀態及最新在地指引。</footer>
+</main>
+
+<script>
+  const scenarios = {
+    acute: {
+      title: '成人急性側腹痛 · 首次或 remote history',
+      subtitle: 'ACR 以 NCCT 為 initial study；EAU 以 US 為 primary tool，再以 NCCT 確認。',
+      source: 'ACR 2023 · EAU 2025',
+      steps: [
+        ['先處理急症風險', '發燒、單腎或診斷不確定時需立即影像；不要為等待 US 延誤 emergency care。'],
+        ['依 workflow 選入口', 'ACR：無顯影 CT abdomen/pelvis usually appropriate。EAU：先 US，之後以 NCCT 評估 location、burden、density 與 anatomy。'],
+        ['需要精準答案時升級', '若 US 陰性但臨床懷疑高、需排除 alternative diagnosis，或 stone size / location 會改變處置，使用 low-dose NCCT。']
+      ],
+      notes: [
+        ['blue','Guideline nuance','ACR 的 US 為 may be appropriate (disagreement)；EAU 則把 US 定義為 primary diagnostic tool。'],
+        ['red','不能延誤','Sepsis / anuria with obstruction 需要 urgent decompression，不是繼續比較 modality。'],
+        ['green','報告重點','CT：stone size、location、density、obstruction、alternative diagnosis；US：hydronephrosis、可見 stone 與 ureteral jets。']
+      ]
+    },
+    recurrent: {
+      title: '已知 current stone · 再次出現症狀',
+      subtitle: '近期已有影像時，問題是 stone 是否移動、造成 obstruction，或症狀是否有其他原因。',
+      source: 'ACR Variant 2',
+      steps: [
+        ['先比較既有影像', '確認先前 stone size、location、radiopacity，以及這次檢查是否真的會改變處置。'],
+        ['影像選擇', 'ACR：NCCT usually appropriate；renal US 與 KUB may be appropriate。已知 radiopaque stone 可用 KUB 追蹤位置。'],
+        ['依臨床變化升級', '疼痛型態改變、腎功能惡化、感染疑慮、US 無法解釋症狀或需要重新定義 stone burden 時，考慮 NCCT。']
+      ],
+      notes: [
+        ['blue','降低累積輻射','若選 CT，採 low-dose stone protocol；避免不會改變 management 的重複檢查。'],
+        ['red','陰性 US 的限制','小 stone、mid ureter stone 或技術受限時仍可能漏診。'],
+        ['green','KUB 的位置','適合已知 radiopaque stone 的 selected follow-up，不適合排除所有 stone。']
+      ]
+    },
+    surveillance: {
+      title: '無症狀 surveillance · 追蹤已知 stone burden',
+      subtitle: '目標是降低累積輻射，同時避免被 US 的尺寸高估推向不必要介入。',
+      source: 'Sun 2025 · Ganesan 2017',
+      steps: [
+        ['例行追蹤先用 US', '無輻射、可重複，適合觀察 hydronephrosis 與明顯 stone burden。Radiopaque stone 可視情況合併 KUB。'],
+        ['把 US size 當近似值', '小 stone 容易被高估；BMI、gain、depth 與 sonographer 都會影響結果。盡量比較同一技術與既有影像。'],
+        ['跨過治療門檻前確認', '若是否介入取決於 5 mm、10 mm 等尺寸門檻，或 US 顯示明顯生長，考慮 low-dose NCCT 確認。']
+      ],
+      notes: [
+        ['blue','代表表現','2025 cohort：US sensitivity 77%、PPV 75%，平均配對高估 1.8 mm。'],
+        ['red','最危險的誤差','US 報告 5–7 mm 的 stone，只有 28% 在 CT 上仍 ≥5 mm。'],
+        ['green','合理用途','穩定、無症狀且結果不會直接觸發手術時，US 的低輻射優勢最明顯。']
+      ]
+    },
+    special: {
+      title: '孕婦／兒童 · 優先避免 ionizing radiation',
+      subtitle: 'US 是共同的 first-line；後續檢查依族群與未解決的臨床問題選擇。',
+      source: 'ACR 2023 · EAU 2025',
+      steps: [
+        ['第一線：Ultrasound', '評估 hydronephrosis、可見 stone、bladder 與 ureteral jets；避免以生理性 hydronephrosis 過度診斷孕婦 obstruction。'],
+        ['US 不足時', '孕婦：noncontrast MRU 可作第二線；兒童：依需求選 KUB 或 low-dose NCCT。'],
+        ['最後才用 CT', '若關鍵診斷仍無法回答且會影響安全處置，孕婦可審慎考慮 low-dose CT；兒童使用兒科低劑量 protocol。']
+      ],
+      notes: [
+        ['blue','兒童研究','US patient-level sensitivity 66.7%、specificity 97.4%；漏診多為 ≤3 mm。'],
+        ['red','持續高度懷疑','負面 US 不應在高度懷疑時終止評估。'],
+        ['green','避免不必要 CT','明確陽性 US 且能回答處置問題時，不一定需要 confirmatory CT。']
+      ]
+    }
+  };
+
+  function renderScenario(key){
+    const data=scenarios[key];
+    const steps=data.steps.map(function(step,index){
+      return '<div class="path-step"><span class="step-num">'+(index+1)+'</span><div><b>'+step[0]+'</b><span>'+step[1]+'</span></div></div>';
+    }).join('');
+    const notes=data.notes.map(function(note){
+      return '<div class="note '+note[0]+'"><b>'+note[1]+'</b>'+note[2]+'</div>';
+    }).join('');
+    document.getElementById('scenarioOutput').innerHTML=
+      '<div class="output-head"><div><h3>'+data.title+'</h3><p>'+data.subtitle+'</p></div><span class="source-chip">'+data.source+'</span></div>'+
+      '<div class="output-body"><div class="pathway">'+steps+'</div><div class="decision-notes">'+notes+'</div></div>';
+  }
+
+  const tabs=Array.from(document.querySelectorAll('.scenario-tab'));
+  tabs.forEach(function(tab){
+    tab.addEventListener('click',function(){
+      tabs.forEach(function(item){item.setAttribute('aria-selected','false')});
+      tab.setAttribute('aria-selected','true');
+      renderScenario(tab.dataset.scenario);
+    });
+    tab.addEventListener('keydown',function(event){
+      const index=tabs.indexOf(tab);
+      let next=null;
+      if(event.key==='ArrowRight'||event.key==='ArrowDown') next=tabs[(index+1)%tabs.length];
+      if(event.key==='ArrowLeft'||event.key==='ArrowUp') next=tabs[(index-1+tabs.length)%tabs.length];
+      if(next){event.preventDefault(); next.focus(); next.click();}
+    });
+  });
+  renderScenario('acute');
+</script>
+</body>
+</html>
