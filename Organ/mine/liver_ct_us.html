@@ -73,6 +73,7 @@
   <div class="nav">
     <a href="#mA">① 肝段 / 門脈 Segments</a>
     <a href="#mPLD">② Parenchymal / CLD</a>
+    <a href="#mSize">肝臟大小 Liver size</a>
     <a href="#mB">③ CT Phase</a>
     <a href="#mC">④ Lesion 鑑別</a>
     <a href="#mD">⑤ Attenuation (HU)</a>
@@ -293,6 +294,51 @@
   <div class="module" id="mPLD">
     <h2>② Parenchymal Liver Disease / Chronic Liver Disease 慢性肝病超音波評分</h2>
     <p class="zh" style="font-size:.9rem;">評估三個超音波特徵（肝緣、肝表面、肝實質紋理），<b>左右肝葉分別打分後取平均</b>，三項平均分相加 = 總分（0–8）。同時使用 <b>高頻（5–12 MHz）</b> 偵測輕度變化，<b>低頻（2–5 MHz）</b> 確認中重度變化。</p>
+
+    <!-- ===== Liver size (US) — Lee JJ et al. Clinical Ultrasound 2019;4:44-58, Fig 18 ===== -->
+    <div class="card" id="mSize" style="scroll-margin-top:70px;">
+      <h3 style="margin-top:0;">肝臟大小 Liver size on US — 左葉／右葉量法與 cut-off</h3>
+      <p class="zh" style="font-size:.88rem;margin:0 0 10px;">作者提醒：量法多、受體型影響，<b>可靠度有限</b>；判斷時要考慮性別、身高、體格的相對大小，並與腎臟、脾臟等其他器官比較。</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;">
+        <div>
+          <img src="../assets/liver_size/liver_size_fig18A.jpg" style="width:100%;aspect-ratio:453/500;object-fit:contain;background:#000;border-radius:6px;border:1px solid #d1fae5;display:block;" alt="Fig 18A left lobe: cranio-caudal length a to b, antero-posterior length a to c">
+          <small class="note" style="display:block;margin-top:5px;"><b>A · 左葉 Left lobe</b>（心窩部縱切、看到主動脈）：<span style="color:#dc2626;">a→b 頭尾徑 cranio-caudal</span>、<span style="color:#ca8a04;">a→c 前後徑 antero-posterior</span></small>
+        </div>
+        <div>
+          <img src="../assets/liver_size/liver_size_fig18B.jpg" style="width:100%;aspect-ratio:453/500;object-fit:contain;background:#000;border-radius:6px;border:1px solid #d1fae5;display:block;" alt="Fig 18B right lobe: longitudinal length at anterior axillary or mid-clavicular line, inferior end of right lobe to diaphragm parallel to the long axis of the right kidney, a to b">
+          <small class="note" style="display:block;margin-top:5px;"><b>B · 右葉 Right lobe</b>（前腋線或鎖骨中線縱切）：<span style="color:#16a34a;">a→b</span> 右葉下緣→橫膈，與右腎長軸平行</small>
+        </div>
+      </div>
+      <div style="overflow-x:auto;margin-top:12px;-webkit-overflow-scrolling:touch;">
+      <table style="min-width:640px;">
+        <tr><th style="width:12%;">肝葉</th><th style="width:16%;">量測</th><th style="width:15%;">正常</th><th>萎縮 / 下限</th><th style="width:13%;">肝腫大</th></tr>
+        <tr>
+          <td rowspan="2"><b>左葉</b><br><span class="en">Left lobe</span><br><small class="note">Fig 18A</small></td>
+          <td>前後徑 AP（a→c）</td>
+          <td>約 <b>5 cm</b> 前後<br><small class="note">（原文作者）</small></td>
+          <td><small class="note">文獻<b>無明文下限</b>。常模 AP-D(L)（<a href="https://koreascience.kr/article/JAKO201809253683064.page" target="_blank" rel="noopener">Kim &amp; Han 2018 ↗</a>，n=260，胸骨下主動脈面縱切，與 18A 同切面）：男 5.81±0.92、女 5.15±0.81 cm，觀察最小 3.7／3.4 cm；mean−2SD ≈ <b>4.0／3.5 cm</b>（本站計算，非原文 cut-off）</small></td>
+          <td rowspan="2"><small class="note">作者未給左葉腫大 cut-off</small></td>
+        </tr>
+        <tr>
+          <td>頭尾徑 CC（a→b）</td>
+          <td>約 <b>7 cm</b> 前後<br><small class="note">（原文作者）</small></td>
+          <td><small class="note">文獻<b>無明文下限</b>。常模縱徑 L-D（<a href="https://koreascience.kr/article/JAKO201809253683064.page" target="_blank" rel="noopener">Kim &amp; Han 2018 ↗</a>，胸骨下縱切、下角→前上緣，量法與 18A 略異）：男 8.07±1.28、女 7.63±1.23 cm，觀察最小 3.3／4.4 cm；mean−2SD ≈ <b>5.5／5.2 cm</b>（本站計算）</small></td>
+        </tr>
+        <tr>
+          <td><b>右葉</b><br><span class="en">Right lobe</span><br><small class="note">Fig 18B（或 18C 肋下前後徑）</small></td>
+          <td>縱徑（a→b）MCL／AAL</td>
+          <td><b>≤ 15 cm</b></td>
+          <td><b>&lt; 9 cm</b> 萎縮</td>
+          <td><b>≥ 16 cm</b> 肝腫大</td>
+        </tr>
+      </table>
+      </div>
+      <small class="note" style="display:block;margin-top:8px;line-height:1.6;">
+        原文（韓文）：「전후경 5 cm 전후, 두미경 7 cm 전후를 정상 범위로 평가한다 … 15 cm 이내를 정상으로 보고, 9 cm 미만이면 위축, 16 cm 이상이면 간종대라고 할 수 있다」— Lee JJ, Park S, Kim IB. <i>How to Perform Liver Ultrasound: a Practical Guide for Clinicians.</i> Clinical Ultrasound 2019;4(2):44–58, p.55 &amp; Fig. 18（右葉 15／9／16 cm 為 Lee 等人所述；其右葉量法引 ref 10 Kim &amp; Han 2018）。
+        <a href="https://doi.org/10.18525/cu.2019.4.2.44" target="_blank" rel="noopener">doi:10.18525/cu.2019.4.2.44 ↗</a> · CC BY-NC 4.0，圖 A／B 裁自原文 Fig. 18。
+        左葉下限：查 Kim &amp; Han 2018（原文 ref 10）、Niederau 1983（Radiology，僅給 95th 上限）、Radiopaedia hepatomegaly，皆<b>無左葉萎縮 cut-off</b>；Kim &amp; Han 依體格指數分組的「參照範圍」（如 AP-D(L) 第 I 組 4.84–5.15 cm）是組平均的 95% 信賴區間，不是正常下限；表中「mean−2SD」為本站由其 Table 3 計算。Kim YK, Han DK. Liver size measurement method by ultrasonography and reference range based on normal adult physique index. <i>J Radiol Sci Technol</i> 2018;41(1):13–24. <a href="https://doi.org/10.17946/JRST.2018.41.1.13" target="_blank" rel="noopener">doi:10.17946/JRST.2018.41.1.13 ↗</a> · <a href="https://koreascience.kr/article/JAKO201809253683064.pdf" target="_blank" rel="noopener">PDF ↗</a>
+      </small>
+    </div>
 
     <div class="card">
       <h3>評分準則 Scoring criteria</h3>
@@ -861,6 +907,8 @@
         <li><b>LITFL (Life in the Fast Lane)</b> — Abdominal CT attenuation：HU 數值、脂肪肝/true-enhancement 門檻。 <a href="https://litfl.com/abdominal-ct-attenuation/" target="_blank" rel="noopener">litfl.com ↗</a></li>
         <li><b>ACR LI-RADS®（官方）</b> — CT/MRI v2018 core + diagnostic table（HCC 分級、major/targetoid features）。 <a href="https://www.acr.org/Clinical-Resources/Clinical-Tools-and-Reference/Reporting-and-Data-Systems/LI-RADS" target="_blank" rel="noopener">acr.org/LI-RADS ↗</a></li>
         <li><b>LI-RADS US Surveillance v2024</b>（Radiology 2024;313(3):e240169）— US-1/2/3 + VIS-A/B/C surveillance 演算法。 <a href="https://pubs.rsna.org/doi/10.1148/radiol.240169" target="_blank" rel="noopener">pubs.rsna.org ↗</a></li>
+        <li><b>Lee JJ, Park S, Kim IB.</b> How to Perform Liver Ultrasound: a Practical Guide for Clinicians. <i>Clinical Ultrasound</i> 2019;4(2):44–58（CC BY-NC 4.0）：肝臟大小量法與 cut-off、Fig. 18 A/B。 <a href="https://doi.org/10.18525/cu.2019.4.2.44" target="_blank" rel="noopener">doi.org/10.18525/cu.2019.4.2.44 ↗</a></li>
+        <li><b>Kim YK, Han DK.</b> Liver size measurement method by ultrasonography and reference range based on normal adult physique index. <i>J Radiol Sci Technol</i> 2018;41(1):13–24：左葉 AP／縱徑常模（mean±SD、min–max），無明文下限。 <a href="https://koreascience.kr/article/JAKO201809253683064.page" target="_blank" rel="noopener">koreascience.kr ↗</a> · <a href="https://doi.org/10.17946/JRST.2018.41.1.13" target="_blank" rel="noopener">doi ↗</a></li>
         <li><b>The Radiology Assistant</b> — LI-RADS（教學整理）。 <a href="https://radiologyassistant.nl/abdomen/liver/li-rads" target="_blank" rel="noopener">radiologyassistant.nl ↗</a></li>
       </ol>
     </div>
