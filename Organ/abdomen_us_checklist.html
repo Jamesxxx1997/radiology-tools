@@ -102,9 +102,12 @@
   @media (max-width:640px){ .thumb{ width:96px; } .thumb img{ width:96px; max-height:70px; } .prog .bar{ display:none; } }
 
   /* ===== compact (phone / iPad) mode ===== */
-  .postabs a{ cursor:pointer; }
+  .postabs a{ cursor:pointer; position:relative; overflow:hidden; }
+  .postabs a span{ position:relative; z-index:1; }
+  .postabs a .fill{ position:absolute; left:0; top:0; bottom:0; background:rgba(255,255,255,.32); transition:width .25s; }
+  .postabs a.full{ background:var(--ok) !important; box-shadow:inset 0 0 0 2px #fff; } .postabs a.full .fill{ display:none; }
   .postabs a.dim{ opacity:.45; }
-  .postabs a small{ display:block; font-weight:600; font-size:.72rem; opacity:.95; }
+  .postabs a small{ display:block; font-weight:600; font-size:.74rem; opacity:.95; }
   body.compact{ padding-bottom:80px; -webkit-tap-highlight-color:transparent; }
   body.compact .wrap{ padding:6px 8px 0; }
   body.compact .banner, body.compact .sub, body.compact .pos h2, body.compact .foot, body.compact h1{ display:none; }
@@ -330,8 +333,8 @@ function itemHTML(it){
 }
 function renderTabs(){
   const compact=isCompact();
-  document.getElementById('postabs').innerHTML = PORDER.map(p=>{ const ps=posStats(p); const on=!compact||state.posFilter==='all'||state.posFilter===p;
-    return `<a class="${p} ${on?'':'dim'}" onclick="tabClick('${p}')">${POS[p].label.replace(/（.*$/,'')}<small>${ps.done}/${ps.total}</small></a>`; }).join('');
+  document.getElementById('postabs').innerHTML = PORDER.map(p=>{ const ps=posStats(p); const on=!compact||state.posFilter==='all'||state.posFilter===p; const full=ps.done===ps.total;
+    return `<a class="${p} ${on?'':'dim'} ${full?'full':''}" onclick="tabClick('${p}')"><i class="fill" style="width:${100*ps.done/ps.total}%"></i><span>${full?'✓ ':''}${POS[p].label.replace(/（.*$/,'')}<small>${full?'完成':ps.done+' / '+ps.total+' 必掃'}</small></span></a>`; }).join('');
 }
 function renderStation(){
   let h=''; const compact=isCompact();
