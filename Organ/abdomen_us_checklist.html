@@ -251,7 +251,7 @@ const STATIONS = [
  { pos:'lld', id:'lst_ic', name:'Right intercostal（LLD）', items:[
    { id:'lld_ic_ant',  req:1, lbl:'前枝面：S5 / S8', cov:['S5','S8'], img:'intercostal_ant.png', cr:'note' },
    { id:'lld_ic_post', req:1, lbl:'後枝面：S6 / S7', cov:['S6','S7'], img:'intercostal_post.png', cr:'note' },
-   { id:'lld_dome',    req:1, lbl:'Dome：深吸氣，看 S7 / S8 橫膈下緣', note:'subcostal 很難掃到的區域，只能在這裡補', cov:['Dome','S7','S8'] },
+   { id:'lld_dome',    req:0, lbl:'Dome：深吸氣，看 S7 / S8 橫膈下緣', note:'subcostal 很難掃到的區域，只能在這裡補', cov:['Dome','S7','S8'] },
    { id:'lld_ic_gb',   req:1, lbl:'GB / CBD intercostal view', cov:['GBneck','GBbody','CBD'], img:'cbd_long.png', cr:'sam' },
  ]},
  { pos:'lld', id:'lst_max', name:'Right mid-axillary longitudinal（LLD）', items:[
@@ -286,7 +286,7 @@ const STATIONS = [
  ]},
  { pos:'rld', id:'rst_opt', name:'RLD optional', items:[
    { id:'ladr_long', req:0, lbl:'左腎上腺 longitudinal：脾/腎為窗，往前 angle 到腎上極', cov:['LAd'], img:'l_adrenal_long.png', cr:'th' },
-   { id:'ladr_trv',  req:0, lbl:'左腎上腺 transverse', cov:['LAd'] },
+   { id:'ladr_trv',  req:0, lbl:'左腎上腺 transverse', cov:['LAd'], img:'l_adrenal_trv.png', cr:'note' },
    { id:'rld_gb',    req:0, lbl:'GB 再看一次（結石移動 / fundus）', cov:['GBbody','GBfundus'] },
  ]},
 ];
