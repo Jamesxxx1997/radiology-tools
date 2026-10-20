@@ -161,7 +161,7 @@
 
   <div class="foot" id="foot">
     <b>規則</b>：必掃 = 清單上沒標 optional 的項目；optional = 時間不夠可省略。肝 segment 完成條件 = 該 segment 所有必掃 view 皆勾選。<br>
-    <b>圖片出處</b>：GB long/short axis — Dr. Sam's Imaging Library；aorta longitudinal — CardioServ；adrenal — Thieme《Ultrasound Teaching Manual》Fig 11.4 / 11.7 / 11.9（Hofer）；肝 subcostal High/Mid/Low、intercostal、epigastric 線稿與 kidney/spleen 線稿 — 個人筆記附圖（教學講義）。胰臟標準切面請見 <a href="pancreas.html" target="_blank">Pancreas</a> 頁。<br>
+    <b>圖片出處</b>：GB long/short axis 與 CBD — Dr. Sam's Imaging Library；aorta longitudinal — CardioServ；aorta transverse — 筆記附圖（原始出處未確認）；adrenal — Thieme《Ultrasound Teaching Manual》Fig 11.4 / 11.7 / 11.9（Hofer）；肝 subcostal High/Mid/Low、intercostal、epigastric 線稿與 kidney/spleen 線稿 — 個人筆記附圖（教學講義）。胰臟標準切面請見 <a href="pancreas.html" target="_blank">Pancreas</a> 頁。<br>
     <b>數值</b>：MPV ≥ 13 mm 異常（分叉前、quiet respiration、supine）；CBD ≤ 6 mm（常用規則：>60 歲每 10 歲 +1 mm；膽囊切除後可至 ~10 mm）；infrarenal aorta ≥ 3 cm = AAA。
   </div>
 </div>
@@ -186,7 +186,7 @@ const LIVER = new Set(['S1','S2','S3','S4a','S4b','S5','S6','S7','S8','Dome']);
 
 /* ---------- items: one row = one probe action ---------- */
 const A='mine/assets/abd_us/';
-const CR = { note:'筆記附圖（教學講義）', sam:"Dr. Sam's Imaging Library", cs:'CardioServ', th:'Thieme, Ultrasound Teaching Manual (Hofer)', panc:'Pancreas 頁標準切面（作者教學投影片）' };
+const CR = { note:'筆記附圖（教學講義）', unk:'筆記附圖（原始出處未確認）', sam:"Dr. Sam's Imaging Library", cs:'CardioServ', th:'Thieme, Ultrasound Teaching Manual (Hofer)', panc:'Pancreas 頁標準切面（作者教學投影片）' };
 const PANC='mine/assets/panc/';
 const POS = { sup:{k:'sup',label:'Supine 仰臥',sub:'先把仰臥能掃的全部掃完，再翻身'}, lld:{k:'lld',label:'LLD 左側臥（右側朝上）',sub:'右肝 / 膽囊 / 右腎'}, rld:{k:'rld',label:'RLD 右側臥（左側朝上）',sub:'脾 / 胰尾 / 左腎'} };
 
@@ -194,7 +194,7 @@ const STATIONS = [
  /* ===== SUPINE ===== */
  { pos:'sup', id:'st_eplong', name:'Epigastric longitudinal（劍突下縱切）', items:[
    { id:'ep_long_aorta', req:1, lbl:'Aorta view：aorta 在正下方，往左 sweep 到肝臟消失', note:'左葉外側尖端（S2/S3 貼近脾側）要掃到才停', cov:['S2','S3'], img:'epi_long_aorta.png', cr:'note' },
-   { id:'ep_long_ivc',   req:1, lbl:'IVC view：IVC 在正下方', note:'IVC 前方 = S1（尾葉），S1 前方 = S4；可見 LHV、UP', cov:['S1','S4a','S4b'], img:'epi_long_ivc.png', cr:'note' },
+   { id:'ep_long_ivc',   req:1, lbl:'IVC view：IVC 在正下方', note:'IVC 前方 = S1（尾葉），隔 ligamentum venosum 再前方 = S4；可見 LHV、UP', cov:['S1','S4a','S4b'], img:'epi_long_ivc.png', cr:'note' },
    { id:'ep_long_aobif', req:0, lbl:'Aorta 往下追到 bifurcation', note:'infrarenal aorta ≥ 3 cm = AAA', cov:['Ao'], img:'aorta_long.png', cr:'cs' },
  ]},
  { pos:'sup', id:'st_eptv', name:'Epigastric transverse（劍突下橫切）', items:[
@@ -203,7 +203,7 @@ const STATIONS = [
      imgs:[['tv1.jpg','① Celiac 層：aorta → celiac → CHA / splenic a.；body · tail'],['tv2.jpg','② SV–SMA 層：脾靜脈繞行；head · neck · body · tail 一覽'],['tv3.jpg','③ SMV 層：oval SMV 周圍 head · uncinate · neck']], wide:1, cr:'panc' },
    { id:'ep_lg_panc',  req:1, lbl:'Pancreas 縱切 A→E（IVC → SMV → Ao/SMA → 胃/左腎窗 → 脾窗）', note:'A = head（landmark MPV / IVC），E = tail；最右圖為 A–E 探頭位置對照', cov:['Phead','Pneck','Pbody','Ptail'],
      imgs:[['lg_a.jpg','A · IVC 層 → HEAD'],['lg_b.jpg','B · SMV 層 → NECK + uncinate'],['lg_c.jpg','C · Ao–SMA 層 → BODY'],['lg_d.jpg','D · 胃 / 左腎窗 → body–tail'],['lg_e.jpg','E · 脾窗 → TAIL'],['tv0.jpg','A–E 探頭位置對照圖']], cr:'panc' },
-   { id:'ep_tv_ao',    req:0, lbl:'Aorta 橫切（含 bifurcation）', note:'aorta 在脊椎左前方、IVC 右側', cov:['Ao'], img:'aorta_trv.png', cr:'note' },
+   { id:'ep_tv_ao',    req:0, lbl:'Aorta 橫切（含 bifurcation）', note:'aorta 在脊椎左前方，IVC 在 aorta 右側', cov:['Ao'], img:'aorta_trv.png', cr:'unk' },
  ]},
  { pos:'sup', id:'st_lsc', name:'Left subcostal oblique（左肋緣下斜切）', items:[
    { id:'lsc', req:1, lbl:'往左上方 fan 到肝臟消失', cov:['S2','S3'], img:'left_subcostal.png', cr:'note' },
@@ -214,7 +214,7 @@ const STATIONS = [
    { id:'rsc_low',  req:1, lbl:'Low：看到 pancreas，繼續往下 sweep 到 S6 消失', note:'看到 S3 · S4b · S5 · S6；S6 下緣最常漏', cov:['S3','S4b','S5','S6'] },
    { id:'rsc_gb_long',  req:1, lbl:'同站轉成 GB 長軸：neck（Hartmann）→ body → fundus', note:'結石最常躲在 neck 與 fundus', cov:['GBneck','GBbody','GBfundus'], img:'gb_long.png', cr:'sam' },
    { id:'rsc_gb_short', req:1, lbl:'GB 短軸 sweep', cov:['GBbody'], img:'gb_short.png', cr:'sam' },
-   { id:'rsc_cbd', req:1, lbl:'CBD 長軸（portal vein 前方）', note:'CBD ≤ 6 mm', cov:['CBD'], img:'cbd_long.png', cr:'note' },
+   { id:'rsc_cbd', req:1, lbl:'CBD 長軸（portal vein 前方）', note:'CBD ≤ 6 mm；同 GB 長軸站位，往 neck 內側找', cov:['CBD'], img:'gb_long.png', cr:'sam' },
    { id:'rsc_mpv', req:1, lbl:'Main portal vein 內徑：分叉前、quiet respiration', note:'≥ 13 mm 異常；intercostal 或 subcostal 皆可量', cov:['MPV'] },
    { id:'rsc_pvbr', req:1, lbl:'Left / right portal vein branch：B-mode + Doppler 排除 thrombosis', cov:['PVbr'] },
  ]},
@@ -224,7 +224,7 @@ const STATIONS = [
  { pos:'sup', id:'st_ic', name:'Right intercostal（右肋間）', items:[
    { id:'ic_ant',  req:1, lbl:'前枝面：RPV anterior branch → S5 / S8', note:'RHV 在旁，GB 常同時入鏡', cov:['S5','S8'], img:'intercostal_ant.png', cr:'note' },
    { id:'ic_post', req:1, lbl:'後枝面：RPV posterior branch → S6 / S7（探頭更後、更下）', cov:['S6','S7'], img:'intercostal_post.png', cr:'note' },
-   { id:'ic_gb',   req:1, lbl:'GB / CBD intercostal view', cov:['GBneck','GBbody','CBD'] },
+   { id:'ic_gb',   req:1, lbl:'GB / CBD intercostal view', note:'CBD 在 portal vein 前方、liver 與 IVC 之間', cov:['GBneck','GBbody','CBD'], img:'cbd_long.png', cr:'sam' },
  ]},
  { pos:'sup', id:'st_max', name:'Right mid-axillary longitudinal（右腋中線縱切）', items:[
    { id:'max', req:1, lbl:'腋中線（或腋前線）縱切', note:'看 S6 / S7', cov:['S6','S7'] },
@@ -233,7 +233,7 @@ const STATIONS = [
    { id:'sp', req:1, lbl:'脾臟長軸 + 脾門', cov:['Spleen'], img:'spleen.png', cr:'note' },
  ]},
  { pos:'sup', id:'st_kid', name:'Kidneys（側腹）', items:[
-   { id:'rk_long', req:1, lbl:'右腎 longitudinal（肝為窗）', cov:['RK'], img:'rk_long.png', cr:'note' },
+   { id:'rk_long', req:1, lbl:'右腎 longitudinal（側腹 coronal，上極與腎上腺區一併看）', cov:['RK'], img:'rk_long.png', cr:'note' },
    { id:'rk_trv',  req:1, lbl:'右腎 transverse', cov:['RK'], img:'rk_trv.png', cr:'note' },
    { id:'lk_long', req:1, lbl:'左腎 longitudinal（脾為窗）', cov:['LK'], img:'lk_long.png', cr:'note' },
    { id:'lk_trv',  req:1, lbl:'左腎 transverse', cov:['LK'], img:'lk_trv.png', cr:'note' },
@@ -241,6 +241,7 @@ const STATIONS = [
  { pos:'sup', id:'st_adr', name:'Adrenal（optional）', items:[
    { id:'radr_long', req:0, lbl:'右腎上腺 longitudinal：肝窗，往左移到腎消失、IVC 後方', cov:['RAd'], img:'r_adrenal_long.png', cr:'th' },
    { id:'radr_trv',  req:0, lbl:'右腎上腺 transverse：IVC 後外側、腎上極前內側', cov:['RAd'], img:'r_adrenal_trv.png', cr:'th' },
+   { id:'ladr_sup',  req:0, lbl:'左腎上腺（supine，脾/腎窗）', note:'多數人要到 RLD 才看得到', cov:['LAd'] },
  ]},
 
  /* ===== LLD ===== */
@@ -248,7 +249,7 @@ const STATIONS = [
    { id:'lld_ic_ant',  req:1, lbl:'前枝面：S5 / S8', cov:['S5','S8'], img:'intercostal_ant.png', cr:'note' },
    { id:'lld_ic_post', req:1, lbl:'後枝面：S6 / S7', cov:['S6','S7'], img:'intercostal_post.png', cr:'note' },
    { id:'lld_dome',    req:1, lbl:'Dome：深吸氣，看 S7 / S8 橫膈下緣', note:'subcostal 很難掃到的區域，只能在這裡補', cov:['Dome','S7','S8'] },
-   { id:'lld_ic_gb',   req:1, lbl:'GB / CBD intercostal view', cov:['GBneck','GBbody','CBD'] },
+   { id:'lld_ic_gb',   req:1, lbl:'GB / CBD intercostal view', cov:['GBneck','GBbody','CBD'], img:'cbd_long.png', cr:'sam' },
  ]},
  { pos:'lld', id:'lst_max', name:'Right mid-axillary longitudinal（LLD）', items:[
    { id:'lld_max', req:1, lbl:'腋中線縱切：S6 / S7', cov:['S6','S7'] },
@@ -257,7 +258,8 @@ const STATIONS = [
    { id:'lld_gb_long',  req:1, lbl:'GB 長軸：neck → body → fundus', cov:['GBneck','GBbody','GBfundus'], img:'gb_long.png', cr:'sam' },
    { id:'lld_gb_mob',   req:1, lbl:'結石 / sludge 有沒有隨體位移動', note:'對照 supine 的位置', cov:['GBmob'] },
    { id:'lld_gb_short', req:1, lbl:'GB 短軸 sweep', cov:['GBbody'], img:'gb_short.png', cr:'sam' },
-   { id:'lld_cbd',      req:1, lbl:'CBD 長軸', cov:['CBD'], img:'cbd_long.png', cr:'note' },
+   { id:'lld_cbd',      req:1, lbl:'CBD 長軸', cov:['CBD'], img:'gb_long.png', cr:'sam' },
+   { id:'lld_rsl',      req:0, lbl:'Right subcostal longitudinal 再看 S5 / S8', cov:['S5','S8'] },
    { id:'lld_rsc',      req:0, lbl:'肝 High / Mid / Low 再 fan 一輪', note:'supine 時肋緣下看不清楚的 segment 在這裡補', cov:['S1','S2','S3','S4a','S4b','S5','S6','S7','S8'] },
  ]},
  { pos:'lld', id:'lst_rk', name:'Right kidney（LLD）', items:[
@@ -281,7 +283,7 @@ const STATIONS = [
  ]},
  { pos:'rld', id:'rst_opt', name:'RLD optional', items:[
    { id:'ladr_long', req:0, lbl:'左腎上腺 longitudinal：脾/腎為窗，往前 angle 到腎上極', cov:['LAd'], img:'l_adrenal_long.png', cr:'th' },
-   { id:'ladr_trv',  req:0, lbl:'左腎上腺 transverse', cov:['LAd'], img:'l_adrenal_trv.png', cr:'th' },
+   { id:'ladr_trv',  req:0, lbl:'左腎上腺 transverse', cov:['LAd'] },
    { id:'rld_gb',    req:0, lbl:'GB 再看一次（結石移動 / fundus）', cov:['GBbody','GBfundus'] },
  ]},
 ];
