@@ -100,6 +100,45 @@
   .lb .cap{ color:#cbd5e1; font-size:.85rem; margin-top:8px; }
   .foot{ font-size:.76rem; color:#64748b; margin:26px 0 10px; line-height:1.6; }
   @media (max-width:640px){ .thumb{ width:96px; } .thumb img{ width:96px; max-height:70px; } .prog .bar{ display:none; } }
+
+  /* ===== compact (phone / iPad) mode ===== */
+  .postabs a{ cursor:pointer; }
+  .postabs a.dim{ opacity:.45; }
+  .postabs a small{ display:block; font-weight:600; font-size:.72rem; opacity:.95; }
+  body.compact{ padding-bottom:80px; -webkit-tap-highlight-color:transparent; }
+  body.compact .wrap{ padding:6px 8px 0; }
+  body.compact .banner, body.compact .sub, body.compact .pos h2, body.compact .foot, body.compact h1{ display:none; }
+  body.compact .ctrl{ gap:6px; padding:6px 0; }
+  body.compact .seg button, body.compact .btn{ padding:10px 10px; font-size:.88rem; }
+  body.compact .prog{ font-size:.9rem; } body.compact .prog .bar{ display:none; }
+  body.compact .postabs a{ padding:9px 2px; font-size:.86rem; line-height:1.15; }
+  body.compact .station{ margin-bottom:8px; }
+  body.compact .station > h3{ font-size:.95rem; padding:10px 12px; }
+  body.compact .item{ padding:12px 10px; min-height:56px; gap:12px; align-items:center; user-select:none; touch-action:manipulation; }
+  body.compact .item input{ width:28px; height:28px; margin:0; }
+  body.compact .item .lbl{ font-size:1rem; line-height:1.3; }
+  body.compact .item .note{ font-size:.8rem; }
+  body.compact .thumb{ display:none; }
+  body.compact .strip{ display:none; }
+  body.compact .item.showimg .thumb{ display:block; width:100%; margin-top:6px; }
+  body.compact .item.showimg .thumb img{ width:100%; max-height:260px; object-fit:contain; }
+  body.compact .item.showimg .strip{ display:flex; }
+  body.compact .item.showimg{ flex-wrap:wrap; }
+  body.compact .item.showimg .body{ flex:1 1 60%; }
+  body.compact .imgbtn{ display:none; }
+  body.compact .item.hasimg .imgbtn{ display:inline-block; flex:none; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:8px; padding:9px 10px; font-size:.95rem; cursor:pointer; }
+  body.compact .cells{ grid-template-columns:repeat(auto-fill,minmax(92px,1fr)); gap:6px; }
+  body.compact .cell{ padding:7px 4px; } body.compact .cell .nm{ font-size:.98rem; } body.compact .cell .nm small{ font-size:.66rem; }
+  body.compact .organ{ padding:10px; margin:8px 0; }
+  body.compact .todo{ padding:6px 10px; }
+  body.compact .todo .ttl{ display:flex; align-items:center; gap:8px; margin:0; font-size:.88rem; color:#fff; cursor:pointer; min-height:36px; }
+  body.compact .todo .ttl .nx{ margin-left:auto; background:#fbbf24; color:#1e293b; border:none; border-radius:8px; padding:8px 12px; font-weight:800; font-size:.9rem; cursor:pointer; white-space:nowrap; }
+  body.compact .todo .ttl .nx.ok{ background:var(--ok); color:#fff; }
+  body.compact .chips{ display:none; margin-top:6px; max-height:120px; }
+  body.compact .todo.open .chips{ display:flex; }
+  body.compact .chip{ padding:8px 12px; font-size:.86rem; }
+  .posdone{ background:#ecfdf5; border:1px solid var(--ok); color:#047857; border-radius:10px; padding:12px; margin:8px 0; font-weight:700; display:flex; align-items:center; gap:10px; }
+  .posdone button{ margin-left:auto; background:var(--ok); color:#fff; border:none; border-radius:8px; padding:9px 14px; font-weight:800; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -111,9 +150,10 @@
   <div class="ctrl" id="ctrl">
     <div class="seg"><button id="vStation" class="on" onclick="setView('station')">站位順序</button><button id="vOrgan" onclick="setView('organ')">器官導向</button></div>
     <button class="btn" id="bOpt" onclick="toggleOpt()">時間不夠：隱藏 optional</button>
-    <button class="btn warn" onclick="resetAll()">新病人（清除）</button>
+    <button class="btn warn" id="bReset" onclick="resetAll()">新病人（清除）</button>
+    <button class="btn" id="bCompact" onclick="toggleCompact()" title="手機 / iPad 精簡版">📱</button>
     <div class="prog">必掃 <b id="pDone">0</b> / <span id="pTot">0</span><span class="bar"><i id="pBar"></i></span></div>
-    <div class="postabs" id="postabs"><a class="sup" href="#pos-sup">Supine</a><a class="lld" href="#pos-lld">LLD（左側臥）</a><a class="rld" href="#pos-rld">RLD（右側臥）</a></div>
+    <div class="postabs" id="postabs"></div>
   </div>
 
   <div id="viewStation"></div>
@@ -250,14 +290,16 @@ const BYID = {}; ITEMS.forEach(it=>BYID[it.id]=it);
 
 /* ---------- state ---------- */
 const KEY='abdUsChecklist.v1';
-let state = { checked:{}, hideOpt:false, view:'station', sel:null };
+let state = { checked:{}, hideOpt:false, view:'station', sel:null, compact:'auto', posFilter:'sup', todoOpen:false };
+const PORDER=['sup','lld','rld'];
+function isCompact(){ return state.compact==='on' || (state.compact==='auto' && window.innerWidth<=900); }
 function load(){
   try{ const s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s) state=Object.assign(state,s); }catch(e){}
   const h=location.hash.match(/s=([A-Za-z0-9_-]+)/);
   if(h){ try{ const bits=atob(h[1].replace(/-/g,'+').replace(/_/g,'/')); const c={}; ITEMS.forEach((it,i)=>{ if(bits.charCodeAt(i>>3)&(1<<(i&7))) c[it.id]=true; }); state.checked=c; }catch(e){} }
 }
 function save(){
-  localStorage.setItem(KEY, JSON.stringify({checked:state.checked,hideOpt:state.hideOpt,view:state.view,ts:Date.now()}));
+  try{ localStorage.setItem(KEY, JSON.stringify({checked:state.checked,hideOpt:state.hideOpt,view:state.view,compact:state.compact,posFilter:state.posFilter,ts:Date.now()})); }catch(e){}
   if(window.top===window.self){ const n=Math.ceil(ITEMS.length/8); const arr=new Array(n).fill(0); ITEMS.forEach((it,i)=>{ if(state.checked[it.id]) arr[i>>3]|=1<<(i&7); });
     const b64=btoa(String.fromCharCode.apply(null,arr)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); history.replaceState(null,'','#s='+b64); }
 }
@@ -268,25 +310,38 @@ function toggle(id, v){ if(v===undefined) v=!isChecked(id); if(v) state.checked[
 function cellStats(cell){ const req=ITEMS.filter(it=>it.req&&it.cov.includes(cell)); const opt=ITEMS.filter(it=>!it.req&&it.cov.includes(cell));
   return { req, opt, done:req.filter(it=>isChecked(it.id)).length, total:req.length }; }
 function stationStats(s){ const req=s.items.filter(i=>i.req); return { done:req.filter(i=>isChecked(i.id)).length, total:req.length, allopt:req.length===0 }; }
+function posStats(p){ const req=ITEMS.filter(i=>i.req&&i.pos===p); return { done:req.filter(i=>isChecked(i.id)).length, total:req.length }; }
+function firstUnfinished(p){ return STATIONS.find(s=>(!p||s.pos===p)&&(()=>{const st=stationStats(s);return st.total&&st.done<st.total;})()); }
 
 /* ---------- render ---------- */
 const esc=s=>s;
 function covTags(cov){ return cov.map(c=>`<span class="tag ${LIVER.has(c)?'liv':''}">${c}</span>`).join(''); }
 function itemHTML(it){
-  const on=isChecked(it.id);
-  return `<div class="item ${it.req?'':'opt'} ${on?'done':''}" data-id="${it.id}" onclick="toggle('${it.id}')">
+  const on=isChecked(it.id), hasimg=!!(it.img||it.imgs);
+  return `<div class="item ${it.req?'':'opt'} ${on?'done':''} ${hasimg?'hasimg':''}" data-id="${it.id}" onclick="toggle('${it.id}')">
     <input type="checkbox" ${on?'checked':''} onclick="event.stopPropagation();toggle('${it.id}',this.checked)">
     <div class="body"><div class="lbl">${esc(it.lbl)}</div>${it.note?`<div class="note">${it.note}</div>`:''}<div class="cov">${covTags(it.cov)}</div>
-      ${it.imgs?`<div class="strip ${it.wide?'wide':''}">${it.imgs.map(([f,c])=>`<figure onclick="event.stopPropagation();lightbox('${PANC+f}','${c.replace(/'/g,'’')}')"><img src="${PANC+f}" alt=""><figcaption>${c}</figcaption></figure>`).join('')}<div class="cred">${CR[it.cr]||''}</div></div>`:''}</div>
-    ${it.img?`<div class="thumb"><img src="${A+it.img}" alt="" onclick="event.stopPropagation();lightbox('${A+it.img}','${CR[it.cr]||''}')"><div class="cred">${CR[it.cr]||''}</div></div>`:''}
+      ${it.imgs?`<div class="strip ${it.wide?'wide':''}">${it.imgs.map(([f,c])=>`<figure onclick="event.stopPropagation();lightbox('${PANC+f}','${c.replace(/'/g,'’')}')"><img src="${PANC+f}" alt="" loading="lazy"><figcaption>${c}</figcaption></figure>`).join('')}<div class="cred">${CR[it.cr]||''}</div></div>`:''}</div>
+    ${hasimg?`<button class="imgbtn" onclick="event.stopPropagation();this.closest('.item').classList.toggle('showimg')">🖼</button>`:''}
+    ${it.img?`<div class="thumb"><img src="${A+it.img}" alt="" loading="lazy" onclick="event.stopPropagation();lightbox('${A+it.img}','${CR[it.cr]||''}')"><div class="cred">${CR[it.cr]||''}</div></div>`:''}
   </div>`;
 }
+function renderTabs(){
+  const compact=isCompact();
+  document.getElementById('postabs').innerHTML = PORDER.map(p=>{ const ps=posStats(p); const on=!compact||state.posFilter==='all'||state.posFilter===p;
+    return `<a class="${p} ${on?'':'dim'}" onclick="tabClick('${p}')">${POS[p].label.replace(/（.*$/,'')}<small>${ps.done}/${ps.total}</small></a>`; }).join('');
+}
 function renderStation(){
-  let h='';
-  ['sup','lld','rld'].forEach(p=>{
+  let h=''; const compact=isCompact();
+  const show = compact && state.posFilter!=='all' ? [state.posFilter] : PORDER;
+  show.forEach(p=>{
     h+=`<div class="pos ${p}" id="pos-${p}"><h2>${POS[p].label}<small>${POS[p].sub}</small></h2>`;
     STATIONS.filter(s=>s.pos===p).forEach(s=>{ const st=stationStats(s);
       h+=`<div class="station ${st.allopt?'allopt':''}" id="${s.id}"><h3>${s.name}<span class="cnt ${st.done===st.total&&st.total?'done':''}">${st.allopt?'optional':`必掃 ${st.done}/${st.total}`}</span></h3>${s.items.map(itemHTML).join('')}</div>`; });
+    const ps=posStats(p), ni=PORDER.indexOf(p)+1;
+    if(ps.done===ps.total){ h += ni<PORDER.length
+      ? `<div class="posdone">✓ ${POS[p].label.replace(/（.*$/,'')} 必掃全部完成<button onclick="tabClick('${PORDER[ni]}')">翻身 → ${POS[PORDER[ni]].label}</button></div>`
+      : `<div class="posdone">✓ ${POS[p].label.replace(/（.*$/,'')} 必掃全部完成</div>`; }
     h+='</div>';
   });
   document.getElementById('viewStation').innerHTML=h;
@@ -314,30 +369,46 @@ function renderTodo(){
   document.getElementById('pDone').textContent=done; document.getElementById('pTot').textContent=req.length;
   document.getElementById('pBar').style.width=(100*done/req.length)+'%';
   const left=STATIONS.map(s=>({s,st:stationStats(s)})).filter(x=>x.st.total&&x.st.done<x.st.total);
-  const ttl=document.getElementById('todoTtl'), chips=document.getElementById('chips');
-  if(!left.length){ ttl.innerHTML='必掃項目全部完成 ✓'; chips.innerHTML='<span class="chip alldone">全部掃完</span>'; return; }
+  const ttl=document.getElementById('todoTtl'), chips=document.getElementById('chips'), compact=isCompact();
+  document.getElementById('todo').classList.toggle('open',state.todoOpen);
+  if(!left.length){ ttl.innerHTML='必掃項目全部完成 ✓'+(compact?'<button class="nx ok" onclick="event.stopPropagation();resetAll()">新病人</button>':''); chips.innerHTML='<span class="chip alldone">全部掃完</span>'; return; }
   const n=left.reduce((a,x)=>a+x.st.total-x.st.done,0);
-  ttl.innerHTML=`還沒掃完 <b>${n}</b> 項必掃（點站位跳過去）`;
-  chips.innerHTML=left.map(x=>`<button class="chip ${x.s.pos}" onclick="goStation('${x.s.id}')">${x.s.name.replace(/（.*$/,'')}${x.s.pos==='lld'?' LLD':x.s.pos==='rld'?' RLD':''} · ${x.st.total-x.st.done}</button>`).join('');
+  const nxt = firstUnfinished(compact&&state.posFilter!=='all'?state.posFilter:null) || left[0].s;
+  const nm = s=>s.name.replace(/（.*$/,'')+(s.pos==='lld'?' LLD':s.pos==='rld'?' RLD':'');
+  ttl.innerHTML = compact
+    ? `<span onclick="state.todoOpen=!state.todoOpen;renderTodo()">還沒掃 <b>${n}</b> 項 ${state.todoOpen?'▾':'▸'}</span><button class="nx" onclick="event.stopPropagation();goStation('${nxt.id}')">下一站：${nm(nxt)} ›</button>`
+    : `還沒掃完 <b>${n}</b> 項必掃（點站位跳過去）`;
+  chips.innerHTML=left.map(x=>`<button class="chip ${x.s.pos}" onclick="goStation('${x.s.id}')">${nm(x.s)} · ${x.st.total-x.st.done}</button>`).join('');
 }
-function render(){ renderStation(); renderOrgan(); renderTodo();
+function render(){ const compact=isCompact(); document.body.classList.toggle('compact',compact);
+  renderTabs(); renderStation(); renderOrgan(); renderTodo();
   document.body.classList.toggle('hideopt',state.hideOpt); document.getElementById('bOpt').classList.toggle('on',state.hideOpt);
-  document.getElementById('bOpt').textContent = state.hideOpt ? '顯示 optional' : '時間不夠：隱藏 optional';
+  document.getElementById('bOpt').textContent = compact ? (state.hideOpt?'顯示 opt':'隱藏 opt') : (state.hideOpt ? '顯示 optional' : '時間不夠：隱藏 optional');
+  document.getElementById('bCompact').classList.toggle('on',state.compact==='on'); document.getElementById('bCompact').textContent = compact?'🖥':'📱';
+  document.getElementById('bCompact').style.display = (compact && state.compact!=='on') ? 'none' : '';
+  document.getElementById('bReset').textContent = compact ? '🗑 新病人' : '新病人（清除）';
   document.getElementById('viewStation').style.display = state.view==='station'?'':'none';
   document.getElementById('viewOrgan').style.display = state.view==='organ'?'':'none';
   document.getElementById('postabs').style.display = state.view==='station'?'':'none';
-  document.getElementById('vStation').classList.toggle('on',state.view==='station'); document.getElementById('vOrgan').classList.toggle('on',state.view==='organ'); }
+  document.getElementById('vStation').classList.toggle('on',state.view==='station'); document.getElementById('vOrgan').classList.toggle('on',state.view==='organ');
+  requestAnimationFrame(()=>document.documentElement.style.setProperty('--ctrlH',document.getElementById('ctrl').offsetHeight+'px')); }
 
 /* ---------- actions ---------- */
 function setView(v){ state.view=v; save(); render(); window.scrollTo({top:0}); }
 function toggleOpt(){ state.hideOpt=!state.hideOpt; save(); render(); }
-function resetAll(){ if(!confirm('清除所有勾選，開始新病人？')) return; state.checked={}; state.sel=null; save(); render(); window.scrollTo({top:0}); }
+function toggleCompact(){ state.compact = isCompact() ? 'off' : 'on'; save(); render(); }
+function tabClick(p){ if(isCompact()){ state.posFilter=p; save(); render(); window.scrollTo({top:0}); return; }
+  const el=document.getElementById('pos-'+p); if(!el) return; const top=el.getBoundingClientRect().top+window.scrollY-document.getElementById('ctrl').offsetHeight; window.scrollTo({top,behavior:'smooth'}); }
+function resetAll(){ if(!confirm('清除所有勾選，開始新病人？')) return; state.checked={}; state.sel=null; state.posFilter='sup'; save(); render(); window.scrollTo({top:0}); }
 function selCell(c){ state.sel = state.sel===c?null:c; renderOrgan(); if(state.sel){ const d=document.querySelector('.celldetail'); if(d) d.scrollIntoView({behavior:'smooth',block:'nearest'}); } }
-function goStation(id){ if(state.view!=='station'){ state.view='station'; save(); render(); }
+function goStation(id){ const s=STATIONS.find(x=>x.id===id); if(!s) return; let changed=false;
+  if(state.view!=='station'){ state.view='station'; changed=true; }
+  if(isCompact() && state.posFilter!=='all' && state.posFilter!==s.pos){ state.posFilter=s.pos; changed=true; }
+  if(changed){ save(); render(); }
   const el=document.getElementById(id); if(!el) return; const top=el.getBoundingClientRect().top+window.scrollY-document.getElementById('ctrl').offsetHeight-8;
   window.scrollTo({top,behavior:'smooth'}); el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1600); }
 function lightbox(src,cap){ document.getElementById('lbImg').src=src; document.getElementById('lbCap').textContent=cap; document.getElementById('lb').classList.add('on'); }
-document.addEventListener('click',e=>{ const a=e.target.closest('.postabs a'); if(!a) return; e.preventDefault(); const el=document.querySelector(a.getAttribute('href')); const top=el.getBoundingClientRect().top+window.scrollY-document.getElementById('ctrl').offsetHeight; window.scrollTo({top,behavior:'smooth'}); });
+let _rt; window.addEventListener('resize',()=>{ clearTimeout(_rt); _rt=setTimeout(()=>{ if(state.compact==='auto') render(); },150); });
 
 load(); render();
 </script>
