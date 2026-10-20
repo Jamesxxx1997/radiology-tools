@@ -35,6 +35,7 @@
   .pos.sup h2{ background:var(--sup);} .pos.lld h2{ background:var(--lld);} .pos.rld h2{ background:var(--rld);}
   .pos h2 small{ font-weight:400; font-size:.85rem; opacity:.9; }
   .station{ background:#fff; border:1px solid #e2e8f0; border-radius:10px; margin:0 0 10px; overflow:hidden; }
+  .station, .celldetail, .pos{ scroll-margin-top:calc(var(--ctrlH,60px) + 8px); }
   .station.flash{ box-shadow:0 0 0 3px #f59e0b; }
   .station > h3{ margin:0; padding:9px 14px; font-size:1rem; background:#f1f5f9; display:flex; align-items:center; gap:8px; }
   .station > h3 .cnt{ margin-left:auto; font-size:.82rem; font-weight:600; color:#64748b; }
@@ -49,11 +50,12 @@
   .item .body{ flex:1; min-width:0; }
   .item .lbl{ font-weight:600; font-size:.98rem; }
   .item .note{ font-size:.84rem; color:#64748b; margin-top:2px; line-height:1.45; }
+  .item .note a{ color:#0369a1; }
   .item .cov{ margin-top:4px; display:flex; flex-wrap:wrap; gap:4px; }
   .tag{ font-size:.72rem; background:#e0f2fe; color:#0369a1; border-radius:4px; padding:1px 6px; font-weight:600; }
   .tag.liv{ background:#fee2e2; color:#b91c1c; }
   .thumb{ flex:none; width:150px; }
-  .thumb img{ width:150px; max-height:95px; object-fit:contain; border-radius:6px; border:1px solid #cbd5e1; background:#fff; cursor:zoom-in; display:block; }
+  .thumb img{ width:150px; height:95px; object-fit:contain; border-radius:6px; border:1px solid #cbd5e1; background:#fff; cursor:zoom-in; display:block; }
   .thumb .cred{ font-size:.66rem; color:#94a3b8; margin-top:2px; line-height:1.2; }
   .strip{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
   .strip figure{ margin:0; width:150px; cursor:zoom-in; }
@@ -63,7 +65,10 @@
   .strip figcaption{ font-size:.72rem; color:#475569; line-height:1.25; margin-top:3px; }
   .strip .cred{ width:100%; font-size:.66rem; color:#94a3b8; }
   .item.done .strip img{ opacity:.6; }
+  .imgbtn{ display:none; }
+  .station > h3 .cnt{ white-space:nowrap; }
   .hideopt .item.opt{ display:none; }
+  .hideopt .organ.optorg{ display:none; }
   .hideopt .station.allopt{ display:none; }
 
   /* organ view */
@@ -79,6 +84,9 @@
   .cell.part{ border-color:#f59e0b; background:#fffbeb; } .cell.part .n{ color:#b45309; font-weight:700; }
   .cell.none{ border-color:#fca5a5; background:#fff; } .cell.none .n{ color:#b91c1c; }
   .cell.sel{ outline:3px solid #1e293b; }
+  .cell .miss{ display:flex; flex-wrap:wrap; gap:3px; justify-content:center; margin-top:4px; }
+  .cell .miss i{ font-style:normal; font-size:.66rem; color:#fff; border-radius:3px; padding:0 4px; font-weight:700; }
+  .cell .miss i.sup{ background:var(--sup);} .cell .miss i.lld{ background:var(--lld);} .cell .miss i.rld{ background:var(--rld);}
   .cell.optcell{ opacity:.75; border-style:dashed; }
   .celldetail{ margin-top:10px; border-top:1px dashed #cbd5e1; padding-top:8px; }
   .celldetail .ph{ font-size:.8rem; font-weight:700; color:#fff; padding:2px 8px; border-radius:4px; display:inline-block; margin:6px 0 2px; }
@@ -88,7 +96,7 @@
   .todo{ position:fixed; left:0; right:0; bottom:0; background:#1e293b; color:#fff; padding:8px 12px; z-index:30; box-shadow:0 -4px 12px rgba(0,0,0,.25); }
   .todo .ttl{ font-size:.8rem; color:#94a3b8; margin-bottom:5px; }
   .todo .ttl b{ color:#fbbf24; }
-  .chips{ display:flex; flex-wrap:wrap; gap:6px; max-height:64px; overflow-y:auto; }
+  .chips{ display:flex; flex-wrap:wrap; gap:6px; max-height:100px; overflow-y:auto; }
   .chip{ border-radius:14px; padding:4px 10px; font-size:.82rem; font-weight:700; cursor:pointer; color:#fff; border:none; white-space:nowrap; }
   .chip.sup{ background:var(--sup);} .chip.lld{ background:var(--lld);} .chip.rld{ background:var(--rld);}
   .chip.alldone{ background:var(--ok); cursor:default; }
@@ -112,8 +120,9 @@
   body.compact .wrap{ padding:6px 8px 0; }
   body.compact .banner, body.compact .sub, body.compact .pos h2, body.compact .foot, body.compact h1{ display:none; }
   body.compact .ctrl{ gap:6px; padding:6px 0; }
-  body.compact .seg button, body.compact .btn{ padding:10px 10px; font-size:.88rem; }
-  body.compact .prog{ font-size:.9rem; } body.compact .prog .bar{ display:none; }
+  body.compact .seg button, body.compact .btn{ padding:10px 7px; font-size:.86rem; }
+  body.compact .prog{ margin-left:auto; }
+  body.compact .prog{ font-size:.9rem; } body.compact .prog .bar{ display:none; } body.compact .prog .lblw{ display:none; }
   body.compact .postabs a{ padding:9px 2px; font-size:.86rem; line-height:1.15; }
   body.compact .station{ margin-bottom:8px; }
   body.compact .station > h3{ font-size:.95rem; padding:10px 12px; }
@@ -124,7 +133,7 @@
   body.compact .thumb{ display:none; }
   body.compact .strip{ display:none; }
   body.compact .item.showimg .thumb{ display:block; width:100%; margin-top:6px; }
-  body.compact .item.showimg .thumb img{ width:100%; max-height:260px; object-fit:contain; }
+  body.compact .item.showimg .thumb img{ width:100%; height:220px; object-fit:contain; }
   body.compact .item.showimg .strip{ display:flex; }
   body.compact .item.showimg{ flex-wrap:wrap; }
   body.compact .item.showimg .body{ flex:1 1 60%; }
@@ -137,7 +146,7 @@
   body.compact .todo .ttl{ display:flex; align-items:center; gap:8px; margin:0; font-size:.88rem; color:#fff; cursor:pointer; min-height:36px; }
   body.compact .todo .ttl .nx{ margin-left:auto; background:#fbbf24; color:#1e293b; border:none; border-radius:8px; padding:8px 12px; font-weight:800; font-size:.9rem; cursor:pointer; white-space:nowrap; }
   body.compact .todo .ttl .nx.ok{ background:var(--ok); color:#fff; }
-  body.compact .chips{ display:none; margin-top:6px; max-height:120px; }
+  body.compact .chips{ display:none; margin-top:6px; max-height:160px; }
   body.compact .todo.open .chips{ display:flex; }
   body.compact .chip{ padding:8px 12px; font-size:.86rem; }
   .posdone{ background:#ecfdf5; border:1px solid var(--ok); color:#047857; border-radius:10px; padding:12px; margin:8px 0; font-weight:700; display:flex; align-items:center; gap:10px; }
@@ -155,7 +164,7 @@
     <button class="btn" id="bOpt" onclick="toggleOpt()">時間不夠：隱藏 optional</button>
     <button class="btn warn" id="bReset" onclick="resetAll()">新病人（清除）</button>
     <button class="btn" id="bCompact" onclick="toggleCompact()" title="手機 / iPad 精簡版">📱</button>
-    <div class="prog">必掃 <b id="pDone">0</b> / <span id="pTot">0</span><span class="bar"><i id="pBar"></i></span></div>
+    <div class="prog"><span class="lblw">必掃 </span><b id="pDone">0</b> / <span id="pTot">0</span><span class="bar"><i id="pBar"></i></span></div>
     <div class="postabs" id="postabs"></div>
   </div>
 
@@ -351,6 +360,7 @@ function renderStation(){
   });
   document.getElementById('viewStation').innerHTML=h;
 }
+document.addEventListener('click',e=>{ if(e.target.closest('.item .note a')) e.stopPropagation(); },true);
 function renderOrgan(){
   let h='';
   ORGANS.forEach(o=>{
@@ -358,14 +368,14 @@ function renderOrgan(){
     const cells=o.cells.map(([c,sub])=>{ const cs=cellStats(c); reqDone+=cs.done; reqTot+=cs.total;
       const cls = cs.total===0 ? 'optcell' : cs.done===cs.total ? 'done' : cs.done>0 ? 'part' : 'none';
       const optDone=cs.opt.filter(i=>isChecked(i.id)).length;
-      return `<div class="cell ${cls} ${state.sel===c?'sel':''}" onclick="selCell('${c}')"><div class="nm">${c}<small>${sub}</small></div><div class="n">${cs.total?`${cs.done} / ${cs.total} view`:`${optDone} / ${cs.opt.length} optional`}</div></div>`; }).join('');
+      return `<div class="cell ${cls} ${state.sel===c?'sel':''}" onclick="selCell('${c}')"><div class="nm">${c}<small>${sub}</small></div><div class="n">${cs.total?`${cs.done} / ${cs.total} view`:`${optDone} / ${cs.opt.length} optional`}</div>${cs.total&&cs.done<cs.total?`<div class="miss">${PORDER.map(p=>{const k=cs.req.filter(i=>i.pos===p&&!isChecked(i.id)).length;return k?`<i class="${p}">${POS[p].label.split(' ')[0]} ${k}</i>`:'';}).join('')}</div>`:''}</div>`; }).join('');
     let detail='';
     if(state.sel && o.cells.some(c=>c[0]===state.sel)){ const cs=cellStats(state.sel);
       detail=`<div class="celldetail"><b>${state.sel}</b> ${CELLNAME[state.sel]||''} — 涵蓋這一格的 view（勾選會同步到站位視圖）`;
       ['sup','lld','rld'].forEach(p=>{ const list=cs.req.concat(cs.opt).filter(i=>i.pos===p); if(!list.length) return;
         detail+=`<div><span class="ph ${p}">${POS[p].label}</span></div>`+list.map(i=>itemHTML(Object.assign({},i,{lbl:`${i.station.name.replace(/（.*$/,'')} › ${i.lbl}`}))).join(''); });
       detail+='</div>'; }
-    h+=`<div class="organ"><h3>${o.label}<span class="cnt">${o.opt?'optional':`完成 ${o.cells.filter(c=>{const s=cellStats(c[0]);return s.total&&s.done===s.total;}).length} / ${o.cells.length}`}</span></h3><div class="cells">${cells}</div>${detail}</div>`;
+    h+=`<div class="organ ${o.opt?'optorg':''}"><h3>${o.label}<span class="cnt">${o.opt?'optional':`完成 ${o.cells.filter(c=>{const s=cellStats(c[0]);return s.total&&s.done===s.total;}).length} / ${o.cells.length}`}</span></h3><div class="cells">${cells}</div>${detail}</div>`;
   });
   document.getElementById('viewOrgan').innerHTML=h;
 }
@@ -381,17 +391,20 @@ function renderTodo(){
   const nxt = firstUnfinished(compact&&state.posFilter!=='all'?state.posFilter:null) || left[0].s;
   const nm = s=>s.name.replace(/（.*$/,'')+(s.pos==='lld'?' LLD':s.pos==='rld'?' RLD':'');
   ttl.innerHTML = compact
-    ? `<span onclick="state.todoOpen=!state.todoOpen;renderTodo()">還沒掃 <b>${n}</b> 項 ${state.todoOpen?'▾':'▸'}</span><button class="nx" onclick="event.stopPropagation();goStation('${nxt.id}')">下一站：${nm(nxt)} ›</button>`
+    ? `<span onclick="state.todoOpen=!state.todoOpen;renderTodo()">還沒掃 <b>${n}</b> 項 ${state.todoOpen?'▾':'▸'}</span><button class="nx" onclick="event.stopPropagation();goStation('${nxt.id}')">繼續：${nm(nxt)} ›</button>`
     : `還沒掃完 <b>${n}</b> 項必掃（點站位跳過去）`;
   chips.innerHTML=left.map(x=>`<button class="chip ${x.s.pos}" onclick="goStation('${x.s.id}')">${nm(x.s)} · ${x.st.total-x.st.done}</button>`).join('');
 }
 function render(){ const compact=isCompact(); document.body.classList.toggle('compact',compact);
+  const open=[...document.querySelectorAll('.item.showimg')].map(e=>e.dataset.id), flash=document.querySelector('.station.flash')?.id;
   renderTabs(); renderStation(); renderOrgan(); renderTodo();
+  open.forEach(id=>document.querySelectorAll(`.item[data-id="${id}"]`).forEach(e=>e.classList.add('showimg')));
+  if(flash){ const f=document.getElementById(flash); if(f) f.classList.add('flash'); }
   document.body.classList.toggle('hideopt',state.hideOpt); document.getElementById('bOpt').classList.toggle('on',state.hideOpt);
   document.getElementById('bOpt').textContent = compact ? (state.hideOpt?'顯示 opt':'隱藏 opt') : (state.hideOpt ? '顯示 optional' : '時間不夠：隱藏 optional');
   document.getElementById('bCompact').classList.toggle('on',state.compact==='on'); document.getElementById('bCompact').textContent = compact?'🖥':'📱';
-  document.getElementById('bCompact').style.display = (compact && state.compact!=='on') ? 'none' : '';
-  document.getElementById('bReset').textContent = compact ? '🗑 新病人' : '新病人（清除）';
+  
+  document.getElementById('bReset').textContent = compact ? '🗑' : '新病人（清除）'; document.getElementById('bReset').title='新病人（清除）';
   document.getElementById('viewStation').style.display = state.view==='station'?'':'none';
   document.getElementById('viewOrgan').style.display = state.view==='organ'?'':'none';
   document.getElementById('postabs').style.display = state.view==='station'?'':'none';
@@ -403,15 +416,15 @@ function setView(v){ state.view=v; save(); render(); window.scrollTo({top:0}); }
 function toggleOpt(){ state.hideOpt=!state.hideOpt; save(); render(); }
 function toggleCompact(){ state.compact = isCompact() ? 'off' : 'on'; save(); render(); }
 function tabClick(p){ if(isCompact()){ state.posFilter=p; save(); render(); window.scrollTo({top:0}); return; }
-  const el=document.getElementById('pos-'+p); if(!el) return; const top=el.getBoundingClientRect().top+window.scrollY-document.getElementById('ctrl').offsetHeight; window.scrollTo({top,behavior:'smooth'}); }
+  const el=document.getElementById('pos-'+p); if(!el) return; const go=()=>el.scrollIntoView({block:'start'}); go(); [250,700].forEach(t=>setTimeout(go,t)); }
 function resetAll(){ if(!confirm('清除所有勾選，開始新病人？')) return; state.checked={}; state.sel=null; state.posFilter='sup'; save(); render(); window.scrollTo({top:0}); }
-function selCell(c){ state.sel = state.sel===c?null:c; renderOrgan(); if(state.sel){ const d=document.querySelector('.celldetail'); if(d) d.scrollIntoView({behavior:'smooth',block:'nearest'}); } }
-function goStation(id){ const s=STATIONS.find(x=>x.id===id); if(!s) return; let changed=false;
+function selCell(c){ state.sel = state.sel===c?null:c; renderOrgan(); if(state.sel){ const d=document.querySelector('.celldetail'); if(d){ const top=d.getBoundingClientRect().top+window.scrollY-document.getElementById('ctrl').offsetHeight-8; if(top<window.scrollY||d.getBoundingClientRect().bottom>innerHeight) window.scrollTo({top,behavior:'smooth'}); } } }
+function goStation(id){ const s=STATIONS.find(x=>x.id===id); if(!s) return; let changed=false; if(state.todoOpen){ state.todoOpen=false; changed=true; }
   if(state.view!=='station'){ state.view='station'; changed=true; }
   if(isCompact() && state.posFilter!=='all' && state.posFilter!==s.pos){ state.posFilter=s.pos; changed=true; }
   if(changed){ save(); render(); }
-  const el=document.getElementById(id); if(!el) return; const top=el.getBoundingClientRect().top+window.scrollY-document.getElementById('ctrl').offsetHeight-8;
-  window.scrollTo({top,behavior:'smooth'}); el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1600); }
+  const el=document.getElementById(id); if(!el) return; const go=()=>el.scrollIntoView({behavior:'auto',block:'start'});
+  go(); [250,700,1400].forEach(t=>setTimeout(go,t)); el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),2200); }
 function lightbox(src,cap){ document.getElementById('lbImg').src=src; document.getElementById('lbCap').textContent=cap; document.getElementById('lb').classList.add('on'); }
 let _rt; window.addEventListener('resize',()=>{ clearTimeout(_rt); _rt=setTimeout(()=>{ if(state.compact==='auto') render(); },150); });
 
