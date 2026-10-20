@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Abdominal US Checklist — jamesxxx1997</title>
+<style>
+  :root{ --sup:#0ea5e9; --lld:#f59e0b; --rld:#8b5cf6; --ok:#10b981; --req:#1e293b; --opt:#94a3b8; }
+  *{ box-sizing:border-box; }
+  body{ font-family:'Segoe UI',Tahoma,sans-serif; background:#f8fafc; color:#1e293b; margin:0; padding-bottom:120px; }
+  .wrap{ max-width:1100px; margin:0 auto; padding:14px 14px 0; }
+  .banner{ background:#dcfce7; border-left:6px solid #10b981; color:#047857; padding:10px 16px; border-radius:8px; font-size:.95rem; margin-bottom:12px; }
+  h1{ font-size:1.45rem; margin:4px 0 2px; }
+  .sub{ color:#475569; font-size:.9rem; margin:0 0 12px; line-height:1.5; }
+
+  /* top control bar */
+  .ctrl{ position:sticky; top:0; z-index:20; background:#f8fafc; padding:8px 0; border-bottom:1px solid #e2e8f0; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .seg{ display:inline-flex; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden; }
+  .seg button{ background:#fff; border:none; padding:9px 14px; cursor:pointer; font-weight:700; font-size:.95rem; color:#475569; }
+  .seg button.on{ background:#1e293b; color:#fff; }
+  .btn{ background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:9px 14px; cursor:pointer; font-weight:600; font-size:.92rem; color:#1e293b; }
+  .btn.warn{ border-color:#fca5a5; color:#b91c1c; }
+  .btn.on{ background:#fef3c7; border-color:#f59e0b; }
+  .prog{ margin-left:auto; font-weight:700; font-size:1rem; }
+  .prog b{ color:var(--ok); }
+  .prog .bar{ display:inline-block; width:120px; height:10px; background:#e2e8f0; border-radius:5px; vertical-align:middle; margin-left:8px; overflow:hidden; }
+  .prog .bar i{ display:block; height:100%; background:var(--ok); width:0; transition:width .2s; }
+  .postabs{ display:flex; gap:6px; width:100%; }
+  .postabs a{ flex:1; text-align:center; text-decoration:none; color:#fff; font-weight:700; padding:7px 4px; border-radius:6px; font-size:.9rem; }
+  .postabs a.sup{ background:var(--sup);} .postabs a.lld{ background:var(--lld);} .postabs a.rld{ background:var(--rld);}
+
+  /* station view */
+  .pos{ margin-top:18px; }
+  .pos h2{ font-size:1.15rem; color:#fff; padding:8px 14px; border-radius:8px; margin:0 0 10px; display:flex; align-items:center; gap:10px; }
+  .pos.sup h2{ background:var(--sup);} .pos.lld h2{ background:var(--lld);} .pos.rld h2{ background:var(--rld);}
+  .pos h2 small{ font-weight:400; font-size:.85rem; opacity:.9; }
+  .station{ background:#fff; border:1px solid #e2e8f0; border-radius:10px; margin:0 0 10px; overflow:hidden; }
+  .station.flash{ box-shadow:0 0 0 3px #f59e0b; }
+  .station > h3{ margin:0; padding:9px 14px; font-size:1rem; background:#f1f5f9; display:flex; align-items:center; gap:8px; }
+  .station > h3 .cnt{ margin-left:auto; font-size:.82rem; font-weight:600; color:#64748b; }
+  .station > h3 .cnt.done{ color:var(--ok); }
+  .item{ display:flex; gap:10px; padding:9px 12px; border-top:1px solid #f1f5f9; cursor:pointer; align-items:flex-start; }
+  .item:hover{ background:#f8fafc; }
+  .item.opt{ color:#64748b; }
+  .item.opt .lbl::after{ content:'optional'; font-size:.7rem; background:#e2e8f0; color:#475569; border-radius:4px; padding:1px 5px; margin-left:6px; vertical-align:middle; }
+  .item.done{ background:#ecfdf5; }
+  .item.done .lbl{ text-decoration:line-through; color:#64748b; }
+  .item input{ width:22px; height:22px; margin:2px 0 0; flex:none; cursor:pointer; }
+  .item .body{ flex:1; min-width:0; }
+  .item .lbl{ font-weight:600; font-size:.98rem; }
+  .item .note{ font-size:.84rem; color:#64748b; margin-top:2px; line-height:1.45; }
+  .item .cov{ margin-top:4px; display:flex; flex-wrap:wrap; gap:4px; }
+  .tag{ font-size:.72rem; background:#e0f2fe; color:#0369a1; border-radius:4px; padding:1px 6px; font-weight:600; }
+  .tag.liv{ background:#fee2e2; color:#b91c1c; }
+  .thumb{ flex:none; width:150px; }
+  .thumb img{ width:150px; max-height:95px; object-fit:contain; border-radius:6px; border:1px solid #cbd5e1; background:#fff; cursor:zoom-in; display:block; }
+  .thumb .cred{ font-size:.66rem; color:#94a3b8; margin-top:2px; line-height:1.2; }
+  .hideopt .item.opt{ display:none; }
+  .hideopt .station.allopt{ display:none; }
+
+  /* organ view */
+  .organ{ background:#fff; border:1px solid #e2e8f0; border-radius:10px; margin:12px 0; padding:12px 14px; }
+  .organ h3{ margin:0 0 8px; font-size:1.05rem; display:flex; align-items:center; gap:8px; }
+  .organ h3 .cnt{ margin-left:auto; font-size:.82rem; color:#64748b; font-weight:600; }
+  .cells{ display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px; }
+  .cell{ border:2px solid #e2e8f0; border-radius:8px; padding:8px 6px; text-align:center; cursor:pointer; background:#fff; }
+  .cell .nm{ font-weight:800; font-size:1.05rem; }
+  .cell .nm small{ font-weight:600; font-size:.72rem; color:#64748b; display:block; }
+  .cell .n{ font-size:.85rem; color:#64748b; margin-top:2px; }
+  .cell.done{ border-color:var(--ok); background:#ecfdf5; } .cell.done .n{ color:var(--ok); font-weight:700; }
+  .cell.part{ border-color:#f59e0b; background:#fffbeb; } .cell.part .n{ color:#b45309; font-weight:700; }
+  .cell.none{ border-color:#fca5a5; background:#fff; } .cell.none .n{ color:#b91c1c; }
+  .cell.sel{ outline:3px solid #1e293b; }
+  .cell.optcell{ opacity:.75; border-style:dashed; }
+  .celldetail{ margin-top:10px; border-top:1px dashed #cbd5e1; padding-top:8px; }
+  .celldetail .ph{ font-size:.8rem; font-weight:700; color:#fff; padding:2px 8px; border-radius:4px; display:inline-block; margin:6px 0 2px; }
+  .ph.sup{ background:var(--sup);} .ph.lld{ background:var(--lld);} .ph.rld{ background:var(--rld);}
+
+  /* bottom bar */
+  .todo{ position:fixed; left:0; right:0; bottom:0; background:#1e293b; color:#fff; padding:8px 12px; z-index:30; box-shadow:0 -4px 12px rgba(0,0,0,.25); }
+  .todo .ttl{ font-size:.8rem; color:#94a3b8; margin-bottom:5px; }
+  .todo .ttl b{ color:#fbbf24; }
+  .chips{ display:flex; flex-wrap:wrap; gap:6px; max-height:64px; overflow-y:auto; }
+  .chip{ border-radius:14px; padding:4px 10px; font-size:.82rem; font-weight:700; cursor:pointer; color:#fff; border:none; white-space:nowrap; }
+  .chip.sup{ background:var(--sup);} .chip.lld{ background:var(--lld);} .chip.rld{ background:var(--rld);}
+  .chip.alldone{ background:var(--ok); cursor:default; }
+
+  /* lightbox */
+  .lb{ position:fixed; inset:0; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; z-index:100; cursor:zoom-out; flex-direction:column; }
+  .lb.on{ display:flex; }
+  .lb img{ max-width:96vw; max-height:88vh; border-radius:6px; }
+  .lb .cap{ color:#cbd5e1; font-size:.85rem; margin-top:8px; }
+  .foot{ font-size:.76rem; color:#64748b; margin:26px 0 10px; line-height:1.6; }
+  @media (max-width:640px){ .thumb{ width:96px; } .thumb img{ width:96px; max-height:70px; } .prog .bar{ display:none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="banner">📗 <b>Abdominal US scan checklist — jamesxxx1997</b> · 掃描防呆清單。勾選狀態存在這台裝置的瀏覽器裡，刷新、關掉再開都保留；按「新病人」才清除。</div>
+  <h1>腹部超音波 掃描 checklist</h1>
+  <p class="sub">同一份勾選資料、兩種排法：<b>站位</b>＝照 probe 擺位與翻身順序掃；<b>器官</b>＝看哪個 segment / 器官還缺哪個 view。segment 要「所有必掃 view 都勾」才算完成。底部永遠列出還沒掃完的站位，想起漏掉什麼直接點過去。</p>
+
+  <div class="ctrl" id="ctrl">
+    <div class="seg"><button id="vStation" class="on" onclick="setView('station')">站位順序</button><button id="vOrgan" onclick="setView('organ')">器官導向</button></div>
+    <button class="btn" id="bOpt" onclick="toggleOpt()">時間不夠：隱藏 optional</button>
+    <button class="btn warn" onclick="resetAll()">新病人（清除）</button>
+    <div class="prog">必掃 <b id="pDone">0</b> / <span id="pTot">0</span><span class="bar"><i id="pBar"></i></span></div>
+    <div class="postabs" id="postabs"><a class="sup" href="#pos-sup">Supine</a><a class="lld" href="#pos-lld">LLD（左側臥）</a><a class="rld" href="#pos-rld">RLD（右側臥）</a></div>
+  </div>
+
+  <div id="viewStation"></div>
+  <div id="viewOrgan" style="display:none"></div>
+
+  <div class="foot" id="foot">
+    <b>規則</b>：必掃 = 清單上沒標 optional 的項目；optional = 時間不夠可省略。肝 segment 完成條件 = 該 segment 所有必掃 view 皆勾選。<br>
+    <b>圖片出處</b>：GB long/short axis — Dr. Sam's Imaging Library；aorta longitudinal — CardioServ；adrenal — Thieme《Ultrasound Teaching Manual》Fig 11.4 / 11.7 / 11.9（Hofer）；肝 subcostal High/Mid/Low、intercostal、epigastric 線稿與 kidney/spleen 線稿 — 個人筆記附圖（教學講義）。胰臟標準切面請見 <a href="pancreas.html" target="_blank">Pancreas</a> 頁。<br>
+    <b>數值</b>：MPV ≥ 13 mm 異常（分叉前、quiet respiration、supine）；CBD ≤ 6 mm（常用規則：>60 歲每 10 歲 +1 mm；膽囊切除後可至 ~10 mm）；infrarenal aorta ≥ 3 cm = AAA。
+  </div>
+</div>
+
+<div class="todo" id="todo"><div class="ttl" id="todoTtl"></div><div class="chips" id="chips"></div></div>
+<div class="lb" id="lb" onclick="this.classList.remove('on')"><img id="lbImg" alt=""><div class="cap" id="lbCap"></div></div>
+
+<script>
+/* ---------- targets (organ view cells) ---------- */
+const ORGANS = [
+  { id:'liver', label:'肝臟 Liver', cells:[
+    ['S1','尾葉'],['S2','左葉外上'],['S3','左葉外下'],['S4a','內側上'],['S4b','內側下'],
+    ['S5','右前下'],['S6','右後下'],['S7','右後上'],['S8','右前上'],['Dome','S7/S8 橫膈下緣'] ] },
+  { id:'gb', label:'膽囊 GB', cells:[ ['GBneck','neck / Hartmann'],['GBbody','body'],['GBfundus','fundus'],['GBmob','結石移動性 (LLD)'] ] },
+  { id:'bd', label:'膽管 / 門脈', cells:[ ['CBD','CBD ≤ 6 mm'],['MPV','MPV 內徑 (<13 mm)'],['PVbr','PV L/R branch 血栓'] ] },
+  { id:'panc', label:'胰臟 Pancreas', cells:[ ['Phead','head'],['Pneck','neck / uncinate'],['Pbody','body'],['Ptail','tail'] ] },
+  { id:'sk', label:'脾臟 / 腎臟', cells:[ ['Spleen','spleen'],['RK','right kidney'],['LK','left kidney'] ] },
+  { id:'optorg', label:'Optional：腎上腺 / 主動脈', opt:true, cells:[ ['RAd','right adrenal'],['LAd','left adrenal'],['Ao','aorta → bifurcation'] ] },
+];
+const CELLNAME = {}; ORGANS.forEach(o=>o.cells.forEach(c=>CELLNAME[c[0]]=c[1]));
+const LIVER = new Set(['S1','S2','S3','S4a','S4b','S5','S6','S7','S8','Dome']);
+
+/* ---------- items: one row = one probe action ---------- */
+const A='mine/assets/abd_us/';
+const CR = { note:'筆記附圖（教學講義）', sam:"Dr. Sam's Imaging Library", cs:'CardioServ', th:'Thieme, Ultrasound Teaching Manual (Hofer)' };
+const POS = { sup:{k:'sup',label:'Supine 仰臥',sub:'先把仰臥能掃的全部掃完，再翻身'}, lld:{k:'lld',label:'LLD 左側臥（右側朝上）',sub:'右肝 / 膽囊 / 右腎'}, rld:{k:'rld',label:'RLD 右側臥（左側朝上）',sub:'脾 / 胰尾 / 左腎'} };
+
+const STATIONS = [
+ /* ===== SUPINE ===== */
+ { pos:'sup', id:'st_eplong', name:'Epigastric longitudinal（劍突下縱切）', items:[
+   { id:'ep_long_aorta', req:1, lbl:'Aorta view：aorta 在正下方，往左 sweep 到肝臟消失', note:'左葉外側尖端（S2/S3 貼近脾側）要掃到才停', cov:['S2','S3'], img:'epi_long_aorta.png', cr:'note' },
+   { id:'ep_long_ivc',   req:1, lbl:'IVC view：IVC 在正下方', note:'IVC 前方 = S1（尾葉），S1 前方 = S4；可見 LHV、UP', cov:['S1','S4a','S4b'], img:'epi_long_ivc.png', cr:'note' },
+   { id:'ep_long_aobif', req:0, lbl:'Aorta 往下追到 bifurcation', note:'infrarenal aorta ≥ 3 cm = AAA', cov:['Ao'], img:'aorta_long.png', cr:'cs' },
+ ]},
+ { pos:'sup', id:'st_eptv', name:'Epigastric transverse（劍突下橫切）', items:[
+   { id:'ep_tv_liver', req:1, lbl:'往下 sweep 到肝臟消失', note:'landmark：P2 / P3 / P4 與 UP（umbilical portion）', cov:['S2','S3','S4a','S4b'], img:'epi_transverse.png', cr:'note' },
+   { id:'ep_tv_panc',  req:1, lbl:'Pancreas 橫切 ① celiac ② SV–SMA ③ SMV 三層', note:'標準切面圖與滑桿見 <a href="pancreas.html" target="_blank">Pancreas 頁</a>', cov:['Phead','Pneck','Pbody','Ptail'] },
+   { id:'ep_lg_panc',  req:1, lbl:'Pancreas 縱切 A→E（IVC → SMV → Ao/SMA → 胃/左腎窗 → 脾窗）', note:'A = head（landmark MPV / IVC），E = tail', cov:['Phead','Pneck','Pbody','Ptail'] },
+   { id:'ep_tv_ao',    req:0, lbl:'Aorta 橫切（含 bifurcation）', note:'aorta 在脊椎左前方、IVC 右側', cov:['Ao'], img:'aorta_trv.png', cr:'note' },
+ ]},
+ { pos:'sup', id:'st_lsc', name:'Left subcostal oblique（左肋緣下斜切）', items:[
+   { id:'lsc', req:1, lbl:'往左上方 fan 到肝臟消失', cov:['S2','S3'], img:'left_subcostal.png', cr:'note' },
+ ]},
+ { pos:'sup', id:'st_rsc', name:'Right subcostal oblique（probe 平行右肋緣，由上往下 fan）', items:[
+   { id:'rsc_high', req:1, lbl:'High：hepatic veins 匯入 IVC', note:'看到 S2 · S4a · S8 · S7', cov:['S2','S4a','S8','S7'], img:'rt_subcostal_oblique_hml.png', cr:'note' },
+   { id:'rsc_mid',  req:1, lbl:'Mid：left + right portal vein', note:'看到 S1 · S3 · S4b · S5/8 · S6/7', cov:['S1','S3','S4b','S5','S8','S6','S7'] },
+   { id:'rsc_low',  req:1, lbl:'Low：看到 pancreas，繼續往下 sweep 到 S6 消失', note:'看到 S3 · S4b · S5 · S6；S6 下緣最常漏', cov:['S3','S4b','S5','S6'] },
+   { id:'rsc_gb_long',  req:1, lbl:'同站轉成 GB 長軸：neck（Hartmann）→ body → fundus', note:'結石最常躲在 neck 與 fundus', cov:['GBneck','GBbody','GBfundus'], img:'gb_long.png', cr:'sam' },
+   { id:'rsc_gb_short', req:1, lbl:'GB 短軸 sweep', cov:['GBbody'], img:'gb_short.png', cr:'sam' },
+   { id:'rsc_cbd', req:1, lbl:'CBD 長軸（portal vein 前方）', note:'CBD ≤ 6 mm', cov:['CBD'], img:'cbd_long.png', cr:'note' },
+   { id:'rsc_mpv', req:1, lbl:'Main portal vein 內徑：分叉前、quiet respiration', note:'≥ 13 mm 異常；intercostal 或 subcostal 皆可量', cov:['MPV'] },
+   { id:'rsc_pvbr', req:1, lbl:'Left / right portal vein branch：B-mode + Doppler 排除 thrombosis', cov:['PVbr'] },
+ ]},
+ { pos:'sup', id:'st_rsl', name:'Right subcostal longitudinal（probe 垂直右肋緣）', items:[
+   { id:'rsl', req:1, lbl:'右肋緣下縱切', note:'看 S5 / S8', cov:['S5','S8'], img:'rt_subcostal_long.png', cr:'note' },
+ ]},
+ { pos:'sup', id:'st_ic', name:'Right intercostal（右肋間）', items:[
+   { id:'ic_ant',  req:1, lbl:'前枝面：RPV anterior branch → S5 / S8', note:'RHV 在旁，GB 常同時入鏡', cov:['S5','S8'], img:'intercostal_ant.png', cr:'note' },
+   { id:'ic_post', req:1, lbl:'後枝面：RPV posterior branch → S6 / S7（探頭更後、更下）', cov:['S6','S7'], img:'intercostal_post.png', cr:'note' },
+   { id:'ic_gb',   req:1, lbl:'GB / CBD intercostal view', cov:['GBneck','GBbody','CBD'] },
+ ]},
+ { pos:'sup', id:'st_max', name:'Right mid-axillary longitudinal（右腋中線縱切）', items:[
+   { id:'max', req:1, lbl:'腋中線（或腋前線）縱切', note:'看 S6 / S7', cov:['S6','S7'] },
+ ]},
+ { pos:'sup', id:'st_spl', name:'Spleen（左肋間）', items:[
+   { id:'sp', req:1, lbl:'脾臟長軸 + 脾門', cov:['Spleen'], img:'spleen.png', cr:'note' },
+ ]},
+ { pos:'sup', id:'st_kid', name:'Kidneys（側腹）', items:[
+   { id:'rk_long', req:1, lbl:'右腎 longitudinal（肝為窗）', cov:['RK'], img:'rk_long.png', cr:'note' },
+   { id:'rk_trv',  req:1, lbl:'右腎 transverse', cov:['RK'], img:'rk_trv.png', cr:'note' },
+   { id:'lk_long', req:1, lbl:'左腎 longitudinal（脾為窗）', cov:['LK'], img:'lk_long.png', cr:'note' },
+   { id:'lk_trv',  req:1, lbl:'左腎 transverse', cov:['LK'], img:'lk_trv.png', cr:'note' },
+ ]},
+ { pos:'sup', id:'st_adr', name:'Adrenal（optional）', items:[
+   { id:'radr_long', req:0, lbl:'右腎上腺 longitudinal：肝窗，往左移到腎消失、IVC 後方', cov:['RAd'], img:'r_adrenal_long.png', cr:'th' },
+   { id:'radr_trv',  req:0, lbl:'右腎上腺 transverse：IVC 後外側、腎上極前內側', cov:['RAd'], img:'r_adrenal_trv.png', cr:'th' },
+ ]},
+
+ /* ===== LLD ===== */
+ { pos:'lld', id:'lst_ic', name:'Right intercostal（LLD）', items:[
+   { id:'lld_ic_ant',  req:1, lbl:'前枝面：S5 / S8', cov:['S5','S8'], img:'intercostal_ant.png', cr:'note' },
+   { id:'lld_ic_post', req:1, lbl:'後枝面：S6 / S7', cov:['S6','S7'], img:'intercostal_post.png', cr:'note' },
+   { id:'lld_dome',    req:1, lbl:'Dome：深吸氣，看 S7 / S8 橫膈下緣', note:'subcostal 很難掃到的區域，只能在這裡補', cov:['Dome','S7','S8'] },
+   { id:'lld_ic_gb',   req:1, lbl:'GB / CBD intercostal view', cov:['GBneck','GBbody','CBD'] },
+ ]},
+ { pos:'lld', id:'lst_max', name:'Right mid-axillary longitudinal（LLD）', items:[
+   { id:'lld_max', req:1, lbl:'腋中線縱切：S6 / S7', cov:['S6','S7'] },
+ ]},
+ { pos:'lld', id:'lst_rsc', name:'Right subcostal oblique（LLD）', items:[
+   { id:'lld_gb_long',  req:1, lbl:'GB 長軸：neck → body → fundus', cov:['GBneck','GBbody','GBfundus'], img:'gb_long.png', cr:'sam' },
+   { id:'lld_gb_mob',   req:1, lbl:'結石 / sludge 有沒有隨體位移動', note:'對照 supine 的位置', cov:['GBmob'] },
+   { id:'lld_gb_short', req:1, lbl:'GB 短軸 sweep', cov:['GBbody'], img:'gb_short.png', cr:'sam' },
+   { id:'lld_cbd',      req:1, lbl:'CBD 長軸', cov:['CBD'], img:'cbd_long.png', cr:'note' },
+   { id:'lld_rsc',      req:0, lbl:'肝 High / Mid / Low 再 fan 一輪', note:'supine 時肋緣下看不清楚的 segment 在這裡補', cov:['S1','S2','S3','S4a','S4b','S5','S6','S7','S8'] },
+ ]},
+ { pos:'lld', id:'lst_rk', name:'Right kidney（LLD）', items:[
+   { id:'lld_rk_long', req:1, lbl:'右腎 longitudinal', cov:['RK'] },
+   { id:'lld_rk_trv',  req:1, lbl:'右腎 transverse', cov:['RK'] },
+ ]},
+ { pos:'lld', id:'lst_opt', name:'LLD optional', items:[
+   { id:'lld_radr', req:0, lbl:'右腎上腺 longitudinal / transverse', cov:['RAd'] },
+   { id:'lld_panc', req:0, lbl:'Pancreas 再看一次（supine 被腸氣擋住時）', cov:['Phead','Pneck','Pbody','Ptail'] },
+   { id:'lld_left', req:0, lbl:'左葉 S2 / S3（epigastric longitudinal、left subcostal）再看一次', cov:['S2','S3'] },
+ ]},
+
+ /* ===== RLD ===== */
+ { pos:'rld', id:'rst_sp', name:'Spleen window（RLD）', items:[
+   { id:'rld_sp',    req:1, lbl:'脾臟長軸 + 脾門', cov:['Spleen'], img:'spleen.png', cr:'note' },
+   { id:'rld_ptail', req:1, lbl:'同一窗：脾門看 pancreas tail（P-tail）', note:'筆記圖右半：SpV 旁的 P-tail', cov:['Ptail'] },
+ ]},
+ { pos:'rld', id:'rst_lk', name:'Left kidney（RLD）', items:[
+   { id:'rld_lk_long', req:1, lbl:'左腎 longitudinal', cov:['LK'], img:'lk_long.png', cr:'note' },
+   { id:'rld_lk_trv',  req:1, lbl:'左腎 transverse', cov:['LK'], img:'lk_trv.png', cr:'note' },
+ ]},
+ { pos:'rld', id:'rst_opt', name:'RLD optional', items:[
+   { id:'ladr_long', req:0, lbl:'左腎上腺 longitudinal：脾/腎為窗，往前 angle 到腎上極', cov:['LAd'], img:'l_adrenal_long.png', cr:'th' },
+   { id:'ladr_trv',  req:0, lbl:'左腎上腺 transverse', cov:['LAd'], img:'l_adrenal_trv.png', cr:'th' },
+   { id:'rld_gb',    req:0, lbl:'GB 再看一次（結石移動 / fundus）', cov:['GBbody','GBfundus'] },
+ ]},
+];
+const ITEMS = []; STATIONS.forEach(s=>s.items.forEach(it=>{ it.station=s; it.pos=s.pos; ITEMS.push(it); }));
+const BYID = {}; ITEMS.forEach(it=>BYID[it.id]=it);
+
+/* ---------- state ---------- */
+const KEY='abdUsChecklist.v1';
+let state = { checked:{}, hideOpt:false, view:'station', sel:null };
+function load(){
+  try{ const s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s) state=Object.assign(state,s); }catch(e){}
+  const h=location.hash.match(/s=([A-Za-z0-9_-]+)/);
+  if(h){ try{ const bits=atob(h[1].replace(/-/g,'+').replace(/_/g,'/')); const c={}; ITEMS.forEach((it,i)=>{ if(bits.charCodeAt(i>>3)&(1<<(i&7))) c[it.id]=true; }); state.checked=c; }catch(e){} }
+}
+function save(){
+  localStorage.setItem(KEY, JSON.stringify({checked:state.checked,hideOpt:state.hideOpt,view:state.view,ts:Date.now()}));
+  if(window.top===window.self){ const n=Math.ceil(ITEMS.length/8); const arr=new Array(n).fill(0); ITEMS.forEach((it,i)=>{ if(state.checked[it.id]) arr[i>>3]|=1<<(i&7); });
+    const b64=btoa(String.fromCharCode.apply(null,arr)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); history.replaceState(null,'','#s='+b64); }
+}
+function isChecked(id){ return !!state.checked[id]; }
+function toggle(id, v){ if(v===undefined) v=!isChecked(id); if(v) state.checked[id]=true; else delete state.checked[id]; save(); render(); }
+
+/* ---------- derived ---------- */
+function cellStats(cell){ const req=ITEMS.filter(it=>it.req&&it.cov.includes(cell)); const opt=ITEMS.filter(it=>!it.req&&it.cov.includes(cell));
+  return { req, opt, done:req.filter(it=>isChecked(it.id)).length, total:req.length }; }
+function stationStats(s){ const req=s.items.filter(i=>i.req); return { done:req.filter(i=>isChecked(i.id)).length, total:req.length, allopt:req.length===0 }; }
+
+/* ---------- render ---------- */
+const esc=s=>s;
+function covTags(cov){ return cov.map(c=>`<span class="tag ${LIVER.has(c)?'liv':''}">${c}</span>`).join(''); }
+function itemHTML(it){
+  const on=isChecked(it.id);
+  return `<div class="item ${it.req?'':'opt'} ${on?'done':''}" data-id="${it.id}" onclick="toggle('${it.id}')">
+    <input type="checkbox" ${on?'checked':''} onclick="event.stopPropagation();toggle('${it.id}',this.checked)">
+    <div class="body"><div class="lbl">${esc(it.lbl)}</div>${it.note?`<div class="note">${it.note}</div>`:''}<div class="cov">${covTags(it.cov)}</div></div>
+    ${it.img?`<div class="thumb"><img src="${A+it.img}" alt="" onclick="event.stopPropagation();lightbox('${A+it.img}','${CR[it.cr]||''}')"><div class="cred">${CR[it.cr]||''}</div></div>`:''}
+  </div>`;
+}
+function renderStation(){
+  let h='';
+  ['sup','lld','rld'].forEach(p=>{
+    h+=`<div class="pos ${p}" id="pos-${p}"><h2>${POS[p].label}<small>${POS[p].sub}</small></h2>`;
+    STATIONS.filter(s=>s.pos===p).forEach(s=>{ const st=stationStats(s);
+      h+=`<div class="station ${st.allopt?'allopt':''}" id="${s.id}"><h3>${s.name}<span class="cnt ${st.done===st.total&&st.total?'done':''}">${st.allopt?'optional':`必掃 ${st.done}/${st.total}`}</span></h3>${s.items.map(itemHTML).join('')}</div>`; });
+    h+='</div>';
+  });
+  document.getElementById('viewStation').innerHTML=h;
+}
+function renderOrgan(){
+  let h='';
+  ORGANS.forEach(o=>{
+    let reqDone=0, reqTot=0;
+    const cells=o.cells.map(([c,sub])=>{ const cs=cellStats(c); reqDone+=cs.done; reqTot+=cs.total;
+      const cls = cs.total===0 ? 'optcell' : cs.done===cs.total ? 'done' : cs.done>0 ? 'part' : 'none';
+      const optDone=cs.opt.filter(i=>isChecked(i.id)).length;
+      return `<div class="cell ${cls} ${state.sel===c?'sel':''}" onclick="selCell('${c}')"><div class="nm">${c}<small>${sub}</small></div><div class="n">${cs.total?`${cs.done} / ${cs.total} view`:`${optDone} / ${cs.opt.length} optional`}</div></div>`; }).join('');
+    let detail='';
+    if(state.sel && o.cells.some(c=>c[0]===state.sel)){ const cs=cellStats(state.sel);
+      detail=`<div class="celldetail"><b>${state.sel}</b> ${CELLNAME[state.sel]||''} — 涵蓋這一格的 view（勾選會同步到站位視圖）`;
+      ['sup','lld','rld'].forEach(p=>{ const list=cs.req.concat(cs.opt).filter(i=>i.pos===p); if(!list.length) return;
+        detail+=`<div><span class="ph ${p}">${POS[p].label}</span></div>`+list.map(i=>itemHTML(Object.assign({},i,{lbl:`${i.station.name.replace(/（.*$/,'')} › ${i.lbl}`}))).join(''); });
+      detail+='</div>'; }
+    h+=`<div class="organ"><h3>${o.label}<span class="cnt">${o.opt?'optional':`完成 ${o.cells.filter(c=>{const s=cellStats(c[0]);return s.total&&s.done===s.total;}).length} / ${o.cells.length}`}</span></h3><div class="cells">${cells}</div>${detail}</div>`;
+  });
+  document.getElementById('viewOrgan').innerHTML=h;
+}
+function renderTodo(){
+  const req=ITEMS.filter(i=>i.req), done=req.filter(i=>isChecked(i.id)).length;
+  document.getElementById('pDone').textContent=done; document.getElementById('pTot').textContent=req.length;
+  document.getElementById('pBar').style.width=(100*done/req.length)+'%';
+  const left=STATIONS.map(s=>({s,st:stationStats(s)})).filter(x=>x.st.total&&x.st.done<x.st.total);
+  const ttl=document.getElementById('todoTtl'), chips=document.getElementById('chips');
+  if(!left.length){ ttl.innerHTML='必掃項目全部完成 ✓'; chips.innerHTML='<span class="chip alldone">全部掃完</span>'; return; }
+  const n=left.reduce((a,x)=>a+x.st.total-x.st.done,0);
+  ttl.innerHTML=`還沒掃完 <b>${n}</b> 項必掃（點站位跳過去）`;
+  chips.innerHTML=left.map(x=>`<button class="chip ${x.s.pos}" onclick="goStation('${x.s.id}')">${x.s.name.replace(/（.*$/,'')}${x.s.pos==='lld'?' LLD':x.s.pos==='rld'?' RLD':''} · ${x.st.total-x.st.done}</button>`).join('');
+}
+function render(){ renderStation(); renderOrgan(); renderTodo();
+  document.body.classList.toggle('hideopt',state.hideOpt); document.getElementById('bOpt').classList.toggle('on',state.hideOpt);
+  document.getElementById('bOpt').textContent = state.hideOpt ? '顯示 optional' : '時間不夠：隱藏 optional';
+  document.getElementById('viewStation').style.display = state.view==='station'?'':'none';
+  document.getElementById('viewOrgan').style.display = state.view==='organ'?'':'none';
+  document.getElementById('postabs').style.display = state.view==='station'?'':'none';
+  document.getElementById('vStation').classList.toggle('on',state.view==='station'); document.getElementById('vOrgan').classList.toggle('on',state.view==='organ'); }
+
+/* ---------- actions ---------- */
+function setView(v){ state.view=v; save(); render(); window.scrollTo({top:0}); }
+function toggleOpt(){ state.hideOpt=!state.hideOpt; save(); render(); }
+function resetAll(){ if(!confirm('清除所有勾選，開始新病人？')) return; state.checked={}; state.sel=null; save(); render(); window.scrollTo({top:0}); }
+function selCell(c){ state.sel = state.sel===c?null:c; renderOrgan(); if(state.sel){ const d=document.querySelector('.celldetail'); if(d) d.scrollIntoView({behavior:'smooth',block:'nearest'}); } }
+function goStation(id){ if(state.view!=='station'){ state.view='station'; save(); render(); }
+  const el=document.getElementById(id); if(!el) return; const top=el.getBoundingClientRect().top+window.scrollY-document.getElementById('ctrl').offsetHeight-8;
+  window.scrollTo({top,behavior:'smooth'}); el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1600); }
+function lightbox(src,cap){ document.getElementById('lbImg').src=src; document.getElementById('lbCap').textContent=cap; document.getElementById('lb').classList.add('on'); }
+document.addEventListener('click',e=>{ const a=e.target.closest('.postabs a'); if(!a) return; e.preventDefault(); const el=document.querySelector(a.getAttribute('href')); const top=el.getBoundingClientRect().top+window.scrollY-document.getElementById('ctrl').offsetHeight; window.scrollTo({top,behavior:'smooth'}); });
+
+load(); render();
+</script>
+</body>
+</html>

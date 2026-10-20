@@ -147,9 +147,11 @@
             'brain', 'spinal_cord', 'bones', 'lungs', 'heart', 
             'adrenal_glands', 'liver', 'kidneys', 'pancreas', 
             'spleen', 'stomach', 'bowel','urinary_bladder', 'gallbladder_bile_duct', 'neck',
+            'abdomen_us_checklist',
             // 'mediastinum', 'pleura/chest_wall', 'vessels', 'soft_tissue',
             // 'lymph_nodes' 'uterus/adenexas', 'prostate/seminal_vesicles'
         ]; 
+        const customLabels = { abdomen_us_checklist: '✅ Abdominal US Checklist' };
 
         const gridContainer = document.getElementById('organ-grid');
         
@@ -159,7 +161,7 @@
             btn.className = 'nav-btn';
             
             // Format name: Replace underscores with spaces, but keep slashes
-            let cleanName = fileName.replace(/_/g, ' ') 
+            let cleanName = customLabels[fileName] || fileName.replace(/_/g, ' ') 
                             .split('/')
                             .map(part => part.trim()
                                 .split(' ')
