@@ -55,6 +55,14 @@
   .thumb{ flex:none; width:150px; }
   .thumb img{ width:150px; max-height:95px; object-fit:contain; border-radius:6px; border:1px solid #cbd5e1; background:#fff; cursor:zoom-in; display:block; }
   .thumb .cred{ font-size:.66rem; color:#94a3b8; margin-top:2px; line-height:1.2; }
+  .strip{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .strip figure{ margin:0; width:150px; cursor:zoom-in; }
+  .strip.wide figure{ width:330px; }
+  .strip.wide img{ width:330px; height:150px; }
+  .strip img{ width:150px; height:100px; object-fit:contain; background:#000; border:1px solid #cbd5e1; border-radius:6px; display:block; }
+  .strip figcaption{ font-size:.72rem; color:#475569; line-height:1.25; margin-top:3px; }
+  .strip .cred{ width:100%; font-size:.66rem; color:#94a3b8; }
+  .item.done .strip img{ opacity:.6; }
   .hideopt .item.opt{ display:none; }
   .hideopt .station.allopt{ display:none; }
 
@@ -138,7 +146,8 @@ const LIVER = new Set(['S1','S2','S3','S4a','S4b','S5','S6','S7','S8','Dome']);
 
 /* ---------- items: one row = one probe action ---------- */
 const A='mine/assets/abd_us/';
-const CR = { note:'筆記附圖（教學講義）', sam:"Dr. Sam's Imaging Library", cs:'CardioServ', th:'Thieme, Ultrasound Teaching Manual (Hofer)' };
+const CR = { note:'筆記附圖（教學講義）', sam:"Dr. Sam's Imaging Library", cs:'CardioServ', th:'Thieme, Ultrasound Teaching Manual (Hofer)', panc:'Pancreas 頁標準切面（作者教學投影片）' };
+const PANC='mine/assets/panc/';
 const POS = { sup:{k:'sup',label:'Supine 仰臥',sub:'先把仰臥能掃的全部掃完，再翻身'}, lld:{k:'lld',label:'LLD 左側臥（右側朝上）',sub:'右肝 / 膽囊 / 右腎'}, rld:{k:'rld',label:'RLD 右側臥（左側朝上）',sub:'脾 / 胰尾 / 左腎'} };
 
 const STATIONS = [
@@ -150,8 +159,10 @@ const STATIONS = [
  ]},
  { pos:'sup', id:'st_eptv', name:'Epigastric transverse（劍突下橫切）', items:[
    { id:'ep_tv_liver', req:1, lbl:'往下 sweep 到肝臟消失', note:'landmark：P2 / P3 / P4 與 UP（umbilical portion）', cov:['S2','S3','S4a','S4b'], img:'epi_transverse.png', cr:'note' },
-   { id:'ep_tv_panc',  req:1, lbl:'Pancreas 橫切 ① celiac ② SV–SMA ③ SMV 三層', note:'標準切面圖與滑桿見 <a href="pancreas.html" target="_blank">Pancreas 頁</a>', cov:['Phead','Pneck','Pbody','Ptail'] },
-   { id:'ep_lg_panc',  req:1, lbl:'Pancreas 縱切 A→E（IVC → SMV → Ao/SMA → 胃/左腎窗 → 脾窗）', note:'A = head（landmark MPV / IVC），E = tail', cov:['Phead','Pneck','Pbody','Ptail'] },
+   { id:'ep_tv_panc',  req:1, lbl:'Pancreas 橫切 ① celiac ② SV–SMA ③ SMV 三層', note:'點圖放大；互動滑桿版在 <a href="pancreas.html" target="_blank">Pancreas 頁</a>', cov:['Phead','Pneck','Pbody','Ptail'],
+     imgs:[['tv1.jpg','① Celiac 層：aorta → celiac → CHA / splenic a.；body · tail'],['tv2.jpg','② SV–SMA 層：脾靜脈繞行；head · neck · body · tail 一覽'],['tv3.jpg','③ SMV 層：oval SMV 周圍 head · uncinate · neck']], wide:1, cr:'panc' },
+   { id:'ep_lg_panc',  req:1, lbl:'Pancreas 縱切 A→E（IVC → SMV → Ao/SMA → 胃/左腎窗 → 脾窗）', note:'A = head（landmark MPV / IVC），E = tail；最右圖為 A–E 探頭位置對照', cov:['Phead','Pneck','Pbody','Ptail'],
+     imgs:[['lg_a.jpg','A · IVC 層 → HEAD'],['lg_b.jpg','B · SMV 層 → NECK + uncinate'],['lg_c.jpg','C · Ao–SMA 層 → BODY'],['lg_d.jpg','D · 胃 / 左腎窗 → body–tail'],['lg_e.jpg','E · 脾窗 → TAIL'],['tv0.jpg','A–E 探頭位置對照圖']], cr:'panc' },
    { id:'ep_tv_ao',    req:0, lbl:'Aorta 橫切（含 bifurcation）', note:'aorta 在脊椎左前方、IVC 右側', cov:['Ao'], img:'aorta_trv.png', cr:'note' },
  ]},
  { pos:'sup', id:'st_lsc', name:'Left subcostal oblique（左肋緣下斜切）', items:[
@@ -265,7 +276,8 @@ function itemHTML(it){
   const on=isChecked(it.id);
   return `<div class="item ${it.req?'':'opt'} ${on?'done':''}" data-id="${it.id}" onclick="toggle('${it.id}')">
     <input type="checkbox" ${on?'checked':''} onclick="event.stopPropagation();toggle('${it.id}',this.checked)">
-    <div class="body"><div class="lbl">${esc(it.lbl)}</div>${it.note?`<div class="note">${it.note}</div>`:''}<div class="cov">${covTags(it.cov)}</div></div>
+    <div class="body"><div class="lbl">${esc(it.lbl)}</div>${it.note?`<div class="note">${it.note}</div>`:''}<div class="cov">${covTags(it.cov)}</div>
+      ${it.imgs?`<div class="strip ${it.wide?'wide':''}">${it.imgs.map(([f,c])=>`<figure onclick="event.stopPropagation();lightbox('${PANC+f}','${c.replace(/'/g,'’')}')"><img src="${PANC+f}" alt=""><figcaption>${c}</figcaption></figure>`).join('')}<div class="cred">${CR[it.cr]||''}</div></div>`:''}</div>
     ${it.img?`<div class="thumb"><img src="${A+it.img}" alt="" onclick="event.stopPropagation();lightbox('${A+it.img}','${CR[it.cr]||''}')"><div class="cred">${CR[it.cr]||''}</div></div>`:''}
   </div>`;
 }
